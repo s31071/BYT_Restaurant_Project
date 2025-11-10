@@ -1,0 +1,1 @@
+tu proponuje walnąć teściory - każdy dla swoich klas
