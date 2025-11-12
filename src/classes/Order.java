@@ -13,6 +13,7 @@ public class Order {
     private int quantity;
     private LocalDateTime timestamp;
     private Table table;
+    private DeliveryDriver deliveryDriver; //czy to sie wrzuca do konstruktora? je ne sais pas
 
     public Order(int id, int numberOfPeople, OrderStatus status, int quantity, LocalDateTime timestamp, Table table) {
         this.id = id;
@@ -32,10 +33,12 @@ public class Order {
 
 
     private void updateOrderStatus(OrderStatus status){
-
+        this.status = status;
     }
 
-    private void assignToDeliveryDriver(){}
+    private void assignToDeliveryDriver(DeliveryDriver deliveryDriver){
+        this.deliveryDriver = deliveryDriver;
+    }
     private void updateDeliveryStatus(){}
     //que??
     private void finalizeOrder(){}

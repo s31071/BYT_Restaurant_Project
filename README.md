@@ -50,3 +50,10 @@ Reservation
 Shift
 
 +testy
+
+## Notatki 
+### Ania <3
+- mamy dwie metody w Order - updateOrderStatus() i updateDeliveryDriverStatus() ale nie mamy enuma status w delivery driver
+- nie wiem co ma robic modify and candel reservation 
+- potrzebuje idei co ma być w manage shift
+- 
