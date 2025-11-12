@@ -1,8 +1,12 @@
 package classes;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Invoice extends Payment implements Serializable {
     public long ID;
@@ -84,6 +88,5 @@ public class Invoice extends Payment implements Serializable {
     public List<SupplyHistory> getSupplyHistoryList() {
         return new ArrayList<>(supplyHistoryList);
     }
-
 }
 
