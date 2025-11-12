@@ -4,7 +4,6 @@ import javax.management.AttributeNotFoundException;
 
 enum MenuType {
     FOOD, BEVERAGE, SEASONAL
-
 }
 public class Menu {
     private String name;
@@ -14,11 +13,11 @@ public class Menu {
         this.type = type;
     }
 
-    private static void updateMenu(Dish dish, String action) throws AttributeNotFoundException {
-        if(Dish.getDishList().contains(dish)) {
-            if(action == "ADD") {
+    public static void updateMenu(Dish dish, String action) throws AttributeNotFoundException {
+        if(!Dish.getDishList().contains(dish)) {
+            if(action.equals("ADD")) {
                 Dish.addNewDish(dish);
-            } else if(action == "DELETE") {
+            } else if(action.equals("DELETE")) {
                 Dish.deleteDish(dish);
             }
         } else {
