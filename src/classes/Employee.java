@@ -37,8 +37,47 @@ public abstract class Employee extends Person{
         return baseSalary;
     }
 
-    private void ManageEmployee(){} // co to ma robic?
+    private void ManageEmployee(ManageEmployeeType type){
+      switch (type){
+          case update -> {
+              //updateEmployee(this, );
+          }
+          case delete -> employeeList.remove(this);
+      }
 
+    }
+
+    private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, String newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
+        employee.setName(newName);
+        employee.setSurname(newSurname);
+        employee.setPhoneNumber(newPhoneNumber);
+        employee.setAddress(newAddress);
+        employee.setEmail(newEmail);
+        employee.setEmploymentDate(newEmploymentDate);
+        employee.setContract(newContract);
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    public void setEmploymentDate(LocalDate employmentDate) {
+        this.employmentDate = employmentDate;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
+
+    public void setBaseSalary(double baseSalary) {
+        this.baseSalary = baseSalary;
+    }
+}
+
+enum ManageEmployeeType{
+    add,
+    update,
+    delete
 }
 
 enum Contract{
