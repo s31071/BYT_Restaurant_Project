@@ -2,7 +2,7 @@ package classes;
 
 import java.io.Serializable;
 
-abstract class Payment implements Serializable {
+public abstract class Payment implements Serializable {
 
     //jest jako public, żeby mieć do niego dostęp z innych klas jak potrzeba
     public enum PaymentMethod {
@@ -33,11 +33,6 @@ abstract class Payment implements Serializable {
     public PaymentMethod getPaymentMethod() {
         return method;
     }
-
-//moim zdaniem do usunięcia z payment, może być w manager
-    //public void managePaychecks(){}
-
-    // public void modifyPaychecks(){}
 
 }
 
