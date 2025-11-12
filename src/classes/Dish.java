@@ -14,7 +14,7 @@ public class Dish {
     }
 
     public static boolean checkAvailability(Dish dish) {
-        if(dishList.contains(dish)) return true;
+        if (dishList.contains(dish)) return true;
         return false;
     }
 
