@@ -1,8 +1,12 @@
 package classes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeliveryDriver extends Employee{
+    private static List<DeliveryDriver> deliveryDriverList = new ArrayList<>();
+
     private String carModel;
     private String registrationNumber;
     private static final double kmBonus = 1;
@@ -17,10 +21,12 @@ public class DeliveryDriver extends Employee{
         this.bonusApply = bonusApply;
         kmsInDay = 0;
         kmsInMonth = 0;
+
+        addDeliveryDriver(this);
     }
 
     @Override
-    double calculateSalary(Contract contract, LocalDate employmentDate) {
+    public double calculateSalary(Contract contract, LocalDate employmentDate) {
         return getBaseSalary()*168+kmsInMonth*(bonusApply ? kmBonus : 0);
     }
 
@@ -32,4 +38,60 @@ public class DeliveryDriver extends Employee{
     }
 
     private void reportIssue(){}
+
+    private static void addDeliveryDriver(DeliveryDriver deliveryDriver){
+        if(deliveryDriver == null){
+            throw new IllegalArgumentException("Delivery driver cannot be null");
+        }
+
+        deliveryDriverList.add(deliveryDriver);
+    }
+
+    public static List<DeliveryDriver> getDeliveryDriverList() {
+        return deliveryDriverList;
+    }
+
+    public static void setDeliveryDriverList(List<DeliveryDriver> deliveryDriverList) {
+        DeliveryDriver.deliveryDriverList = deliveryDriverList;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
+
+    public boolean isBonusApply() {
+        return bonusApply;
+    }
+
+    public void setBonusApply(boolean bonusApply) {
+        this.bonusApply = bonusApply;
+    }
+
+    public double getKmsInDay() {
+        return kmsInDay;
+    }
+
+    public void setKmsInDay(double kmsInDay) {
+        this.kmsInDay = kmsInDay;
+    }
+
+    public double getKmsInMonth() {
+        return kmsInMonth;
+    }
+
+    public void setKmsInMonth(double kmsInMonth) {
+        this.kmsInMonth = kmsInMonth;
+    }
 }

@@ -18,7 +18,7 @@ public abstract class Employee extends Person{
         this.employmentDate = employmentDate;
         this.contract = contract;
 
-        this.salary = calculateSalary(contract, employmentDate); //derived attribute
+        //this.salary = calculateSalary(contract, employmentDate); //derived attribute
 
         addEmployee(this);
     }
@@ -72,6 +72,26 @@ public abstract class Employee extends Person{
     public void setBaseSalary(double baseSalary) {
         this.baseSalary = baseSalary;
     }
+
+    public static List<Employee> getEmployeeList() {
+        return employeeList;
+    }
+
+    public static void setEmployeeList(List<Employee> employeeList) {
+        Employee.employeeList = employeeList;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public LocalDate getEmploymentDate() {
+        return employmentDate;
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
 }
 
 enum ManageEmployeeType{
@@ -80,8 +100,3 @@ enum ManageEmployeeType{
     delete
 }
 
-enum Contract{
-    employmentContract,
-    mandateContract,
-    B2B
-}

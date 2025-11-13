@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FullTime extends Employee{
+    private static List<FullTime> fullTimeList = new ArrayList<>();
+
     private static final double hoursPerWeek = 40;
     public FullTime(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
+        addFullTime(this);
     }
 
     @Override
@@ -18,7 +21,15 @@ public class FullTime extends Employee{
             case mandateContract -> 0.9 * workingYears*hoursPerWeek*4.5*getBaseSalary();
             case B2B -> workingYears*hoursPerWeek*4.5*getBaseSalary();
         };
-
     }
+
+    private static void addFullTime(FullTime fullTime){
+        if(fullTime == null){
+            throw new IllegalArgumentException("Full time cannot be null");
+        }
+
+        fullTimeList.add(fullTime);
+    }
+
 
 }

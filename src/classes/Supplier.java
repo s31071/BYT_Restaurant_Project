@@ -15,6 +15,8 @@ public class Supplier extends Person{
         this.companyName = validateCompanyName(companyName);
         this.category = category;
         this.deliveryCost = deliveryCost;
+
+        addSupplier(this);
     }
 
     private String validateCompanyName(String companyName){
@@ -32,12 +34,36 @@ public class Supplier extends Person{
         supplierList.add(supplier);
     }
 
+    public static List<Supplier> getSupplierList() {
+        return supplierList;
+    }
+
+    public static void setSupplierList(List<Supplier> supplierList) {
+        Supplier.supplierList = supplierList;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public double getDeliveryCost() {
+        return deliveryCost;
+    }
+
+    public void setDeliveryCost(double deliveryCost) {
+        this.deliveryCost = deliveryCost;
+    }
 }
 
-enum Category{
-    meat,
-    diary,
-    vegetables,
-    bread,
-    beverages
-}
