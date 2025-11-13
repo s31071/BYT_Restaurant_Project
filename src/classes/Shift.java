@@ -21,7 +21,7 @@ public class Shift {
     ///przykładowy management shiftu - można dopisać ale pytanie co hehe
     private void manageShift(int numberOfPeopleNeeded) {
         if(numberOfPeopleNeeded < 3 || numberOfPeopleNeeded > 7) {
-            throw new IllegalArgumentException("No. of people needed must be between 3 and 7");
+            throw new IllegalArgumentException("Number of people needed must be between 3 and 7");
         } else {
             setNumberOfPeopleNeeded(numberOfPeopleNeeded);
         }

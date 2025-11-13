@@ -13,86 +13,78 @@ public class SupplyHistoryTest {
     private Address address;
     private ProductOrder productOrder;
     private Invoice invoice;
+    private SupplyHistory supplyHistory;
+    private LocalDate today;
 
     @BeforeEach
     void setup() {
-        address = new Address("Street 1", "City", "12345", "Country");
+        address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
         productOrder = new ProductOrder(2, 3);
-        invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123, "John", address, productOrder);
-    }
+        invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+        today = LocalDate.now();
 
-    @Test
-    void testConstructor_valid() {
-        SupplyHistory sh = new SupplyHistory(
-                LocalDate.now(),
+        supplyHistory = new SupplyHistory(
+                today,
                 SupplyHistory.Status.ORDERED,
                 invoice,
                 productOrder
         );
-        assertEquals(LocalDate.now(), sh.getDate());
-        assertEquals(SupplyHistory.Status.ORDERED, sh.getStatus());
-        assertEquals(invoice, sh.getInvoice());
-        assertEquals(productOrder, sh.getProductOrder());
     }
 
     @Test
-    void testSetDate_null_throwsException() {
-        SupplyHistory sh = new SupplyHistory(
-                LocalDate.now(),
-                SupplyHistory.Status.ORDERED,
-                invoice,
-                productOrder
-        );
-        assertThrows(IllegalArgumentException.class, () -> sh.setDate(null));
+    void testConstructorValid() {
+        assertEquals(today, supplyHistory.getDate());
+        assertEquals(SupplyHistory.Status.ORDERED, supplyHistory.getStatus());
+        assertEquals(invoice, supplyHistory.getInvoice());
+        assertEquals(productOrder, supplyHistory.getProductOrder());
     }
 
     @Test
-    void testSetDate_future_throwsException() {
-        SupplyHistory sh = new SupplyHistory(
-                LocalDate.now(),
-                SupplyHistory.Status.ORDERED,
-                invoice,
-                productOrder
-        );
-        assertThrows(IllegalArgumentException.class, () -> sh.setDate(LocalDate.now().plusDays(1)));
+    void testSetDateNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> supplyHistory.setDate(null));
     }
 
     @Test
-    void testSetStatus_null_throwsException() {
-        SupplyHistory sh = new SupplyHistory(
-                LocalDate.now(),
-                SupplyHistory.Status.ORDERED,
-                invoice,
-                productOrder
-        );
-        assertThrows(IllegalArgumentException.class, () -> sh.setStatus(null));
+    void testSetDateFutureThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> supplyHistory.setDate(today.plusDays(1)));
     }
 
     @Test
-    void testConstructor_nullInvoice_throwsException() {
+    void testSetStatusNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> supplyHistory.setStatus(null));
+    }
+
+    @Test
+    void testConstructorNullInvoiceThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
-                new SupplyHistory(LocalDate.now(),
-                        SupplyHistory.Status.ORDERED,
-                        null,
-                        productOrder)
+                new SupplyHistory(today, SupplyHistory.Status.ORDERED, null, productOrder)
         );
     }
 
     @Test
-    void testConstructor_nullProductOrder_throwsException() {
+    void testConstructorNullProductOrderThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
-                new SupplyHistory(LocalDate.now(),
-                        SupplyHistory.Status.ORDERED,
-                        invoice,
-                        null)
+                new SupplyHistory(today, SupplyHistory.Status.ORDERED, invoice, null)
         );
     }
 
     @Test
-    void testExtent_addsAutomatically() {
+    void testExtentAddsAutomatically() {
         int before = SupplyHistory.getSupplyHistoryList().size();
-        new SupplyHistory(LocalDate.now(), SupplyHistory.Status.ORDERED, invoice, productOrder);
+        new SupplyHistory(today, SupplyHistory.Status.ORDERED, invoice, productOrder);
         int after = SupplyHistory.getSupplyHistoryList().size();
         assertEquals(before + 1, after);
     }
+    @Test
+    void testConstructorNullStatusThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new SupplyHistory(LocalDate.now(), null, invoice, productOrder));
+    }
+
+    @Test
+    void testConstructorNullDateThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new SupplyHistory(null, SupplyHistory.Status.ORDERED, invoice, productOrder));
+    }
+
 }
