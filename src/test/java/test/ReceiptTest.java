@@ -3,10 +3,12 @@ package test.java.test;
 import classes.Payment;
 import classes.Receipt;
 import classes.Order;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//do zmiany po wieczornym callu
 public class ReceiptTest {
 
     static class TestOrder extends Order {
@@ -23,65 +25,82 @@ public class ReceiptTest {
         }
     }
 
-    @Test
-    void testConstructor_validWithoutTip() {
-        TestOrder order = new TestOrder(100);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order);
-        assertEquals(order, r.getOrder());
-        assertNull(r.getTip());
+    private TestOrder order100;
+    private TestOrder order50;
+    private Receipt receiptNoTip;
+    private Receipt receiptWithTip;
+
+    @BeforeEach
+    void setup() {
+        order100 = new TestOrder(100);
+        order50 = new TestOrder(50);
+
+        receiptNoTip = new Receipt(Payment.PaymentMethod.CARD, order100);
+        receiptWithTip = new Receipt(Payment.PaymentMethod.CARD, order100, 10.0);
     }
 
     @Test
-    void testConstructor_validWithTip() {
-        TestOrder order = new TestOrder(100);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order, 10.0);
-        assertEquals(10.0, r.getTip());
-        assertEquals(order, r.getOrder());
+    void testConstructorValidWithoutTip() {
+        assertEquals(order100, receiptNoTip.getOrder());
+        assertNull(receiptNoTip.getTip());
     }
 
     @Test
-    void testSetTip_valid() {
-        TestOrder order = new TestOrder(50);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order);
+    void testConstructorValidWithTip() {
+        assertEquals(10.0, receiptWithTip.getTip());
+        assertEquals(order100, receiptWithTip.getOrder());
+    }
+
+    @Test
+    void testSetTipValid() {
+        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order50);
         r.setTip(5.0);
         assertEquals(5.0, r.getTip());
     }
 
     @Test
-    void testSetTip_nullAllowed() {
-        TestOrder order = new TestOrder(50);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order);
+    void testSetTipNullAllowed() {
+        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order50);
         r.setTip(null);
         assertNull(r.getTip());
     }
 
     @Test
-    void testSetTip_negative_throwsException() {
-        TestOrder order = new TestOrder(50);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order);
+    void testSetTipNegativeThrowsException() {
+        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order50);
         assertThrows(IllegalArgumentException.class, () -> r.setTip(-1.0));
     }
 
     @Test
-    void testSetOrder_null_throwsException() {
-        TestOrder order = new TestOrder(50);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order);
+    void testSetOrderNullThrowsException() {
+        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order50);
         assertThrows(IllegalArgumentException.class, () -> r.setOrder(null));
     }
 
     @Test
-    void testGetFinalAmount_withoutTip() {
-        TestOrder order = new TestOrder(100);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order, null);
+    void testGetFinalAmountWithoutTip() {
+        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order100, null);
         double expected = 100 + (100 * Receipt.service);
         assertEquals(expected, r.getFinalAmount());
     }
 
     @Test
-    void testGetFinalAmount_withTip() {
-        TestOrder order = new TestOrder(100);
-        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order, 15.0);
+    void testGetFinalAmountWithTip() {
+        Receipt r = new Receipt(Payment.PaymentMethod.CARD, order100, 15.0);
         double expected = 100 + (100 * Receipt.service) + 15.0;
         assertEquals(expected, r.getFinalAmount());
+    }
+
+    @Test
+    void testConstructorNullOrderThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Receipt(Payment.PaymentMethod.CARD, null));
+    }
+
+    @Test
+    void testConstructorNullPaymentMethodThrowsException() {
+        TestOrder order = new TestOrder(50);
+        assertThrows(IllegalArgumentException.class,
+                () -> new Receipt(null, order));
     }
 }

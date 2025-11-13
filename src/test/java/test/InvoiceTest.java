@@ -11,84 +11,86 @@ import static org.junit.jupiter.api.Assertions.*;
 public class InvoiceTest {
 
     private Address address;
+    private Address newAddress;
     private ProductOrder productOrder;
+    private ProductOrder newProductOrder;
+    private Invoice invoice;
 
     @BeforeEach
     void setup() {
         address = new Address("Koszykowa", "Warsaw", "12345", "Poland");
         productOrder = new ProductOrder(2, 3);
+
+        newAddress = new Address("Koszykowa", "Warsaw", "00-001", "Poland");
+        newProductOrder = new ProductOrder(5, 10);
+
+        invoice = new Invoice(
+                Payment.PaymentMethod.CARD,
+                1,
+                123456789,
+                "Emilia",
+                address,
+                productOrder
+        );
     }
 
     @Test
-    void testSetID_validValue() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetIDValid() {
         invoice.setID(10);
         assertEquals(10, invoice.getID());
     }
 
     @Test
-    void testSetID_negative_throwsException() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetIDNegativeThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> invoice.setID(-5));
     }
 
     @Test
-    void testSetTaxIdentificationNumber_valid() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetTaxIdentificationNumberValid() {
         invoice.setTaxIdentificationNumber(987654321);
         assertEquals(987654321, invoice.getTaxIdentificationNumber());
     }
 
     @Test
-    void testSetTaxIdentificationNumber_invalid_throwsException() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetTaxIdentificationNumberInvalidThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> invoice.setTaxIdentificationNumber(0));
     }
 
     @Test
-    void testSetName_valid() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetNameValid() {
         invoice.setName("Emilia");
         assertEquals("Emilia", invoice.getName());
     }
 
     @Test
-    void testSetName_empty_throwsException() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetNameEmptyThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> invoice.setName(""));
     }
 
     @Test
-    void testSetAddress_valid() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
-        Address newAddress = new Address("Koszykowa", "Warsaw", "00-001", "Poland");
+    void testSetAddressValid() {
         invoice.setAddress(newAddress);
         assertEquals(newAddress, invoice.getAddress());
     }
 
     @Test
-    void testSetAddress_null_throwsException() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetAddressNullThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> invoice.setAddress(null));
     }
 
     @Test
-    void testSetProductOrder_valid() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
-        ProductOrder newOrder = new ProductOrder(5, 10);
-        invoice.setProductOrder(newOrder);
-        assertEquals(newOrder, invoice.getProductOrder());
+    void testSetProductOrderValid() {
+        invoice.setProductOrder(newProductOrder);
+        assertEquals(newProductOrder, invoice.getProductOrder());
     }
 
     @Test
-    void testSetProductOrder_null_throwsException() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testSetProductOrderNullThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> invoice.setProductOrder(null));
     }
 
     @Test
-    void testAddSupplyHistory_addsItem() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testAddSupplyHistoryValid() {
         SupplyHistory supplyHistory = new SupplyHistory(
                 LocalDate.now(),
                 SupplyHistory.Status.ORDERED,
@@ -100,9 +102,39 @@ public class InvoiceTest {
     }
 
     @Test
-    void testAddSupplyHistory_null_doesNothing() {
-        Invoice invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+    void testAddSupplyHistoryNullDoesNothing() {
         invoice.addSupplyHistory(null);
-        assertEquals(0, invoice.getSupplyHistoryList().size());
+        assertEquals(0, new Invoice(
+                Payment.PaymentMethod.CARD,
+                2,
+                987654321,
+                "Emilia",
+                address,
+                productOrder
+        ).getSupplyHistoryList().size());
+    }
+
+    @Test
+    void testConstructorNullAddressThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", null, productOrder));
+    }
+
+    @Test
+    void testConstructorNullProductOrderThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, null));
+    }
+
+    @Test
+    void testConstructorNullNameThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, null, address, productOrder));
+    }
+
+    @Test
+    void testConstructorNullPaymentMethodThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(null, 1, 123456789, "Emilia", address, productOrder));
     }
 }

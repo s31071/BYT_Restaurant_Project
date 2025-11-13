@@ -10,78 +10,96 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductTest {
 
+    private Product product;
+
     @BeforeEach
-    void resetExtent() {
+    void setup() {
         Product.getProductList().clear();
+        product = new Product(1, "Milk", 1.0, "Dairy");
     }
 
     @Test
-    void testConstructor_validWithExpiryDate() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy", LocalDate.now().plusDays(7));
-        assertEquals(1, p.getID());
-        assertEquals("Milk", p.getName());
+    void testConstructorValidWithExpiryDate() {
+        Product p = new Product(2, "Cheese", 1.0, "Dairy", LocalDate.now().plusDays(7));
+        assertEquals(2, p.getID());
+        assertEquals("Cheese", p.getName());
         assertEquals(1.0, p.getWeight());
         assertEquals("Dairy", p.getCategory());
         assertEquals(LocalDate.now().plusDays(7), p.getExpiryDate());
     }
 
     @Test
-    void testConstructor_validWithoutExpiryDate() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        assertNull(p.getExpiryDate());
+    void testConstructorValidWithoutExpiryDate() {
+        assertNull(product.getExpiryDate());
     }
 
     @Test
-    void testSetID_invalid_throwsException() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        assertThrows(IllegalArgumentException.class, () -> p.setID(0));
+    void testSetIDInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> product.setID(0));
     }
 
     @Test
-    void testSetName_invalid_throwsException() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        assertThrows(IllegalArgumentException.class, () -> p.setName(""));
+    void testSetNameInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> product.setName(""));
     }
 
     @Test
-    void testSetWeight_valid() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        p.setWeight(2.0);
-        assertEquals(2.0, p.getWeight());
+    void testSetWeightValid() {
+        product.setWeight(2.0);
+        assertEquals(2.0, product.getWeight());
     }
 
     @Test
-    void testSetWeight_invalid_throwsException() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        assertThrows(IllegalArgumentException.class, () -> p.setWeight(0.0));
-        assertThrows(IllegalArgumentException.class, () -> p.setWeight(-1.0));
-        assertThrows(IllegalArgumentException.class, () -> p.setWeight(null));
+    void testSetWeightInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> product.setWeight(0.0));
+        assertThrows(IllegalArgumentException.class, () -> product.setWeight(-1.0));
+        assertThrows(IllegalArgumentException.class, () -> product.setWeight(null));
     }
 
     @Test
-    void testSetCategory_invalid_throwsException() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        assertThrows(IllegalArgumentException.class, () -> p.setCategory(""));
-        assertThrows(IllegalArgumentException.class, () -> p.setCategory(null));
+    void testSetCategoryInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> product.setCategory(""));
+        assertThrows(IllegalArgumentException.class, () -> product.setCategory(null));
     }
 
     @Test
-    void testSetExpiryDate_past_throwsException() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        assertThrows(IllegalArgumentException.class, () -> p.setExpiryDate(LocalDate.now().minusDays(1)));
+    void testSetExpiryDatePastThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> product.setExpiryDate(LocalDate.now().minusDays(1)));
     }
 
     @Test
-    void testExtent_addsAutomatically() {
-        new Product(1, "Milk", 1.0, "Dairy");
-        new Product(2, "Milk", 1.0, "Dairy");
-        assertEquals(2, Product.getProductList().size());
+    void testExtentAddsAutomatically() {
+        new Product(5, "Chocolate", 2.0, "Sweets");
+        new Product(6, "Ham", 3.0, "Meat");
+        assertEquals(3, Product.getProductList().size());
     }
 
     @Test
-    void testRemove_removesFromExtent() {
-        Product p = new Product(1, "Milk", 1.0, "Dairy");
-        p.remove();
-        assertFalse(Product.getProductList().contains(p));
+    void testRemoveRemovesFromExtent() {
+        product.remove();
+        assertFalse(Product.getProductList().contains(product));
+    }
+    @Test
+    void testConstructorNullNameThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Product(1, null, 1.0, "Dairy"));
+    }
+
+    @Test
+    void testConstructorNullCategoryThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Product(1, "Milk", 1.0, null));
+    }
+
+    @Test
+    void testConstructorZeroWeightThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Product(1, "Milk", 0.0, "Dairy"));
+    }
+
+    @Test
+    void testConstructorNegativeWeightThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Product(1, "Milk", -5.0, "Dairy"));
     }
 }

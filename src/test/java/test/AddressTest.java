@@ -1,75 +1,96 @@
 package test.java.test;
 
 import classes.Address;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddressTest {
 
-    @Test
-    void testConstructor_valid() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
+    private Address address;
 
-        assertEquals("Koszykowa", a.getStreet());
-        assertEquals("Warsaw", a.getCity());
-        assertEquals("0000", a.getPostalCode());
-        assertEquals("Poland", a.getCountry());
+    @BeforeEach
+    void setup() {
+        address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
     }
 
     @Test
-    void testSetStreet_valid() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        a.setStreet("Nowowiejska");
-        assertEquals("Nowowiejska", a.getStreet());
+    void testConstructorValid() {
+        assertEquals("Koszykowa", address.getStreet());
+        assertEquals("Warsaw", address.getCity());
+        assertEquals("0000", address.getPostalCode());
+        assertEquals("Poland", address.getCountry());
     }
 
     @Test
-    void testSetStreet_invalid_throwsException() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        assertThrows(IllegalArgumentException.class, () -> a.setStreet(""));
-        assertThrows(IllegalArgumentException.class, () -> a.setStreet(null));
+    void testSetStreetValid() {
+        address.setStreet("Nowowiejska");
+        assertEquals("Nowowiejska", address.getStreet());
     }
 
     @Test
-    void testSetCity_valid() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        a.setCity("Krakow");
-        assertEquals("Krakow", a.getCity());
+    void testSetStreetInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> address.setStreet(""));
+        assertThrows(IllegalArgumentException.class, () -> address.setStreet(null));
     }
 
     @Test
-    void testSetCity_invalid_throwsException() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        assertThrows(IllegalArgumentException.class, () -> a.setCity(""));
-        assertThrows(IllegalArgumentException.class, () -> a.setCity(null));
+    void testSetCityValid() {
+        address.setCity("Krakow");
+        assertEquals("Krakow", address.getCity());
     }
 
     @Test
-    void testSetPostalCode_valid() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        a.setPostalCode("1111");
-        assertEquals("1111", a.getPostalCode());
+    void testSetCityInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> address.setCity(""));
+        assertThrows(IllegalArgumentException.class, () -> address.setCity(null));
     }
 
     @Test
-    void testSetPostalCode_invalid_throwsException() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        assertThrows(IllegalArgumentException.class, () -> a.setPostalCode(""));
-        assertThrows(IllegalArgumentException.class, () -> a.setPostalCode(null));
+    void testSetPostalCodeValid() {
+        address.setPostalCode("1111");
+        assertEquals("1111", address.getPostalCode());
     }
 
     @Test
-    void testSetCountry_valid() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        a.setCountry("Germany");
-        assertEquals("Germany", a.getCountry());
+    void testSetPostalCodeInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> address.setPostalCode(""));
+        assertThrows(IllegalArgumentException.class, () -> address.setPostalCode(null));
     }
 
     @Test
-    void testSetCountry_invalid_throwsException() {
-        Address a = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        assertThrows(IllegalArgumentException.class, () -> a.setCountry(""));
-        assertThrows(IllegalArgumentException.class, () -> a.setCountry(null));
+    void testSetCountryValid() {
+        address.setCountry("Germany");
+        assertEquals("Germany", address.getCountry());
+    }
+
+    @Test
+    void testSetCountryInvalidThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> address.setCountry(""));
+        assertThrows(IllegalArgumentException.class, () -> address.setCountry(null));
+    }
+    @Test
+    void testConstructorNullStreetThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Address(null, "Warsaw", "0000", "Poland"));
+    }
+
+    @Test
+    void testConstructorNullCityThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Address("Koszykowa", null, "0000", "Poland"));
+    }
+
+    @Test
+    void testConstructorNullPostalCodeThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Address("Koszykowa", "Warsaw", null, "Poland"));
+    }
+
+    @Test
+    void testConstructorNullCountryThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Address("Koszykowa", "Warsaw", "0000", null));
     }
 }

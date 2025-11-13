@@ -1,6 +1,7 @@
 package test.java.test;
 
 import classes.Payment;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,29 +14,46 @@ public class PaymentTest {
         }
     }
 
+    private TestPayment payment;
+
+    @BeforeEach
+    void setup() {
+        payment = new TestPayment(Payment.PaymentMethod.CARD, 50);
+    }
+
     @Test
-    void testConstructor_valid() {
+    void testConstructorValid() {
         TestPayment p = new TestPayment(Payment.PaymentMethod.CARD, 50);
         assertEquals(50, p.getSum());
         assertEquals(Payment.PaymentMethod.CARD, p.getPaymentMethod());
     }
 
     @Test
-    void testSetPaymentMethod_valid() {
-        TestPayment p = new TestPayment(Payment.PaymentMethod.CARD, 10);
-        p.setPaymentMethod(Payment.PaymentMethod.CASH);
-        assertEquals(Payment.PaymentMethod.CASH, p.getPaymentMethod());
+    void testSetPaymentMethodValid() {
+        payment.setPaymentMethod(Payment.PaymentMethod.CASH);
+        assertEquals(Payment.PaymentMethod.CASH, payment.getPaymentMethod());
     }
 
     @Test
-    void testSetPaymentMethod_null_throwsException() {
-        TestPayment p = new TestPayment(Payment.PaymentMethod.CARD, 10);
-        assertThrows(IllegalArgumentException.class, () -> p.setPaymentMethod(null));
+    void testSetPaymentMethodNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> payment.setPaymentMethod(null));
     }
 
     @Test
-    void testDerivedSum_noSetter() {
+    void testDerivedSumValid() {
         TestPayment p = new TestPayment(Payment.PaymentMethod.CARD, 99.5);
         assertEquals(99.5, p.getSum());
+    }
+
+    @Test
+    void testConstructorNullPaymentMethodThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new TestPayment(null, 10.0));
+    }
+
+    @Test
+    void testConstructorNegativeSumThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new TestPayment(Payment.PaymentMethod.CARD, -10.0));
     }
 }
