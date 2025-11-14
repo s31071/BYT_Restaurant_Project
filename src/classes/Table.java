@@ -6,10 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-enum TableStatus {
-    AVAILABLE, TAKEN, RESERVED
-}
-
 public class Table {
     private int number;
     private int numberOfSeats;
@@ -25,22 +21,19 @@ public class Table {
         this.orders = new HashMap<>(); // iffy podejscie ale bedzie mozna poprawic
     }
 
-    //co to znaczy create albo delete table bo nie mam pojecia :')
-    private void createTable(){}
     private void changeTableStatus(TableStatus status){
         this.status = status;
     }
-    private void deleteTable(){}
-    private void deleteOrder(LocalDateTime timestamp){
+    public void deleteOrder(LocalDateTime timestamp){
         Order removed = this.orders.remove(timestamp);
     }
-    private void takeOrder(Order order){
+    public void takeOrder(Order order){
         this.orders.put(order.getTimestamp(), order);
     }
-    private OrderStatus accessOrderStatus(Order order){
+    public OrderStatus accessOrderStatus(Order order){
         return order.getStatus();
     }
-    private void displayAllOrders(){
+    public void displayAllOrders(){
         for(Map.Entry<LocalDateTime, Order> entry : orders.entrySet()) {
             Order order = entry.getValue();
             System.out.println("Timestamp: " + entry.getKey() +
@@ -50,5 +43,23 @@ public class Table {
         }
     }
 
+    public int getNumber() {
+        return number;
+    }
 
+    public int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public TableStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public HashMap<LocalDateTime, Order> getOrders() {
+        return orders;
+    }
 }

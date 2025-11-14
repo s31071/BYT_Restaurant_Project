@@ -1,10 +1,9 @@
 package classes;
 
 import javax.management.AttributeNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
-enum MenuType {
-    FOOD, BEVERAGE, SEASONAL
-}
 public class Menu {
     private String name;
     private MenuType type;
@@ -24,5 +23,13 @@ public class Menu {
             throw new AttributeNotFoundException("Could not find dish to update");
         }
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public MenuType getType() {
+        return type;
     }
 }

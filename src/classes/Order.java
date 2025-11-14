@@ -2,10 +2,6 @@ package classes;
 
 import java.time.LocalDateTime;
 
-enum OrderStatus {
-    TAKEN, IN_PREPARATION, READY, SERVED, DELIVERED
-}
-
 public class Order {
     private int id;
     private int numberOfPeople;
@@ -13,7 +9,7 @@ public class Order {
     private int quantity;
     private LocalDateTime timestamp;
     private Table table;
-    private DeliveryDriver deliveryDriver; //czy to sie wrzuca do konstruktora? je ne sais pas
+    private DeliveryDriver deliveryDriver;
 
     public Order(int id, int numberOfPeople, OrderStatus status, int quantity, LocalDateTime timestamp, Table table) {
         this.id = id;
@@ -24,23 +20,15 @@ public class Order {
         this.table = table;
     }
 
-    public Order(int id, int numberOfPeople, OrderStatus status, int quantity) {
-        this.id = id;
-        this.numberOfPeople = numberOfPeople;
-        this.status = status;
-        this.quantity = quantity;
-    }
 
 
-    private void updateOrderStatus(OrderStatus status){
+    public void updateOrderStatus(OrderStatus status){
         this.status = status;
     }
 
-    private void assignToDeliveryDriver(DeliveryDriver deliveryDriver){
+    public void assignToDeliveryDriver(DeliveryDriver deliveryDriver){
         this.deliveryDriver = deliveryDriver;
     }
-    private void updateDeliveryStatus(){}
-    //que??
     private void finalizeOrder(){}
     public LocalDateTime getTimestamp(){
         return timestamp;

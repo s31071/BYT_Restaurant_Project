@@ -1,10 +1,10 @@
 package test.java.test;
 
-import classes.Payment;
-import classes.Receipt;
-import classes.Order;
+import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,7 +15,7 @@ public class ReceiptTest {
         private final double totalPrice;
 
         public TestOrder(double totalPrice) {
-            super(1, 1, null, 1);
+            super(1, 1, null, 1, LocalDateTime.now(), new Table(1, 2, TableStatus.TAKEN, LocalDateTime.now()));
             this.totalPrice = totalPrice;
         }
 
