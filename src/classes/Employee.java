@@ -27,7 +27,7 @@ public abstract class Employee extends Person implements Serializable {
     private void ManageEmployee(ManageEmployeeType type){
         switch (type){
             case UPDATE -> {}
-            case DELETE  -> extent.remove(this);
+            //case DELETE  -> extent.remove(this);
         }
     }
 
@@ -55,10 +55,6 @@ public abstract class Employee extends Person implements Serializable {
 
     public void setBaseSalary(double baseSalary) {
         this.baseSalary = baseSalary;
-    }
-
-    public static void setExtent(List<Employee> employeeList) {
-        Employee.extent = employeeList;
     }
 
     public double getSalary() {

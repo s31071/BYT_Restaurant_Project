@@ -4,73 +4,62 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.lang.reflect.Field;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductOrderTest {
 
     private ProductOrder order;
-    private Address address;
-    private Invoice invoice;
+    private Product p1;
+    private Product p2;
 
     @BeforeEach
-    void setup() {
-        order = new ProductOrder(50, 3);
-        address = new Address("Koszykowa", "Warsaw", "00000", "Poland");
-        invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 111222333, "Emilia", address, order);
+    void setup() throws Exception {
+        Field productExtent = Product.class.getDeclaredField("extent");
+        productExtent.setAccessible(true);
+        ((List<?>) productExtent.get(null)).clear();
+
+        Field orderExtent = ProductOrder.class.getDeclaredField("extent");
+        orderExtent.setAccessible(true);
+        ((List<?>) orderExtent.get(null)).clear();
+
+        p1 = new Product(1, "Milk", 1.0, Category.DAIRY);
+        p2 = new Product(2, "Bread", 0.5, Category.BREAD);
+        order = new ProductOrder(List.of(p1, p2));
     }
 
     @Test
     void testConstructorValid() {
-        ProductOrder o = new ProductOrder(100, 5);
-        assertEquals(100, o.getTotalPrice());
-        assertEquals(5, o.getWeight());
+        double expectedWeight = p1.getWeight() + p2.getWeight();
+        assertEquals(List.of(p1, p2), order.getProducts());
+        assertEquals(expectedWeight, order.getWeight());
     }
 
     @Test
-    void testSetTotalPriceValid() {
-        order.setTotalPrice(200);
-        assertEquals(200, order.getTotalPrice());
+    void testSetProductsValid() {
+        Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY);
+        Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY);
+
+        order.setProducts(List.of(p3, p4));
+
+        assertEquals(List.of(p3, p4), order.getProducts());
+        assertEquals(p3.getWeight() + p4.getWeight(), order.getWeight());
     }
 
     @Test
-    void testSetTotalPriceInvalidThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> order.setTotalPrice(-10));
+    void testSetProductsNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> order.setProducts(null));
     }
 
     @Test
-    void testSetWeightValid() {
-        order.setWeight(10.0);
-        assertEquals(10.0, order.getWeight());
+    void testSetProductsEmptyThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> order.setProducts(List.of()));
     }
 
     @Test
-    void testSetWeightNullThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> order.setWeight(null));
-    }
-
-    @Test
-    void testSetWeightNonPositiveThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> order.setWeight(0.0));
-        assertThrows(IllegalArgumentException.class, () -> order.setWeight(-2.0));
-    }
-
-    @Test
-    void testAddSupplyHistoryValid() {
-        new SupplyHistory(
-                LocalDate.now(),
-                SupplyHistory.Status.ORDERED,
-                invoice,
-                order
-        );
-
-        assertEquals(1, order.getSupplyHistoryList().size());
-    }
-
-    @Test
-    void testAddSupplyHistoryNullDoesNothing() {
-        order.addSupplyHistory(null);
-        assertEquals(0, order.getSupplyHistoryList().size());
+    void testSetProductsWithNullElementThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> order.setProducts(List.of(p1, null)));
     }
 }
