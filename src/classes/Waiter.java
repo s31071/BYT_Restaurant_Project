@@ -17,8 +17,8 @@ public class Waiter extends Employee implements Serializable {
 
     public Waiter(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, WorkwearSize workwearSize, double maximumTables) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
-        this.workwearSize = workwearSize;
-        this.maximumTables = maximumTables;
+        setWorkwearSize(workwearSize);
+        setMaximumTables(maximumTables);
         addExtent(this);
     }
 
@@ -41,6 +41,12 @@ public class Waiter extends Employee implements Serializable {
     }
 
     public void setMaximumTables(double maximumTables) {
+        if (maximumTables <= 0) {
+            throw new IllegalArgumentException("Maximum tables must be greater than 0");
+        }
+        if (maximumTables >= 30){
+            throw new IllegalArgumentException("The waiter cannot be assigned to more than 30 tables"); //TODO: zapisać to w dokumentacji
+        }
         this.maximumTables = maximumTables;
     }
 

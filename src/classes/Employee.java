@@ -14,8 +14,8 @@ public abstract class Employee extends Person implements Serializable {
 
     public Employee(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract){
         super(name, surname, phoneNumber, address, email);
-        this.employmentDate = employmentDate;
-        this.contract = contract;
+        setEmploymentDate(employmentDate);
+        setContract(contract);
     }
 
     abstract double calculateSalary(Contract contract, LocalDate employmentDate);
@@ -24,12 +24,12 @@ public abstract class Employee extends Person implements Serializable {
         return baseSalary;
     }
 
-    private void ManageEmployee(ManageEmployeeType type){
+    /*private void ManageEmployee(ManageEmployeeType type){
         switch (type){
             case UPDATE -> {}
-            //case DELETE  -> extent.remove(this);
+            case DELETE  -> extent.remove(this);
         }
-    }
+    }*/
 
     private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, String newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
         employee.setName(newName);
@@ -46,15 +46,22 @@ public abstract class Employee extends Person implements Serializable {
     }
 
     public void setEmploymentDate(LocalDate employmentDate) {
+        if(employmentDate == null){
+            throw new IllegalArgumentException("Employment date cannot be null");
+        }
+
+        if(employmentDate.isAfter(LocalDate.now())){
+            throw new IllegalArgumentException("Employment date cannot be in the future");
+        }
+
         this.employmentDate = employmentDate;
     }
 
     public void setContract(Contract contract) {
+        if(contract == null){
+            throw new IllegalArgumentException("Contract cannot be null");
+        }
         this.contract = contract;
-    }
-
-    public void setBaseSalary(double baseSalary) {
-        this.baseSalary = baseSalary;
     }
 
     public double getSalary() {

@@ -17,17 +17,10 @@ public class Supplier extends Person implements Serializable {
 
     public Supplier(String name, String surname, String phoneNumber, String address, String email, String companyName, Category category, double deliveryCost) {
         super(name, surname, phoneNumber, address, email);
-        this.companyName = validateCompanyName(companyName);
-        this.category = category;
-        this.deliveryCost = deliveryCost;
+        setCompanyName(companyName);
+        setCategory(category);
+        setDeliveryCost(deliveryCost);
         addExtent(this);
-    }
-
-    private String validateCompanyName(String companyName){
-        if (companyName == null || companyName.isBlank()) {
-            throw new IllegalArgumentException("Company name cannot be empty");
-        }
-        return companyName;
     }
 
     public String getCompanyName() {
@@ -35,6 +28,9 @@ public class Supplier extends Person implements Serializable {
     }
 
     public void setCompanyName(String companyName) {
+        if (companyName == null || companyName.isBlank()) {
+            throw new IllegalArgumentException("Company name cannot be empty");
+        }
         this.companyName = companyName;
     }
 
@@ -43,6 +39,9 @@ public class Supplier extends Person implements Serializable {
     }
 
     public void setCategory(Category category) {
+        if(category == null){
+            throw new IllegalArgumentException("Category cannot be null");
+        }
         this.category = category;
     }
 
@@ -51,6 +50,9 @@ public class Supplier extends Person implements Serializable {
     }
 
     public void setDeliveryCost(double deliveryCost) {
+        if(deliveryCost < 0){
+            throw new IllegalArgumentException("Delivery cost cannot be negative");
+        }
         this.deliveryCost = deliveryCost;
     }
 
