@@ -18,15 +18,36 @@ public class Cook extends Employee implements Serializable {
 
     public Cook(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, double yearsOfExperience, String title, String specialization) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
-        this.yearsOfExperience = yearsOfExperience;
-        this.title = title;
-        this.specialization = specialization;
+        setYearsOfExperience(yearsOfExperience);
+        setTitle(title);
+        setSpecialization(specialization);
         addExtent(this);
     }
 
-    @Override
+    @Override //TODO: co zrobic z calculateSalary tutaj
     public double calculateSalary(Contract contract, LocalDate employmentDate) {
         return 0;
+    }
+
+    public void setYearsOfExperience(double yearsOfExperience) {
+        if(yearsOfExperience < 0){
+            throw new IllegalArgumentException("Years of experience cannot be negative");
+        }
+        this.yearsOfExperience = yearsOfExperience;
+    }
+
+    public void setTitle(String title) {
+        if(title == null || title.isBlank()){
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+        this.title = title;
+    }
+
+    public void setSpecialization(String specialization) {
+        if(specialization == null || specialization.isBlank()){
+            throw new IllegalArgumentException("Specialization cannot be empty");
+        }
+        this.specialization = specialization;
     }
 
     public static void addExtent(Cook cook) {
@@ -36,7 +57,6 @@ public class Cook extends Employee implements Serializable {
         extent.add(cook);
     }
 
-    @Override
     public List<Cook> getExtent() {
         return Collections.unmodifiableList(extent);
     }

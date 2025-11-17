@@ -9,39 +9,11 @@ public abstract class Person {
     public String email;
 
     public Person(String name, String surname, String phoneNumber, String address, String email) {
-        this.name = validateName(name);
-        this.surname = validateSurname(surname);
-        this.phoneNumber = validatePhoneNumber(phoneNumber);
-        this.address = address;
-        this.email = validateEmail(email);
-    }
-
-    private String validateName(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name cannot be empty");
-        }
-        return name;
-    }
-
-    private String validateSurname(String surname) {
-        if (surname == null || surname.isBlank()) {
-            throw new IllegalArgumentException("Surname cannot be empty");
-        }
-        return surname;
-    }
-
-    private String validatePhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || !phoneNumber.matches("\\d{9}")) {
-            throw new IllegalArgumentException("Telephone number has to contains 9 digits");
-        }
-        return phoneNumber;
-    }
-
-    private String validateEmail(String email) {
-        if (email == null || !email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-            throw new IllegalArgumentException("Incorrect email format");
-        }
-        return email;
+        setName(name);
+        setSurname(surname);
+        setPhoneNumber(phoneNumber);
+        this.address = address; //TODO: zmienic zeby address byl klasa address zamiast stringiem
+        setEmail(email);
     }
 
     public String getName() {
@@ -65,14 +37,23 @@ public abstract class Person {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        this.name =  name;
     }
 
     public void setSurname(String surname) {
+        if (surname == null || surname.isBlank()) {
+            throw new IllegalArgumentException("Surname cannot be empty");
+        }
         this.surname = surname;
     }
 
     public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || !phoneNumber.matches("\\d{9}")) {
+            throw new IllegalArgumentException("Telephone number has to contains 9 digits");
+        }
         this.phoneNumber = phoneNumber;
     }
 
@@ -81,6 +62,9 @@ public abstract class Person {
     }
 
     public void setEmail(String email) {
+        if (email == null || !email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            throw new IllegalArgumentException("Incorrect email format");
+        }
         this.email = email;
     }
 }

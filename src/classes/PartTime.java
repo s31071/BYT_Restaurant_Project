@@ -17,7 +17,7 @@ public class PartTime extends Employee implements Serializable {
 
     public PartTime(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, Type type) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
-        this.type = type;
+        setType(type);
         this.salary = calculateSalary(contract, employmentDate);
         addExtent(this);
     }
@@ -36,7 +36,15 @@ public class PartTime extends Employee implements Serializable {
     }
 
     public void setType(Type type) {
+        if(type == null){
+            throw new IllegalArgumentException("Type cannot be null");
+        }
         this.type = type;
+    }
+
+    @Override
+    public double getSalary() {
+        return salary;
     }
 
     public static void addExtent(PartTime partTime) {

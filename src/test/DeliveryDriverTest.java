@@ -15,7 +15,7 @@ class DeliveryDriverTest {
     @BeforeEach
     void setUp() {
         driver = new DeliveryDriver("Piotr", "Nowak", "987654321", "Lublin", "piotr@example.com",
-                LocalDate.now(), Contract.mandateContract, "Fiat", "LU12345", true);
+                LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true);
     }
 
     @Test
