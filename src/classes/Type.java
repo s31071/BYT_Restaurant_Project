@@ -1,7 +1,7 @@
 package classes;
 
 public enum Type {
-    halfTime,
-    threeQuarterTime,
-    onCall
+    HALF_TIME,
+    THREE_QUARTER_TIME,
+    ON_CALL
 }

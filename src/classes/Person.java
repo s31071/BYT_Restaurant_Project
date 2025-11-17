@@ -1,16 +1,12 @@
 package classes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class Person {
-    private static List<Person> personList = new ArrayList<>();
 
-    private String name;
-    private String surname;
-    private String phoneNumber;
-    private String address;
-    private String email;
+    public String name;
+    public String surname;
+    public String phoneNumber;
+    public String address;
+    public String email;
 
     public Person(String name, String surname, String phoneNumber, String address, String email) {
         this.name = validateName(name);
@@ -18,8 +14,6 @@ public abstract class Person {
         this.phoneNumber = validatePhoneNumber(phoneNumber);
         this.address = address;
         this.email = validateEmail(email);
-
-        addPerson(this);
     }
 
     private String validateName(String name) {
@@ -48,18 +42,6 @@ public abstract class Person {
             throw new IllegalArgumentException("Incorrect email format");
         }
         return email;
-    }
-
-    private static void addPerson(Person person){
-        if(person == null){
-            throw new IllegalArgumentException("Person cannot be null");
-        }
-
-        personList.add(person);
-    }
-
-    public static List<Person> getPersonList() {
-        return personList;
     }
 
     public String getName() {

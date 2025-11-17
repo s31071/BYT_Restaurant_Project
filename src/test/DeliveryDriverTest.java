@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +27,8 @@ class DeliveryDriverTest {
 
     @Test
     void testCalculateSalaryNoKmBonus() {
-        driver.setContract(Contract.employmentContract);
-        double salary = driver.calculateSalary(Contract.employmentContract, LocalDate.now());
+        driver.setContract(Contract.EMPLOYMENT_CONTRACT);
+        double salary = driver.calculateSalary(Contract.EMPLOYMENT_CONTRACT, LocalDate.now());
         assertEquals(driver.getBaseSalary() * 168, salary);
     }
 

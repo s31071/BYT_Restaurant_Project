@@ -1,9 +1,9 @@
 package classes;
 
 public enum Category {
-    meat,
-    diary,
-    vegetables,
-    bread,
-    beverages
+    MEAT,
+    DIARY,
+    VEGETABLES,
+    BREAD,
+    BEVERAGES
 }

@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ class WaiterTest {
     @BeforeEach
     void setUp() {
         waiter = new Waiter("Tomasz", "Lis", "123456789", "Warszawa", "tomasz@example.com",
-                LocalDate.now(), Contract.employmentContract, WorkwearSize.m, 10);
+                LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ class FullTimeTest {
     @BeforeEach
     void setUp() {
         emp = new FullTime("Jan", "Nowak", "123456789", "Warszawa", "jan@example.com",
-                LocalDate.of(2020, 1, 1), Contract.employmentContract);
+                LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT);
     }
 
     @Test

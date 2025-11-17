@@ -1,16 +1,20 @@
 package classes;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.io.Serializable;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
 
-public class Table {
+public class Table implements Serializable {
+    private static List<Table> extent = new ArrayList<>();
+
     private int number;
     private int numberOfSeats;
     private TableStatus status;
     private LocalDateTime date;
+    //tą hash mape tzreba wywalić i użyć extent, ale to już usisz sama sobie dostosować, bo ja nie chce nic zepsuć
     private HashMap<LocalDateTime,Order> orders;
 
     public Table(int number, int numberOfSeats, TableStatus status, LocalDateTime date) {
@@ -19,20 +23,25 @@ public class Table {
         this.status = status;
         this.date = date;
         this.orders = new HashMap<>(); // iffy podejscie ale bedzie mozna poprawic
+        addExtent(this);
     }
 
     private void changeTableStatus(TableStatus status){
         this.status = status;
     }
+
     public void deleteOrder(LocalDateTime timestamp){
         Order removed = this.orders.remove(timestamp);
     }
+
     public void takeOrder(Order order){
         this.orders.put(order.getTimestamp(), order);
     }
+
     public OrderStatus accessOrderStatus(Order order){
         return order.getStatus();
     }
+
     public void displayAllOrders(){
         for(Map.Entry<LocalDateTime, Order> entry : orders.entrySet()) {
             Order order = entry.getValue();
@@ -61,5 +70,28 @@ public class Table {
 
     public HashMap<LocalDateTime, Order> getOrders() {
         return orders;
+    }
+
+    public static void addExtent(Table table) {
+        if (table == null) {
+            throw new IllegalArgumentException("Table cannot be null");
+        }
+        extent.add(table);
+    }
+
+    public static List<Table> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Table table) {
+        extent.remove(table);
+    }
+
+    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Table>) objectInputStream.readObject();
     }
 }

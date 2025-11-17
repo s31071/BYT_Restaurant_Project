@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.Address;
 import org.junit.jupiter.api.BeforeEach;

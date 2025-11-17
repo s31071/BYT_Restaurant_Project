@@ -31,13 +31,14 @@ Customer
 +testy
 
 ### os2 Emilka:
-productOrder
-product
-Payment
-Receipt
-Invoice
-SupplyHistory
-Product
+ProductOrder 
+Payment 
+Receipt 
+Invoice 
+SupplyHistory 
+Product 
+Address
+
 
 +testy
 

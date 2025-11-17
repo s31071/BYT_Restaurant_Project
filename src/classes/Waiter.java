@@ -2,10 +2,15 @@ package classes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.io.Serializable;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
 
-public class Waiter extends Employee{
-    private static List<Waiter> waiterList = new ArrayList<>();
+public class Waiter extends Employee implements Serializable {
+    private static List<Waiter> extent = new ArrayList<>();
 
     public WorkwearSize workwearSize;
     public double maximumTables;
@@ -14,8 +19,7 @@ public class Waiter extends Employee{
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
         this.workwearSize = workwearSize;
         this.maximumTables = maximumTables;
-
-        addWaiter(this);
+        addExtent(this);
     }
 
     @Override
@@ -23,21 +27,6 @@ public class Waiter extends Employee{
         return 0;
     }
 
-    private static void addWaiter(Waiter waiter){
-        if(waiter == null){
-            throw new IllegalArgumentException("Waiter cannot be null");
-        }
-
-        waiterList.add(waiter);
-    }
-
-    public static List<Waiter> getWaiterList() {
-        return waiterList;
-    }
-
-    public static void setWaiterList(List<Waiter> waiterList) {
-        Waiter.waiterList = waiterList;
-    }
 
     public WorkwearSize getWorkwearSize() {
         return workwearSize;
@@ -54,5 +43,27 @@ public class Waiter extends Employee{
     public void setMaximumTables(double maximumTables) {
         this.maximumTables = maximumTables;
     }
-}
 
+    public static void addExtent(Waiter waiter){
+        if(waiter == null){
+            throw new IllegalArgumentException("Waiter cannot be null");
+        }
+        extent.add(waiter);
+    }
+
+    public static List<Waiter> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Waiter waiter) {
+        extent.remove(waiter);
+    }
+
+    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Waiter>) objectInputStream.readObject();
+    }
+}

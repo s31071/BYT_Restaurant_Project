@@ -2,10 +2,15 @@ package classes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.io.Serializable;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.IOException;
 
-public class DeliveryDriver extends Employee{
-    private static List<DeliveryDriver> deliveryDriverList = new ArrayList<>();
+public class DeliveryDriver extends Employee implements Serializable {
+    private static List<DeliveryDriver> extent = new ArrayList<>();
 
     private String carModel;
     private String registrationNumber;
@@ -21,13 +26,12 @@ public class DeliveryDriver extends Employee{
         this.bonusApply = bonusApply;
         kmsInDay = 0;
         kmsInMonth = 0;
-
-        addDeliveryDriver(this);
+        addExtent(this);
     }
 
     @Override
     public double calculateSalary(Contract contract, LocalDate employmentDate) {
-        return getBaseSalary()*168+kmsInMonth*(bonusApply ? kmBonus : 0);
+        return getBaseSalary() * 168 + kmsInMonth * (bonusApply ? kmBonus : 0);
     }
 
     private void confirmDelivery(){}
@@ -39,21 +43,6 @@ public class DeliveryDriver extends Employee{
 
     private void reportIssue(){}
 
-    private static void addDeliveryDriver(DeliveryDriver deliveryDriver){
-        if(deliveryDriver == null){
-            throw new IllegalArgumentException("Delivery driver cannot be null");
-        }
-
-        deliveryDriverList.add(deliveryDriver);
-    }
-
-    public static List<DeliveryDriver> getDeliveryDriverList() {
-        return deliveryDriverList;
-    }
-
-    public static void setDeliveryDriverList(List<DeliveryDriver> deliveryDriverList) {
-        DeliveryDriver.deliveryDriverList = deliveryDriverList;
-    }
 
     public String getCarModel() {
         return carModel;
@@ -93,5 +82,28 @@ public class DeliveryDriver extends Employee{
 
     public void setKmsInMonth(double kmsInMonth) {
         this.kmsInMonth = kmsInMonth;
+    }
+
+    public static void addExtent(DeliveryDriver deliveryDriver) {
+        if (deliveryDriver == null) {
+            throw new IllegalArgumentException("Delivery driver cannot be null");
+        }
+        extent.add(deliveryDriver);
+    }
+
+    public static List<DeliveryDriver> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(DeliveryDriver deliveryDriver) {
+        extent.remove(deliveryDriver);
+    }
+
+    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<DeliveryDriver>) objectInputStream.readObject();
     }
 }

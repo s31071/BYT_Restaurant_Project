@@ -1,34 +1,21 @@
 package classes;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public abstract class Employee extends Person{
-    private static List<Employee> employeeList = new ArrayList<>();
 
+public abstract class Employee extends Person implements Serializable {
     private double salary;
     private LocalDate employmentDate;
     private Contract contract;
 
-    private double baseSalary = 31.5;//dodane przy tworzeniu klasy
+    private double baseSalary = 31.5;
 
     public Employee(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract){
         super(name, surname, phoneNumber, address, email);
         this.employmentDate = employmentDate;
         this.contract = contract;
-
-        //this.salary = calculateSalary(contract, employmentDate); //derived attribute
-
-        addEmployee(this);
-    }
-
-    private static void addEmployee(Employee employee){
-        if(employee == null){
-            throw new IllegalArgumentException("Employee cannot be null");
-        }
-
-        employeeList.add(employee);
     }
 
     abstract double calculateSalary(Contract contract, LocalDate employmentDate);
@@ -38,13 +25,10 @@ public abstract class Employee extends Person{
     }
 
     private void ManageEmployee(ManageEmployeeType type){
-      switch (type){
-          case update -> {
-              //updateEmployee(this, );
-          }
-          case delete -> employeeList.remove(this);
-      }
-
+        switch (type){
+            case UPDATE -> {}
+            case DELETE  -> extent.remove(this);
+        }
     }
 
     private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, String newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
@@ -73,12 +57,8 @@ public abstract class Employee extends Person{
         this.baseSalary = baseSalary;
     }
 
-    public static List<Employee> getEmployeeList() {
-        return employeeList;
-    }
-
-    public static void setEmployeeList(List<Employee> employeeList) {
-        Employee.employeeList = employeeList;
+    public static void setExtent(List<Employee> employeeList) {
+        Employee.extent = employeeList;
     }
 
     public double getSalary() {
@@ -95,8 +75,7 @@ public abstract class Employee extends Person{
 }
 
 enum ManageEmployeeType{
-    add,
-    update,
-    delete
+    ADD,
+    UPDATE,
+    DELETE
 }
-
