@@ -1,53 +1,37 @@
 package classes;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public abstract class Employee extends Person{
-    private static List<Employee> employeeList = new ArrayList<>();
 
+public abstract class Employee extends Person implements Serializable {
     private double salary;
     private LocalDate employmentDate;
     private Contract contract;
 
-    private double baseSalary = 31.5;//dodane przy tworzeniu klasy
+    private double baseSalary = 31.5;
 
-    public Employee(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract){
+    public Employee(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract){
         super(name, surname, phoneNumber, address, email);
-        this.employmentDate = employmentDate;
-        this.contract = contract;
-
-        //this.salary = calculateSalary(contract, employmentDate); //derived attribute
-
-        addEmployee(this);
+        setEmploymentDate(employmentDate);
+        setContract(contract);
     }
 
-    private static void addEmployee(Employee employee){
-        if(employee == null){
-            throw new IllegalArgumentException("Employee cannot be null");
-        }
-
-        employeeList.add(employee);
-    }
-
-    abstract double calculateSalary(Contract contract, LocalDate employmentDate);
+    abstract double calculateSalary();
 
     public double getBaseSalary() {
         return baseSalary;
     }
 
-    private void ManageEmployee(ManageEmployeeType type){
-      switch (type){
-          case update -> {
-              //updateEmployee(this, );
-          }
-          case delete -> employeeList.remove(this);
-      }
+    /*private void ManageEmployee(ManageEmployeeType type){
+        switch (type){
+            case UPDATE -> {}
+            case DELETE  -> extent.remove(this);
+        }
+    }*/
 
-    }
-
-    private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, String newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
+    private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
         employee.setName(newName);
         employee.setSurname(newSurname);
         employee.setPhoneNumber(newPhoneNumber);
@@ -57,29 +41,41 @@ public abstract class Employee extends Person{
         employee.setContract(newContract);
     }
 
+    public double contractMultiplier(Contract c) {
+        return switch (c) {
+            case EMPLOYMENT_CONTRACT -> 1.0;
+            case MANDATE_CONTRACT -> 0.85;
+            case B2B -> 1.2;
+        };
+    }
+
     public void setSalary(double salary) {
         this.salary = salary;
     }
 
     public void setEmploymentDate(LocalDate employmentDate) {
+        if(employmentDate == null){
+            throw new IllegalArgumentException("Employment date cannot be null");
+        }
+
+        if(employmentDate.isAfter(LocalDate.now())){
+            throw new IllegalArgumentException("Employment date cannot be in the future");
+        }
+
         this.employmentDate = employmentDate;
     }
 
     public void setContract(Contract contract) {
+        if(contract == null){
+            throw new IllegalArgumentException("Contract cannot be null");
+        }
         this.contract = contract;
     }
 
-    public void setBaseSalary(double baseSalary) {
-        this.baseSalary = baseSalary;
+    public long getYearsWorked() {
+        return java.time.temporal.ChronoUnit.YEARS.between(getEmploymentDate(), LocalDate.now());
     }
 
-    public static List<Employee> getEmployeeList() {
-        return employeeList;
-    }
-
-    public static void setEmployeeList(List<Employee> employeeList) {
-        Employee.employeeList = employeeList;
-    }
 
     public double getSalary() {
         return salary;
@@ -95,8 +91,7 @@ public abstract class Employee extends Person{
 }
 
 enum ManageEmployeeType{
-    add,
-    update,
-    delete
+    ADD,
+    UPDATE,
+    DELETE
 }
-

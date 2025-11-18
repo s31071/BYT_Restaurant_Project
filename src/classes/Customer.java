@@ -1,28 +1,49 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.io.Serializable;
+import java.io.IOException;
 
-public class Customer extends Person{
-    private static List<Customer> customerList = new ArrayList<>();
+public class Customer extends Person implements Serializable {
+    private static List<Customer> extent = new ArrayList<>();
 
     private double loyaltyPoints;
-    public Customer(String name, String surname, String phoneNumber, String address, String email) {
+
+    public Customer(String name, String surname, String phoneNumber, Address address, String email) {
         super(name, surname, phoneNumber, address, email);
         loyaltyPoints = 0;
-        addCustomer(this);
+        addExtent(this);
     }
 
     private void updateLoyaltyPoints(double newPoints){
-        loyaltyPoints+=newPoints;
+        loyaltyPoints += newPoints;
     }
 
-    private static void addCustomer(Customer customer){
+    public static void addExtent(Customer customer){
         if(customer == null){
             throw new IllegalArgumentException("Customer cannot be null");
         }
+        extent.add(customer);
+    }
 
-        customerList.add(customer);
+    public static List<Customer> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Customer customer) {
+        extent.remove(customer);
+    }
+
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Customer>) objectInputStream.readObject();
     }
 
     public void displayCustomerInfo(){

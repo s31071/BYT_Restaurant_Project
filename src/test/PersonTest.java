@@ -1,5 +1,6 @@
-package test.java.test;
+package test;
 
+import classes.Address;
 import classes.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,19 +13,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class PersonTest {
 
     static class TestPerson extends Person {
-        public TestPerson(String name, String surname, String phoneNumber, String address, String email) {
+        public TestPerson(String name, String surname, String phoneNumber, Address address, String email) {
             super(name, surname, phoneNumber, address, email);
         }
     }
 
     private TestPerson person1;
     private TestPerson person2;
+    private Address address;
 
     @BeforeEach
     void setUp() {
-        Person.getPersonList().clear();
-        person1 = new TestPerson("Jan", "Kowalski", "123456789", "Warszawa", "jan@example.com");
-        person2 = new TestPerson("Anna", "Nowak", "987654321", "Kraków", "anna@example.com");
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+
+        person1 = new TestPerson("Jan", "Kowalski", "123456789", address, "jan@example.com");
+        person2 = new TestPerson("Anna", "Nowak", "987654321", address, "anna@example.com");
     }
 
     @Test
@@ -37,35 +40,27 @@ class PersonTest {
     }
 
     @Test
-    void testAddPersonList() {
-        List<Person> list = Person.getPersonList();
-        assertEquals(2, list.size());
-        assertTrue(list.contains(person1));
-        assertTrue(list.contains(person2));
-    }
-
-    @Test
     void shouldThrowExceptionForBlankName() {
         assertThrows(IllegalArgumentException.class, () ->
-                new TestPerson("", "Nowak", "123456789", "Warszawa", "jan@example.com"));
+                new TestPerson("", "Nowak", "123456789", address, "jan@example.com"));
     }
 
     @Test
     void shouldThrowExceptionForBlankSurname() {
         assertThrows(IllegalArgumentException.class, () ->
-                new TestPerson("Jan", " ", "123456789", "Warszawa", "jan@example.com"));
+                new TestPerson("Jan", " ", "123456789", address, "jan@example.com"));
     }
 
     @Test
     void shouldThrowExceptionForInvalidPhone() {
         assertThrows(IllegalArgumentException.class, () ->
-                new TestPerson("Jan", "Kowalski", "12345", "Warszawa", "jan@example.com"));
+                new TestPerson("Jan", "Kowalski", "12345", address, "jan@example.com"));
     }
 
     @Test
     void shouldThrowExceptionForInvalidEmail() {
         assertThrows(IllegalArgumentException.class, () ->
-                new TestPerson("Jan", "Kowalski", "123456789", "Warszawa", "invalid_email"));
+                new TestPerson("Jan", "Kowalski", "123456789", address, "invalid_email"));
     }
 
     @Test

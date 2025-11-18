@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.Payment;
 import org.junit.jupiter.api.BeforeEach;

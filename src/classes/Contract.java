@@ -1,7 +1,7 @@
 package classes;
 
 public enum Contract {
-    employmentContract,
-    mandateContract,
+    EMPLOYMENT_CONTRACT,
+    MANDATE_CONTRACT,
     B2B
 }

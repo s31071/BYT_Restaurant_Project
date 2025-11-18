@@ -1,16 +1,22 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.io.Serializable;
+import java.io.IOException;
 
-public class Shift {
+public class Shift implements Serializable {
+    private static List<Shift> extent = new ArrayList<>();
+
     private String title;
     private LocalDateTime date;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int numberOfPeopleNeeded;
-    private static List<Shift> shifts = new ArrayList<>();
 
     public Shift(String title, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, int numberOfPeopleNeeded) {
         this.title = title;
@@ -18,6 +24,7 @@ public class Shift {
         this.startTime = startTime;
         this.endTime = endTime;
         this.numberOfPeopleNeeded = numberOfPeopleNeeded;
+        addExtent(this);
     }
 
     private void manageShift(String action, int numberOfPeopleNeeded, LocalDateTime startTime, LocalDateTime endTime) {
@@ -28,7 +35,7 @@ public class Shift {
                 } else {
                     setNumberOfPeopleNeeded(numberOfPeopleNeeded);
                 }
-                shifts.add(this);
+                extent.add(this);
             }
             case "startTimeEdit" -> {
                 this.startTime = startTime;
@@ -79,11 +86,26 @@ public class Shift {
         return numberOfPeopleNeeded;
     }
 
-    public static List<Shift> getShifts() {
-        return shifts;
+    public static void addExtent(Shift shift) {
+        if (shift == null) {
+            throw new IllegalArgumentException("Shift cannot be null");
+        }
+        extent.add(shift);
     }
 
-    public static void setShifts(List<Shift> shifts) {
-        Shift.shifts = shifts;
+    public static List<Shift> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Shift shift) {
+        extent.remove(shift);
+    }
+
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Shift>) objectInputStream.readObject();
     }
 }

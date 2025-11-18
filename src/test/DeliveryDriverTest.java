@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class DeliveryDriverTest {
 
     private DeliveryDriver driver;
-
+    private Address address;
     @BeforeEach
     void setUp() {
-        driver = new DeliveryDriver("Piotr", "Nowak", "987654321", "Lublin", "piotr@example.com",
-                LocalDate.now(), Contract.mandateContract, "Fiat", "LU12345", true);
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+        driver = new DeliveryDriver("Piotr", "Nowak", "987654321", address, "piotr@example.com",
+                LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true);
     }
 
     @Test
@@ -27,8 +28,8 @@ class DeliveryDriverTest {
 
     @Test
     void testCalculateSalaryNoKmBonus() {
-        driver.setContract(Contract.employmentContract);
-        double salary = driver.calculateSalary(Contract.employmentContract, LocalDate.now());
+        driver.setContract(Contract.EMPLOYMENT_CONTRACT);
+        double salary = driver.calculateSalary();
         assertEquals(driver.getBaseSalary() * 168, salary);
     }
 

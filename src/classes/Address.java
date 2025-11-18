@@ -3,23 +3,30 @@ package classes;
 //potrzebujemy klasy address, żeby mieć complex attribute
 //data też jest complex, ale Java ma wbudowaną funkcje, a dla adresu nie
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+import java.io.IOException;
 
 public class Address implements Serializable {
+
+    private static List<Address> extent = new ArrayList<>();
 
     private String street;
     private String city;
     private String postalCode;
     private String country;
 
-
     public Address(String street, String city, String postalCode, String country) {
         setStreet(street);
         setCity(city);
         setPostalCode(postalCode);
         setCountry(country);
+        addExtent(this);
     }
-
 
     public String getStreet() {
         return street;
@@ -63,5 +70,28 @@ public class Address implements Serializable {
             throw new IllegalArgumentException("Country cannot be empty");
         }
         this.country = country;
+    }
+
+    public static void addExtent(Address address) {
+        if (address == null) {
+            throw new IllegalArgumentException("Address cannot be null");
+        }
+        extent.add(address);
+    }
+
+    public static List<Address> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Address address) {
+        extent.remove(address);
+    }
+
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Address>) objectInputStream.readObject();
     }
 }

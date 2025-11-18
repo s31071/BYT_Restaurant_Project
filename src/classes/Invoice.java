@@ -1,31 +1,38 @@
 package classes;
 
-import org.junit.jupiter.api.Test;
-
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.IOException;
 
 public class Invoice extends Payment implements Serializable {
+    private static List<Invoice> extent = new ArrayList<>();
+
     public long ID;
     public long taxIdentificationNumber;
     public String name;
     private Address address;
-
-    private List<SupplyHistory> supplyHistoryList = new ArrayList<>();
-
     private ProductOrder productOrder;
 
     public Invoice(PaymentMethod method, long ID, long taxIdentificationNumber, String name, Address address, ProductOrder productOrder) {
-        super(method, 0.0);
+        super(method);
         setID(ID);
         setTaxIdentificationNumber(taxIdentificationNumber);
         setName(name);
         setAddress(address);
         setProductOrder(productOrder);
+        addExtent(this);
     }
+
+    @Override
+    public double getSum() {
+        if (productOrder == null) return 0;
+        return Order.getTotalPrice();
+    }
+
     public long getID() {
         return ID;
     }
@@ -69,6 +76,7 @@ public class Invoice extends Payment implements Serializable {
         }
         this.address = address;
     }
+
     public ProductOrder getProductOrder() {
         return productOrder;
     }
@@ -80,13 +88,28 @@ public class Invoice extends Payment implements Serializable {
         this.productOrder = productOrder;
     }
 
-    public void addSupplyHistory(SupplyHistory supplyHistory) {
-        if (supplyHistory == null) return;
-        supplyHistoryList.add(supplyHistory);
+
+
+    public static void addExtent(Invoice invoice) {
+        if (invoice == null) {
+            throw new IllegalArgumentException("Invoice cannot be null");
+        }
+        extent.add(invoice);
     }
 
-    public List<SupplyHistory> getSupplyHistoryList() {
-        return new ArrayList<>(supplyHistoryList);
+    public static List<Invoice> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Invoice invoice) {
+        extent.remove(invoice);
+    }
+
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Invoice>) objectInputStream.readObject();
     }
 }
-

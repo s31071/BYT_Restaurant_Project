@@ -1,28 +1,33 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.io.IOException;
 
 public class Product implements Serializable {
+    private static List<Product> extent = new ArrayList<>();
+
     public long ID;
     public String name;
     public LocalDate expiryDate; //nullable
     public Double weight;
-    public String category;
+    public Category category;
 
-    private static List<Product> productList = new ArrayList<>();
-
-    public Product(long ID, String name, Double weight, String category, LocalDate expiryDate) {
+    public Product(long ID, String name, Double weight, Category category, LocalDate expiryDate) {
         setID(ID);
         setName(name);
         setWeight(weight);
         setCategory(category);
         setExpiryDate(expiryDate);
-        productList.add(this);
+        addExtent(this);
     }
-    public Product(long ID, String name, Double weight, String category) {
+
+    public Product(long ID, String name, Double weight, Category category) {
         this(ID, name, weight, category, null);
     }
 
@@ -74,23 +79,38 @@ public class Product implements Serializable {
         this.weight = weight;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
-        if (category == null || category.isEmpty()) {
-            throw new IllegalArgumentException("Category cannot be empty");
-        }
+    public void setCategory(Category category) {
         this.category = category;
     }
 
     public void remove() {
-        productList.remove(this);
-    }
-    public static List<Product> getProductList() {
-        return productList;
+        extent.remove(this);
     }
 
+    public static void addExtent(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+        extent.add(product);
+    }
+
+    public static List<Product> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Product product) {
+        extent.remove(product);
+    }
+
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Product>) objectInputStream.readObject();
+    }
 }
-

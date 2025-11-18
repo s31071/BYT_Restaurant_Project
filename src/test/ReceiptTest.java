@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//do zmiany po wieczornym callu
 public class ReceiptTest {
 
     static class TestOrder extends Order {

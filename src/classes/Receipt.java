@@ -1,23 +1,32 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.io.IOException;
 
 public class Receipt extends Payment implements Serializable {
+    private static List<Receipt> extent = new ArrayList<>();
+
     public static final double service = 0.1; //cosntant value
-    //musi być z dużej litery, żeby było nullable
     public Double tip; //nullable
 
     private Order order;
 
     public Receipt(PaymentMethod method, Order order, Double tip) {
-        super(method, 0); //narazie 0, żeby mogło sie policzyć z tipem
+        super(method);
         setOrder(order);
         setTip(tip);
+        addExtent(this);
     }
 
     public Receipt(PaymentMethod method, Order order) {
         this(method, order, null);
     }
+
     public Double getTip() {
         return tip;
     }
@@ -41,13 +50,34 @@ public class Receipt extends Payment implements Serializable {
         }
         this.order = order;
     }
-
-    //funkcja do wliczenia tipa i serwisu do naszej kwoty zamówienia
-    public double getFinalAmount() {
+    @Override
+    public double getSum() {
         double base = order.getTotalPrice();
         double total = base + (base * service);
         if (tip != null) total += tip;
         return total;
     }
-}
 
+    public static void addExtent(Receipt receipt) {
+        if (receipt == null) {
+            throw new IllegalArgumentException("Receipt cannot be null");
+        }
+        extent.add(receipt);
+    }
+
+    public static List<Receipt> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Receipt receipt) {
+        extent.remove(receipt);
+    }
+
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
+        objectOutputStream.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
+        extent = (List<Receipt>) objectInputStream.readObject();
+    }
+}

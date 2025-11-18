@@ -1,50 +1,72 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ProductOrder implements Serializable {
-    public double totalPrice;
-    public double weight;
-    private List<SupplyHistory> supplyHistoryList = new ArrayList<>();
+    private static List<ProductOrder> extent = new ArrayList<>();
+//potrzebuje dodatkowejn listy, żeby przechowywać co jest w tej konkretnej relacji
+    private List<Product> products = new ArrayList<>();
+    private double totalWeight;
 
-    public ProductOrder(double totalPrice, double weight) {
-        setTotalPrice(totalPrice);
-        setWeight(weight);
-    }
-    public double getTotalPrice() {
-        return totalPrice;
+    public ProductOrder(List<Product> products) {
+        setProducts(products);
+        computeTotalWeight();
+        addExtent(this);
     }
 
-    public void setTotalPrice(double totalPrice) {
-        if (totalPrice < 0) {
-            throw new IllegalArgumentException("Total price cannot be negative");
+    public void setProducts(List<Product> products) {
+        if (products == null || products.isEmpty()) {
+            throw new IllegalArgumentException("Product list cannot be empty");
         }
-        this.totalPrice = totalPrice;
+        this.products = new ArrayList<>(products);
+        computeTotalWeight();
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    private void computeTotalWeight() {
+        this.totalWeight = products.stream()
+                .mapToDouble(Product::getWeight)
+                .sum();
     }
 
     public double getWeight() {
-        return weight;
+        return totalWeight;
     }
 
-    public void setWeight(Double weight) {
-        if (weight == null) {
-            throw new IllegalArgumentException("Weight cannot be empty");
+
+//    public double getTotalPrice() {
+//
+//    }
+
+
+    public static void addExtent(ProductOrder productOrder) {
+        if (productOrder == null) {
+            throw new IllegalArgumentException("ProductOrder cannot be null");
         }
-        if (weight <= 0) {
-            throw new IllegalArgumentException("Weight must be positive");
-        }
-        this.weight = weight;
+        extent.add(productOrder);
     }
 
-    public void addSupplyHistory(SupplyHistory supplyHistory) {
-        if (supplyHistory == null) return;
-        supplyHistoryList.add(supplyHistory);
+    public static List<ProductOrder> getExtent() {
+        return Collections.unmodifiableList(extent);
     }
 
-    public List<SupplyHistory> getSupplyHistoryList() {
-        return new ArrayList<>(supplyHistoryList);
+    public static void removeFromExtent(ProductOrder productOrder) {
+        extent.remove(productOrder);
+    }
+
+    public static void writeExtent(XMLEncoder out) throws java.io.IOException {
+        out.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder in) throws java.io.IOException, ClassNotFoundException {
+        extent = (List<ProductOrder>) in.readObject();
     }
 }
-

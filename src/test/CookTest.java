@@ -1,4 +1,4 @@
-package test.java.test;
+package test;
 
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class CookTest {
 
     private Cook cook;
+    private Address address;
 
     @BeforeEach
     void setUp() {
-        cook = new Cook("Michał", "Kowal", "111222333", "Łódź", "michal@example.com",
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+        cook = new Cook("Michał", "Kowal", "111222333", address, "michal@example.com",
                 LocalDate.now(), Contract.B2B, 8, "Head Chef", "French");
     }
 
@@ -26,7 +28,7 @@ class CookTest {
 
     @Test
     void testCalculateSalaryZero() {
-        assertEquals(0, cook.calculateSalary(Contract.B2B, LocalDate.now()));
+        assertEquals(0, cook.calculateSalary());
     }
 
     @Test
