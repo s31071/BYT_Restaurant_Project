@@ -15,15 +15,15 @@ public class PartTime extends Employee implements Serializable {
     public Type type;
     public double salary;
 
-    public PartTime(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, Type type) {
+    public PartTime(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract, Type type) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
         setType(type);
-        this.salary = calculateSalary(contract, employmentDate);
+        this.salary = calculateSalary();
         addExtent(this);
     }
 
     @Override
-    public double calculateSalary(Contract contract, LocalDate employmentDate) {
+    public double calculateSalary() {
         return switch (type){
             case HALF_TIME -> 20 * 4.5 * getBaseSalary();
             case THREE_QUARTER_TIME -> 30 * 4.5 * getBaseSalary();

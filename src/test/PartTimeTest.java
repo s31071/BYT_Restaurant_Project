@@ -11,11 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class PartTimeTest {
 
     private PartTime partTime;
+    private Address address;
 
     @BeforeEach
     void setUp() {
-        partTime = new PartTime("Ewa", "Lis", "123456789", "Kraków", "ewa@example.com",
-                LocalDate.now(), Contract.B2B, Type.halfTime);
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+        partTime = new PartTime("Ewa", "Lis", "123456789", address, "ewa@example.com",
+                LocalDate.now(), Contract.B2B, Type.HALF_TIME);
     }
 
     @Test
@@ -27,14 +29,14 @@ class PartTimeTest {
     @Test
     void testCalculateSalaryHalfTime() {
         assertEquals(20 * 4.5 * partTime.getBaseSalary(),
-                partTime.calculateSalary(Contract.B2B, LocalDate.now()));
+                partTime.calculateSalary());
     }
 
     @Test
     void testInvalidPhone() {
         assertThrows(IllegalArgumentException.class, () ->
-                new PartTime("Ewa", "Lis", "1234", "Kraków", "ewa@example.com",
-                        LocalDate.now(), Contract.B2B, Type.onCall));
+                new PartTime("Ewa", "Lis", "1234", address, "ewa@example.com",
+                        LocalDate.now(), Contract.B2B, Type.ON_CALL));
     }
 
     @Test

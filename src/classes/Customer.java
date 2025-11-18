@@ -13,7 +13,7 @@ public class Customer extends Person implements Serializable {
 
     private double loyaltyPoints;
 
-    public Customer(String name, String surname, String phoneNumber, String address, String email) {
+    public Customer(String name, String surname, String phoneNumber, Address address, String email) {
         super(name, surname, phoneNumber, address, email);
         loyaltyPoints = 0;
         addExtent(this);

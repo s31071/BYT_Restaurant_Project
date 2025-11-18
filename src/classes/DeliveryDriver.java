@@ -19,7 +19,7 @@ public class DeliveryDriver extends Employee implements Serializable {
     private double kmsInDay;
     private double kmsInMonth;
 
-    public DeliveryDriver(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply) {
+    public DeliveryDriver(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
         setName(carModel);
         setRegistrationNumber(registrationNumber);
@@ -30,8 +30,14 @@ public class DeliveryDriver extends Employee implements Serializable {
     }
 
     @Override
-    public double calculateSalary(Contract contract, LocalDate employmentDate) {
-        return getBaseSalary() * 168 + kmsInMonth * (bonusApply ? kmBonus : 0);
+    public double calculateSalary() {
+        double base = getBaseSalary() * 168;
+
+        double kmPay = isBonusApply() ? kmsInMonth * kmBonus : 0;
+
+        double contractFactor = contractMultiplier(getContract());
+
+        return (base + kmPay) * contractFactor;
     }
 
     private void confirmDelivery(){}

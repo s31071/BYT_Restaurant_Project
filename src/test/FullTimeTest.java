@@ -11,10 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class FullTimeTest {
 
     private FullTime emp;
+    private Address address;
 
     @BeforeEach
     void setUp() {
-        emp = new FullTime("Jan", "Nowak", "123456789", "Warszawa", "jan@example.com",
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+        emp = new FullTime("Jan", "Nowak", "123456789", address, "jan@example.com",
                 LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT);
     }
 
@@ -27,13 +29,13 @@ class FullTimeTest {
 
     @Test
     void testCalculateSalaryEmploymentContract() {
-        double salary = emp.calculateSalary(emp.getContract(), emp.getEmploymentDate());
+        double salary = emp.calculateSalary();
         assertTrue(salary > 0);
     }
 
     @Test
     void testCalculateSalaryMandateContract() {
-        double salary = emp.calculateSalary(Contract.mandateContract, emp.getEmploymentDate());
+        double salary = emp.calculateSalary();
         assertTrue(salary > 0);
     }
 

@@ -11,10 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class WaiterTest {
 
     private Waiter waiter;
+    private Address address;
 
     @BeforeEach
     void setUp() {
-        waiter = new Waiter("Tomasz", "Lis", "123456789", "Warszawa", "tomasz@example.com",
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+        waiter = new Waiter("Tomasz", "Lis", "123456789", address, "tomasz@example.com",
                 LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10);
     }
 
@@ -27,7 +29,7 @@ class WaiterTest {
 
     @Test
     void testCalculateSalaryAlwaysZero() {
-        assertEquals(0, waiter.calculateSalary(Contract.mandateContract, LocalDate.now()));
+        assertEquals(0, waiter.calculateSalary(Contract.MANDATE_CONTRACT, LocalDate.now()));
     }
 
     @Test

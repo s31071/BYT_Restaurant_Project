@@ -16,7 +16,7 @@ public class Cook extends Employee implements Serializable {
     private String title;
     private String specialization;
 
-    public Cook(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, double yearsOfExperience, String title, String specialization) {
+    public Cook(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract, double yearsOfExperience, String title, String specialization) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
         setYearsOfExperience(yearsOfExperience);
         setTitle(title);
@@ -24,9 +24,25 @@ public class Cook extends Employee implements Serializable {
         addExtent(this);
     }
 
-    @Override //TODO: co zrobic z calculateSalary tutaj
-    public double calculateSalary(Contract contract, LocalDate employmentDate) {
-        return 0;
+    @Override
+    public double calculateSalary() {
+        double base = getBaseSalary() * 168;
+
+        double experienceBonus = base * (0.03 * yearsOfExperience);
+        double employmentBonus = base * (0.02 * getYearsWorked());
+        double specializationBonus = switch (specialization.toLowerCase()) {
+            case "italian" -> 300;
+            case "japanese" -> 400;
+            case "french" -> 500;
+            case "polish" -> 350;
+            case "turkish" -> 250;
+            default -> 200;
+        };
+
+        double contractFactor = contractMultiplier(getContract());
+
+        return (base + experienceBonus + employmentBonus + specializationBonus)
+                * contractFactor;
     }
 
     public void setYearsOfExperience(double yearsOfExperience) {

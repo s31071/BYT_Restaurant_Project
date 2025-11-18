@@ -15,7 +15,7 @@ public class Waiter extends Employee implements Serializable {
     public WorkwearSize workwearSize;
     public double maximumTables;
 
-    public Waiter(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract, WorkwearSize workwearSize, double maximumTables) {
+    public Waiter(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract, WorkwearSize workwearSize, double maximumTables) {
         super(name, surname, phoneNumber, address, email, employmentDate, contract);
         setWorkwearSize(workwearSize);
         setMaximumTables(maximumTables);
@@ -23,8 +23,14 @@ public class Waiter extends Employee implements Serializable {
     }
 
     @Override
-    public double calculateSalary(Contract contract, LocalDate employmentDate) {
-        return 0;
+    public double calculateSalary() {
+        double base = getBaseSalary() * 168;
+        double yearsBonus = base * (0.01 * getYearsWorked());
+        double tableBonus = getMaximumTables() * 20;
+
+        double contractFactor = contractMultiplier(getContract());
+
+        return (base + yearsBonus + tableBonus) * contractFactor;
     }
 
 

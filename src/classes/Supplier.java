@@ -15,7 +15,7 @@ public class Supplier extends Person implements Serializable {
     private Category category;
     private double deliveryCost;
 
-    public Supplier(String name, String surname, String phoneNumber, String address, String email, String companyName, Category category, double deliveryCost) {
+    public Supplier(String name, String surname, String phoneNumber, Address address, String email, String companyName, Category category, double deliveryCost) {
         super(name, surname, phoneNumber, address, email);
         setCompanyName(companyName);
         setCategory(category);

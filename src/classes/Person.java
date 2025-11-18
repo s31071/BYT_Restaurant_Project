@@ -5,14 +5,14 @@ public abstract class Person {
     public String name;
     public String surname;
     public String phoneNumber;
-    public String address;
+    public Address address;
     public String email;
 
-    public Person(String name, String surname, String phoneNumber, String address, String email) {
+    public Person(String name, String surname, String phoneNumber, Address address, String email) {
         setName(name);
         setSurname(surname);
         setPhoneNumber(phoneNumber);
-        this.address = address; //TODO: zmienic zeby address byl klasa address zamiast stringiem
+        setAddress(address);
         setEmail(email);
     }
 
@@ -28,7 +28,7 @@ public abstract class Person {
         return phoneNumber;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
@@ -57,7 +57,7 @@ public abstract class Person {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 

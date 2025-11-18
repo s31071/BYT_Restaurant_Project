@@ -11,10 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class DeliveryDriverTest {
 
     private DeliveryDriver driver;
-
+    private Address address;
     @BeforeEach
     void setUp() {
-        driver = new DeliveryDriver("Piotr", "Nowak", "987654321", "Lublin", "piotr@example.com",
+        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
+        driver = new DeliveryDriver("Piotr", "Nowak", "987654321", address, "piotr@example.com",
                 LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true);
     }
 

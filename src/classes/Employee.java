@@ -12,13 +12,13 @@ public abstract class Employee extends Person implements Serializable {
 
     private double baseSalary = 31.5;
 
-    public Employee(String name, String surname, String phoneNumber, String address, String email, LocalDate employmentDate, Contract contract){
+    public Employee(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract){
         super(name, surname, phoneNumber, address, email);
         setEmploymentDate(employmentDate);
         setContract(contract);
     }
 
-    abstract double calculateSalary(Contract contract, LocalDate employmentDate);
+    abstract double calculateSalary();
 
     public double getBaseSalary() {
         return baseSalary;
@@ -31,7 +31,7 @@ public abstract class Employee extends Person implements Serializable {
         }
     }*/
 
-    private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, String newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
+    private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
         employee.setName(newName);
         employee.setSurname(newSurname);
         employee.setPhoneNumber(newPhoneNumber);
@@ -39,6 +39,14 @@ public abstract class Employee extends Person implements Serializable {
         employee.setEmail(newEmail);
         employee.setEmploymentDate(newEmploymentDate);
         employee.setContract(newContract);
+    }
+
+    public double contractMultiplier(Contract c) {
+        return switch (c) {
+            case EMPLOYMENT_CONTRACT -> 1.0;
+            case MANDATE_CONTRACT -> 0.85;
+            case B2B -> 1.2;
+        };
     }
 
     public void setSalary(double salary) {
@@ -63,6 +71,11 @@ public abstract class Employee extends Person implements Serializable {
         }
         this.contract = contract;
     }
+
+    public long getYearsWorked() {
+        return java.time.temporal.ChronoUnit.YEARS.between(getEmploymentDate(), LocalDate.now());
+    }
+
 
     public double getSalary() {
         return salary;
