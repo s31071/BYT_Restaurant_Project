@@ -16,8 +16,8 @@ public class Menu implements Serializable {
     private MenuType type;
 
     public Menu(String name, MenuType type) {
-        this.name = name;
-        this.type = type;
+        setName(name);
+        setType(type);
         addExtent(this);
     }
 
@@ -31,6 +31,20 @@ public class Menu implements Serializable {
         } else {
             throw new AttributeNotFoundException("Could not find dish to update");
         }
+    }
+
+    public void setName(String name) {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        this.name = name;
+    }
+
+    public void setType(MenuType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Type cannot be null");
+        }
+        this.type = type;
     }
 
     public String getName() {

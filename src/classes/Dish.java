@@ -15,9 +15,23 @@ public class Dish implements Serializable {
     private double price;
 
     public Dish(String name, double price) {
-        this.name = name;
-        this.price = price;
+        setName(name);
+        setPrice(price);
         addExtent(this);
+    }
+
+    public void setName(String name) {
+        if(name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("Price cannot be negative or empty");
+        }
+        this.price = price;
     }
 
     public static boolean checkAvailability(Dish dish) {

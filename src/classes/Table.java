@@ -18,12 +18,32 @@ public class Table implements Serializable {
     private HashMap<LocalDateTime,Order> orders;
 
     public Table(int number, int numberOfSeats, TableStatus status, LocalDateTime date) {
-        this.number = number;
-        this.numberOfSeats = numberOfSeats;
-        this.status = status;
-        this.date = date;
+        setNumber(number);
+        setNumberOfSeats(numberOfSeats);
+        setStatus(status);
+        setDate(date);
         this.orders = new HashMap<>(); // iffy podejscie ale bedzie mozna poprawic
         addExtent(this);
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    public void setStatus(TableStatus status) {
+        this.status = status;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void setOrders(HashMap<LocalDateTime, Order> orders) {
+        this.orders = orders;
     }
 
     private void changeTableStatus(TableStatus status){

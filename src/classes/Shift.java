@@ -19,11 +19,11 @@ public class Shift implements Serializable {
     private int numberOfPeopleNeeded;
 
     public Shift(String title, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, int numberOfPeopleNeeded) {
-        this.title = title;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.numberOfPeopleNeeded = numberOfPeopleNeeded;
+        setTitle(title);
+        setDate(date);
+        setStartTime(startTime);
+        setEndTime(endTime);
+        setNumberOfPeopleNeeded(numberOfPeopleNeeded);
         addExtent(this);
     }
 
@@ -47,6 +47,9 @@ public class Shift implements Serializable {
     }
 
     public void setNumberOfPeopleNeeded(int numberOfPeopleNeeded) {
+        if(numberOfPeopleNeeded < 4) {
+            throw new IllegalArgumentException("Number of people needed must be greater than 3");
+        }
         this.numberOfPeopleNeeded = numberOfPeopleNeeded;
     }
 
@@ -55,6 +58,9 @@ public class Shift implements Serializable {
     }
 
     public void setTitle(String title) {
+        if(title.isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
         this.title = title;
     }
 
@@ -63,6 +69,9 @@ public class Shift implements Serializable {
     }
 
     public void setDate(LocalDateTime date) {
+        if(date == null) {
+            throw new IllegalArgumentException("Date cannot be null");
+        }
         this.date = date;
     }
 
@@ -71,6 +80,9 @@ public class Shift implements Serializable {
     }
 
     public void setStartTime(LocalDateTime startTime) {
+        if(startTime == null) {
+            throw new IllegalArgumentException("Start time cannot be null");
+        }
         this.startTime = startTime;
     }
 
@@ -79,6 +91,9 @@ public class Shift implements Serializable {
     }
 
     public void setEndTime(LocalDateTime endTime) {
+        if(endTime == null) {
+            throw new IllegalArgumentException("End time cannot be null");
+        }
         this.endTime = endTime;
     }
 

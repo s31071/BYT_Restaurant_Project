@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
+import classes.IllegalIdException;
 
 public class Reservation implements Serializable {
     private static List<Reservation> extent = new ArrayList<>();
@@ -19,11 +20,43 @@ public class Reservation implements Serializable {
     private ReservationStatus status;
 
     public Reservation(int id, String nameOfThePerson, LocalDateTime timestamp, ReservationStatus status) {
-        this.id = id;
-        this.nameOfThePerson = nameOfThePerson;
-        this.timestamp = timestamp;
-        this.status = status;
+        try {
+            setId(id);
+        } catch (IllegalIdException e) {
+            throw new RuntimeException(e);
+        }
+        setNameOfThePerson(nameOfThePerson);
+        setTimestamp(timestamp);
+        setStatus(status);
         addExtent(this);
+    }
+
+    public void setId(int id) throws IllegalIdException {
+        if(id < 0 || id >= extent.size()) {
+            throw new IllegalIdException("Invalid ID");
+        }
+        this.id = id;
+    }
+
+    public void setNameOfThePerson(String nameOfThePerson) {
+        if(nameOfThePerson.isEmpty()) {
+            throw new IllegalArgumentException("The name of the person cannot be empty");
+        }
+        this.nameOfThePerson = nameOfThePerson;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        if(timestamp == null) {
+            throw new IllegalArgumentException("The timestamp cannot be null");
+        }
+        this.timestamp = timestamp;
+    }
+
+    public void setStatus(ReservationStatus status) {
+        if(status == null) {
+            throw new IllegalArgumentException("The status cannot be null");
+        }
+        this.status = status;
     }
 
     private void manageCustomerReservation(String action, String name, LocalDateTime timestamp){
