@@ -66,7 +66,7 @@ public class Order implements Serializable {
         return numberOfPeople;
     }
 
-    public double getTotalPrice(){
+    public static double getTotalPrice(){
         double total = 0;
         return total;
     }

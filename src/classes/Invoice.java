@@ -90,11 +90,28 @@ public class Invoice extends Payment implements Serializable {
 
 
 
-    public static void addExtent(Invoice invoice) {
-        if (invoice == null) {
+    public static void addExtent(Invoice newInvoice) {
+        if (newInvoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null");
         }
-        extent.add(invoice);
+
+        for (Invoice existingInvoice : extent) {
+            boolean sameName = existingInvoice.name.equals(newInvoice.name);
+
+            boolean sameTIN = existingInvoice.taxIdentificationNumber == newInvoice.taxIdentificationNumber;
+
+            boolean sameAddress = existingInvoice.address.equals(newInvoice.address);
+
+            boolean sameProductOrder = existingInvoice.productOrder.equals(newInvoice.productOrder);
+
+            boolean sameMethod = existingInvoice.getMethod() == newInvoice.getMethod();
+
+            if (sameName && sameTIN && sameAddress && sameProductOrder && sameMethod) {
+                throw new IllegalArgumentException("This Invoice already exists in extent");
+            }
+        }
+
+        extent.add(newInvoice);
     }
 
     public static List<Invoice> getExtent() {

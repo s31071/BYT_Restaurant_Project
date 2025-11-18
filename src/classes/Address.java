@@ -72,11 +72,23 @@ public class Address implements Serializable {
         this.country = country;
     }
 
-    public static void addExtent(Address address) {
-        if (address == null) {
+    public static void addExtent(Address newAddress) {
+        if (newAddress == null) {
             throw new IllegalArgumentException("Address cannot be null");
         }
-        extent.add(address);
+
+        for (Address existingAddress : extent) {
+            boolean sameStreet = existingAddress.street.equals(newAddress.street);
+            boolean sameCity = existingAddress.city.equals(newAddress.city);
+            boolean samePostal = existingAddress.postalCode.equals(newAddress.postalCode);
+            boolean sameCountry = existingAddress.country.equals(newAddress.country);
+
+            if (sameStreet && sameCity && samePostal && sameCountry) {
+                throw new IllegalArgumentException("This Address already exists in extent");
+            }
+        }
+
+        extent.add(newAddress);
     }
 
     public static List<Address> getExtent() {

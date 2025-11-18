@@ -79,7 +79,6 @@ public class SupplyHistory implements Serializable {
 
         if (newStatus == SupplyStatus.DELIVERED) {
 
-            // Must have at least one ORDERED before this date, żeby nie było delivered bez ordered
             boolean hasOrderedBefore = extent.stream().anyMatch(
                     sh -> sh.getInvoice().equals(this.invoice)
                             && sh.getProductOrder().equals(this.productOrder)
@@ -93,7 +92,6 @@ public class SupplyHistory implements Serializable {
                 );
             }
 
-            // DELIVERED date must be after the ORDERED date, żeby nie było jakiś błędów
             boolean wrongDateOrder = extent.stream().anyMatch(
                     sh -> sh.getInvoice().equals(this.invoice)
                             && sh.getProductOrder().equals(this.productOrder)
@@ -109,11 +107,23 @@ public class SupplyHistory implements Serializable {
         }
     }
 
-    public static void addExtent(SupplyHistory supplyHistory) {
-        if (supplyHistory == null) {
+    public static void addExtent(SupplyHistory newSupplyHistory) {
+        if (newSupplyHistory == null) {
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
-        extent.add(supplyHistory);
+
+        for (SupplyHistory existingSupplyHistory : extent) {
+            boolean sameDate = existingSupplyHistory.date.equals(newSupplyHistory.date);
+            boolean sameStatus = existingSupplyHistory.status == newSupplyHistory.status;
+            boolean sameInvoice = existingSupplyHistory.invoice.equals(newSupplyHistory.invoice);
+            boolean sameProductOrder = existingSupplyHistory.productOrder.equals(newSupplyHistory.productOrder);
+
+            if (sameDate && sameStatus && sameInvoice && sameProductOrder) {
+                throw new IllegalArgumentException("This SupplyHistory already exists in extent");
+            }
+        }
+
+        extent.add(newSupplyHistory);
     }
 
     public static List<SupplyHistory> getExtent() {

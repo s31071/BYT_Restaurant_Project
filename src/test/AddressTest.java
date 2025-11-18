@@ -4,6 +4,9 @@ import classes.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddressTest {
@@ -11,7 +14,12 @@ public class AddressTest {
     private Address address;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
+        Field extentField = Address.class.getDeclaredField("extent");
+        extentField.setAccessible(true);
+        //musimy clearować extent co test
+        ((List<?>) extentField.get(null)).clear();
+
         address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
     }
 
@@ -70,27 +78,24 @@ public class AddressTest {
         assertThrows(IllegalArgumentException.class, () -> address.setCountry(""));
         assertThrows(IllegalArgumentException.class, () -> address.setCountry(null));
     }
+
     @Test
     void testConstructorNullStreetThrowsException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Address(null, "Warsaw", "0000", "Poland"));
+        assertThrows(IllegalArgumentException.class, () -> new Address(null, "Warsaw", "0000", "Poland"));
     }
 
     @Test
     void testConstructorNullCityThrowsException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Address("Koszykowa", null, "0000", "Poland"));
+        assertThrows(IllegalArgumentException.class, () -> new Address("Koszykowa", null, "0000", "Poland"));
     }
 
     @Test
     void testConstructorNullPostalCodeThrowsException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Address("Koszykowa", "Warsaw", null, "Poland"));
+        assertThrows(IllegalArgumentException.class, () -> new Address("Koszykowa", "Warsaw", null, "Poland"));
     }
 
     @Test
     void testConstructorNullCountryThrowsException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Address("Koszykowa", "Warsaw", "0000", null));
+        assertThrows(IllegalArgumentException.class, () -> new Address("Koszykowa", "Warsaw", "0000", null));
     }
 }

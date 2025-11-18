@@ -17,18 +17,24 @@ public class Product implements Serializable {
     public LocalDate expiryDate; //nullable
     public Double weight;
     public Category category;
+    public Double price;
 
-    public Product(long ID, String name, Double weight, Category category, LocalDate expiryDate) {
+    public Product(long ID, String name, Double weight, Category category, LocalDate expiryDate, Double price) {
         setID(ID);
         setName(name);
         setWeight(weight);
         setCategory(category);
         setExpiryDate(expiryDate);
+        setPrice(price);
         addExtent(this);
     }
 
+    public Product(long ID, String name, Double weight, Category category, LocalDate expiryDate) {
+        this(ID, name, weight, category, expiryDate, null);
+    }
+
     public Product(long ID, String name, Double weight, Category category) {
-        this(ID, name, weight, category, null);
+        this(ID, name, weight, category, null, null);
     }
 
     public long getID() {
@@ -59,7 +65,6 @@ public class Product implements Serializable {
 
     public void setExpiryDate(LocalDate expiryDate) {
         if (expiryDate != null && expiryDate.isBefore(LocalDate.now())) {
-            //zakładamy, że nie dodajemy przeterminowanych produktów
             throw new IllegalArgumentException("Expiry date cannot be in the past");
         }
         this.expiryDate = expiryDate;
@@ -84,18 +89,50 @@ public class Product implements Serializable {
     }
 
     public void setCategory(Category category) {
+        if (category == null) {
+            throw new IllegalArgumentException("Category cannot be null");
+        }
         this.category = category;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        if (price != null && price <= 0) {
+            throw new IllegalArgumentException("Price must be positive");
+        }
+        this.price = price;
     }
 
     public void remove() {
         extent.remove(this);
     }
 
-    public static void addExtent(Product product) {
-        if (product == null) {
+    public static void addExtent(Product newProduct) {
+        if (newProduct == null) {
             throw new IllegalArgumentException("Product cannot be null");
         }
-        extent.add(product);
+
+        for (Product existingProduct : extent) {
+            boolean sameName = existingProduct.name.equals(newProduct.name);
+
+            boolean sameExpiry = (existingProduct.expiryDate == null && newProduct.expiryDate == null)
+                    || (existingProduct.expiryDate != null && existingProduct.expiryDate.equals(newProduct.expiryDate));
+
+            boolean sameWeight = existingProduct.weight.equals(newProduct.weight);
+            boolean sameCategory = existingProduct.category == newProduct.category;
+
+            boolean samePrice = (existingProduct.price == null && newProduct.price == null)
+                    || (existingProduct.price != null && existingProduct.price.equals(newProduct.price));
+
+            if (sameName && sameExpiry && sameWeight && sameCategory && samePrice) {
+                throw new IllegalArgumentException("This product already exists.");
+            }
+        }
+
+        extent.add(newProduct);
     }
 
     public static List<Product> getExtent() {
