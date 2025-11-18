@@ -23,13 +23,60 @@ public class Order implements Serializable {
     private DeliveryDriver deliveryDriver;
 
     public Order(int id, int numberOfPeople, OrderStatus status, int quantity, LocalDateTime timestamp, Table table) {
-        this.id = id;
-        this.numberOfPeople = numberOfPeople;
-        this.status = status;
-        this.quantity = quantity;
-        this.timestamp = LocalDateTime.now();
-        this.table = table;
+        setId(id);
+        setNumberOfPeople(numberOfPeople);
+        setStatus(status);
+        setQuantity(quantity);
+        setTimestamp(timestamp);
+        setTable(table);
+        setDeliveryDriver(null);
         addExtent(this);
+    }
+
+    public void setId(int id) {
+        if(id < 0 || id >= extent.size()) {
+            try {
+                throw new IllegalIdException("Invalid ID");
+            } catch (IllegalIdException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        this.id = id;
+    }
+
+    public void setNumberOfPeople(int numberOfPeople) {
+        if(numberOfPeople < 0 || numberOfPeople >= extent.size()) {
+            throw new RuntimeException("Invalid number of people");
+        }
+        this.numberOfPeople = numberOfPeople;
+    }
+
+    public void setStatus(OrderStatus status) {
+        if(status == null) {
+            throw new NullPointerException("Invalid status");
+        }
+        this.status = status;
+    }
+
+    public void setQuantity(int quantity) {
+        if(quantity < 0 || quantity >= extent.size()) {
+            throw new RuntimeException("Invalid quantity");
+        }
+        this.quantity = quantity;
+    }
+
+    public void setTable(Table table) {
+        if(table == null) {
+            throw new NullPointerException("Invalid table");
+        }
+        this.table = table;
+    }
+
+    public void setDeliveryDriver(DeliveryDriver deliveryDriver) {
+        if(deliveryDriver == null) {
+            throw new NullPointerException("Invalid delivery driver");
+        }
+        this.deliveryDriver = deliveryDriver;
     }
 
     public void updateOrderStatus(OrderStatus status){
