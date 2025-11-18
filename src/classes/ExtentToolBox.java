@@ -1,66 +1,64 @@
 package classes;
 
 import java.io.*;
+import java.beans.XMLEncoder;
+import java.beans.XMLDecoder;
 
 public class ExtentToolBox {
 
-    //tworzymy dowolny plik gdzie zapisywac się będą nasze info
-    private static final String allExtentFile = "extents.bin";
+    private static final String allExtentFile = "extents.xml";
 
     public static void saveAllExtents() throws IOException {
+        try (XMLEncoder encoder = new XMLEncoder(
+                new BufferedOutputStream(new FileOutputStream(allExtentFile)))) {
 
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(allExtentFile))) {
+            Address.writeExtent(encoder);
+            Cook.writeExtent(encoder);
+            Customer.writeExtent(encoder);
+            DeliveryDriver.writeExtent(encoder);
+            Dish.writeExtent(encoder);
+            FullTime.writeExtent(encoder);
+            Invoice.writeExtent(encoder);
+            Menu.writeExtent(encoder);
+            Order.writeExtent(encoder);
+            PartTime.writeExtent(encoder);
+            Product.writeExtent(encoder);
+            ProductOrder.writeExtent(encoder);
+            Receipt.writeExtent(encoder);
+            Reservation.writeExtent(encoder);
+            Shift.writeExtent(encoder);
+            Supplier.writeExtent(encoder);
+            SupplyHistory.writeExtent(encoder);
+            Table.writeExtent(encoder);
+            Waiter.writeExtent(encoder);
 
-            // zapisujemy wszystkie extenty do bazy danych, która nie jest bazą danych
-            Address.writeExtent(out);
-            Cook.writeExtent(out);
-            Customer.writeExtent(out);
-            DeliveryDriver.writeExtent(out);
-            Dish.writeExtent(out);
-            FullTime.writeExtent(out);
-            Invoice.writeExtent(out);
-            Menu.writeExtent(out);
-            Order.writeExtent(out);
-            PartTime.writeExtent(out);
-            Product.writeExtent(out);
-            ProductOrder.writeExtent(out);
-            Receipt.writeExtent(out);
-            Reservation.writeExtent(out);
-            Shift.writeExtent(out);
-            Supplier.writeExtent(out);
-            SupplyHistory.writeExtent(out);
-            Table.writeExtent(out);
-            Waiter.writeExtent(out);
-
-            out.flush();
+            encoder.flush();
         }
     }
 
-
     public static void loadAllExtents() throws IOException, ClassNotFoundException {
+        try (XMLDecoder decoder = new XMLDecoder(
+                new BufferedInputStream(new FileInputStream(allExtentFile)))) {
 
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(allExtentFile))) {
-
-//czytamy wszystkie extenty
-            Address.readExtent(in);
-            Cook.readExtent(in);
-            Customer.readExtent(in);
-            DeliveryDriver.readExtent(in);
-            Dish.readExtent(in);
-            FullTime.readExtent(in);
-            Invoice.readExtent(in);
-            Menu.readExtent(in);
-            Order.readExtent(in);
-            PartTime.readExtent(in);
-            Product.readExtent(in);
-            ProductOrder.readExtent(in);
-            Receipt.readExtent(in);
-            Reservation.readExtent(in);
-            Shift.readExtent(in);
-            Supplier.readExtent(in);
-            SupplyHistory.readExtent(in);
-            Table.readExtent(in);
-            Waiter.readExtent(in);
+            Address.readExtent(decoder);
+            Cook.readExtent(decoder);
+            Customer.readExtent(decoder);
+            DeliveryDriver.readExtent(decoder);
+            Dish.readExtent(decoder);
+            FullTime.readExtent(decoder);
+            Invoice.readExtent(decoder);
+            Menu.readExtent(decoder);
+            Order.readExtent(decoder);
+            PartTime.readExtent(decoder);
+            Product.readExtent(decoder);
+            ProductOrder.readExtent(decoder);
+            Receipt.readExtent(decoder);
+            Reservation.readExtent(decoder);
+            Shift.readExtent(decoder);
+            Supplier.readExtent(decoder);
+            SupplyHistory.readExtent(decoder);
+            Table.readExtent(decoder);
+            Waiter.readExtent(decoder);
         }
     }
 }

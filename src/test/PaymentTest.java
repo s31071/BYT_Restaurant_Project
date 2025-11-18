@@ -1,7 +1,6 @@
 package test;
 
 import classes.Payment;
-import classes.PaymentMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,59 +9,51 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PaymentTest {
 
     static class TestPayment extends Payment {
-        private double sum;
-
         public TestPayment(PaymentMethod method, double sum) {
-            super(method);
-            if (sum < 0) throw new IllegalArgumentException("Sum cannot be negative");
-            this.sum = sum;
-        }
-
-        @Override
-        public double getSum() {
-            return sum;
+            super(method, sum);
         }
     }
 
     private TestPayment payment;
 
-    //tutaj nie clearuje extentu, bo jest abstract, więc go nie ma
     @BeforeEach
     void setup() {
-        payment = new TestPayment(PaymentMethod.CARD, 50);
+        payment = new TestPayment(Payment.PaymentMethod.CARD, 50);
     }
 
     @Test
     void testConstructorValid() {
-        TestPayment p = new TestPayment(PaymentMethod.CARD, 50);
+        TestPayment p = new TestPayment(Payment.PaymentMethod.CARD, 50);
         assertEquals(50, p.getSum());
-        assertEquals(PaymentMethod.CARD, p.getMethod());
+        assertEquals(Payment.PaymentMethod.CARD, p.getPaymentMethod());
     }
 
     @Test
     void testSetPaymentMethodValid() {
-        payment.setMethod(PaymentMethod.CASH);
-        assertEquals(PaymentMethod.CASH, payment.getMethod());
+        payment.setPaymentMethod(Payment.PaymentMethod.CASH);
+        assertEquals(Payment.PaymentMethod.CASH, payment.getPaymentMethod());
     }
 
     @Test
     void testSetPaymentMethodNullThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> payment.setMethod(null));
+        assertThrows(IllegalArgumentException.class, () -> payment.setPaymentMethod(null));
     }
 
     @Test
     void testDerivedSumValid() {
-        TestPayment p = new TestPayment(PaymentMethod.CARD, 99.5);
+        TestPayment p = new TestPayment(Payment.PaymentMethod.CARD, 99.5);
         assertEquals(99.5, p.getSum());
     }
 
     @Test
     void testConstructorNullPaymentMethodThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new TestPayment(null, 10.0));
+        assertThrows(IllegalArgumentException.class,
+                () -> new TestPayment(null, 10.0));
     }
 
     @Test
     void testConstructorNegativeSumThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new TestPayment(PaymentMethod.CARD, -10.0));
+        assertThrows(IllegalArgumentException.class,
+                () -> new TestPayment(Payment.PaymentMethod.CARD, -10.0));
     }
 }

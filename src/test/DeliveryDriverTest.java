@@ -29,7 +29,7 @@ class DeliveryDriverTest {
     @Test
     void testCalculateSalaryNoKmBonus() {
         driver.setContract(Contract.EMPLOYMENT_CONTRACT);
-        double salary = driver.calculateSalary(Contract.EMPLOYMENT_CONTRACT, LocalDate.now());
+        double salary = driver.calculateSalary();
         assertEquals(driver.getBaseSalary() * 168, salary);
     }
 

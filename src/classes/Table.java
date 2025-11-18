@@ -1,10 +1,10 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
 
 public class Table implements Serializable {
@@ -87,11 +87,11 @@ public class Table implements Serializable {
         extent.remove(table);
     }
 
-    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
         objectOutputStream.writeObject(extent);
     }
 
-    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Table>) objectInputStream.readObject();
     }
 }

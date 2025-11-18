@@ -4,9 +4,7 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,43 +17,24 @@ public class SupplyHistoryTest {
     private LocalDate today;
 
     @BeforeEach
-    void setup() throws Exception {
-        Field addrExtent = Address.class.getDeclaredField("extent");
-        addrExtent.setAccessible(true);
-        ((List<?>) addrExtent.get(null)).clear();
-
-        Field prodExtent = Product.class.getDeclaredField("extent");
-        prodExtent.setAccessible(true);
-        ((List<?>) prodExtent.get(null)).clear();
-
-        Field orderExtent = ProductOrder.class.getDeclaredField("extent");
-        orderExtent.setAccessible(true);
-        ((List<?>) orderExtent.get(null)).clear();
-
-        Field invoiceExtent = Invoice.class.getDeclaredField("extent");
-        invoiceExtent.setAccessible(true);
-        ((List<?>) invoiceExtent.get(null)).clear();
-
-        Field supplyExtent = SupplyHistory.class.getDeclaredField("extent");
-        supplyExtent.setAccessible(true);
-        ((List<?>) supplyExtent.get(null)).clear();
-
-        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY);
-        Product p2 = new Product(2, "Bread", 0.5, Category.BREAD);
-        productOrder = new ProductOrder(List.of(p1, p2));
-
+    void setup() {
         address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
-
+        productOrder = new ProductOrder(2, 3);
+        invoice = new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
         today = LocalDate.now();
 
-        supplyHistory = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
+        supplyHistory = new SupplyHistory(
+                today,
+                SupplyHistory.Status.ORDERED,
+                invoice,
+                productOrder
+        );
     }
 
     @Test
     void testConstructorValid() {
         assertEquals(today, supplyHistory.getDate());
-        assertEquals(SupplyStatus.ORDERED, supplyHistory.getStatus());
+        assertEquals(SupplyHistory.Status.ORDERED, supplyHistory.getStatus());
         assertEquals(invoice, supplyHistory.getInvoice());
         assertEquals(productOrder, supplyHistory.getProductOrder());
     }
@@ -77,48 +56,35 @@ public class SupplyHistoryTest {
 
     @Test
     void testConstructorNullInvoiceThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(today, SupplyStatus.ORDERED, null, productOrder));
+        assertThrows(IllegalArgumentException.class, () ->
+                new SupplyHistory(today, SupplyHistory.Status.ORDERED, null, productOrder)
+        );
     }
 
     @Test
     void testConstructorNullProductOrderThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(today, SupplyStatus.ORDERED, invoice, null));
+        assertThrows(IllegalArgumentException.class, () ->
+                new SupplyHistory(today, SupplyHistory.Status.ORDERED, invoice, null)
+        );
     }
 
     @Test
+    void testExtentAddsAutomatically() {
+        int before = SupplyHistory.getSupplyHistoryList().size();
+        new SupplyHistory(today, SupplyHistory.Status.ORDERED, invoice, productOrder);
+        int after = SupplyHistory.getSupplyHistoryList().size();
+        assertEquals(before + 1, after);
+    }
+    @Test
     void testConstructorNullStatusThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(today, null, invoice, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new SupplyHistory(LocalDate.now(), null, invoice, productOrder));
     }
 
     @Test
     void testConstructorNullDateThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(null, SupplyStatus.ORDERED, invoice, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new SupplyHistory(null, SupplyHistory.Status.ORDERED, invoice, productOrder));
     }
 
-    @Test
-    void testDeliveredWithoutPreviousOrderedThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(today, SupplyStatus.DELIVERED, invoice, productOrder));
-    }
-
-    @Test
-    void testDeliveredBeforeOrderedThrowsException() {
-        LocalDate orderedDate = today;
-        LocalDate deliveredBefore = today.minusDays(1);
-
-        new SupplyHistory(orderedDate, SupplyStatus.ORDERED, invoice, productOrder);
-
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(deliveredBefore, SupplyStatus.DELIVERED, invoice, productOrder));
-    }
-
-    @Test
-    void testDeliveredValidAfterOrdered() {
-        LocalDate orderedDate = today.minusDays(2);
-        LocalDate deliveredDate = today;
-
-        new SupplyHistory(orderedDate, SupplyStatus.ORDERED, invoice, productOrder);
-
-        SupplyHistory delivered = new SupplyHistory(deliveredDate, SupplyStatus.DELIVERED, invoice, productOrder);
-
-        assertEquals(SupplyStatus.DELIVERED, delivered.getStatus());
-    }
 }

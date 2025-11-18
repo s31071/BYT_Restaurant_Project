@@ -2,7 +2,7 @@ package classes;
 
 public enum Category {
     MEAT,
-    DAIRY,
+    DIARY,
     VEGETABLES,
     BREAD,
     BEVERAGES

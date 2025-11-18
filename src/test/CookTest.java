@@ -28,7 +28,7 @@ class CookTest {
 
     @Test
     void testCalculateSalaryZero() {
-        assertEquals(0, cook.calculateSalary(Contract.B2B, LocalDate.now()));
+        assertEquals(0, cook.calculateSalary());
     }
 
     @Test

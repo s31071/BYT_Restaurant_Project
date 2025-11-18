@@ -1,12 +1,12 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
 
 public class Order implements Serializable {
@@ -66,7 +66,7 @@ public class Order implements Serializable {
         return numberOfPeople;
     }
 
-    public static double getTotalPrice(){
+    public double getTotalPrice(){
         double total = 0;
         return total;
     }
@@ -86,11 +86,11 @@ public class Order implements Serializable {
         extent.remove(order);
     }
 
-    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
         objectOutputStream.writeObject(extent);
     }
 
-    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Order>) objectInputStream.readObject();
     }
 }

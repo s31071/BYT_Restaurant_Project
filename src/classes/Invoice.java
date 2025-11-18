@@ -1,11 +1,11 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
 
 public class Invoice extends Payment implements Serializable {
@@ -90,28 +90,11 @@ public class Invoice extends Payment implements Serializable {
 
 
 
-    public static void addExtent(Invoice newInvoice) {
-        if (newInvoice == null) {
+    public static void addExtent(Invoice invoice) {
+        if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null");
         }
-
-        for (Invoice existingInvoice : extent) {
-            boolean sameName = existingInvoice.name.equals(newInvoice.name);
-
-            boolean sameTIN = existingInvoice.taxIdentificationNumber == newInvoice.taxIdentificationNumber;
-
-            boolean sameAddress = existingInvoice.address.equals(newInvoice.address);
-
-            boolean sameProductOrder = existingInvoice.productOrder.equals(newInvoice.productOrder);
-
-            boolean sameMethod = existingInvoice.getMethod() == newInvoice.getMethod();
-
-            if (sameName && sameTIN && sameAddress && sameProductOrder && sameMethod) {
-                throw new IllegalArgumentException("This Invoice already exists in extent");
-            }
-        }
-
-        extent.add(newInvoice);
+        extent.add(invoice);
     }
 
     public static List<Invoice> getExtent() {
@@ -122,11 +105,11 @@ public class Invoice extends Payment implements Serializable {
         extent.remove(invoice);
     }
 
-    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
         objectOutputStream.writeObject(extent);
     }
 
-    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Invoice>) objectInputStream.readObject();
     }
 }

@@ -4,8 +4,7 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,38 +15,22 @@ public class InvoiceTest {
     private ProductOrder productOrder;
     private ProductOrder newProductOrder;
     private Invoice invoice;
-    private Category category;
 
     @BeforeEach
-    void setup() throws Exception {
-        Field addrExtent = Address.class.getDeclaredField("extent");
-        addrExtent.setAccessible(true);
-        ((List<?>) addrExtent.get(null)).clear();
-
-        Field prodExtent = Product.class.getDeclaredField("extent");
-        prodExtent.setAccessible(true);
-        ((List<?>) prodExtent.get(null)).clear();
-
-        Field orderExtent = ProductOrder.class.getDeclaredField("extent");
-        orderExtent.setAccessible(true);
-        ((List<?>) orderExtent.get(null)).clear();
-
-        Field invoiceExtent = Invoice.class.getDeclaredField("extent");
-        invoiceExtent.setAccessible(true);
-        ((List<?>) invoiceExtent.get(null)).clear();
-
-        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY);
-        Product p2 = new Product(2, "Bread", 0.5, Category.BREAD);
-        productOrder = new ProductOrder(List.of(p1, p2));
-
-        Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY);
-        Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY);
-        newProductOrder = new ProductOrder(List.of(p3, p4));
-
+    void setup() {
         address = new Address("Koszykowa", "Warsaw", "12345", "Poland");
-        newAddress = new Address("Koszykowa", "Warsaw", "00-001", "Poland");
+        productOrder = new ProductOrder(2, 3);
 
-        invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder
+        newAddress = new Address("Koszykowa", "Warsaw", "00-001", "Poland");
+        newProductOrder = new ProductOrder(5, 10);
+
+        invoice = new Invoice(
+                Payment.PaymentMethod.CARD,
+                1,
+                123456789,
+                "Emilia",
+                address,
+                productOrder
         );
     }
 
@@ -107,22 +90,51 @@ public class InvoiceTest {
     }
 
     @Test
+    void testAddSupplyHistoryValid() {
+        SupplyHistory supplyHistory = new SupplyHistory(
+                LocalDate.now(),
+                SupplyHistory.Status.ORDERED,
+                invoice,
+                productOrder
+        );
+        invoice.addSupplyHistory(supplyHistory);
+        assertEquals(2, invoice.getSupplyHistoryList().size());
+    }
+
+    @Test
+    void testAddSupplyHistoryNullDoesNothing() {
+        invoice.addSupplyHistory(null);
+        assertEquals(0, new Invoice(
+                Payment.PaymentMethod.CARD,
+                2,
+                987654321,
+                "Emilia",
+                address,
+                productOrder
+        ).getSupplyHistoryList().size());
+    }
+
+    @Test
     void testConstructorNullAddressThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", null, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", null, productOrder));
     }
 
     @Test
     void testConstructorNullProductOrderThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, null));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, "Emilia", address, null));
     }
 
     @Test
     void testConstructorNullNameThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(PaymentMethod.CARD, 1, 123456789, null, address, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(Payment.PaymentMethod.CARD, 1, 123456789, null, address, productOrder));
     }
 
     @Test
     void testConstructorNullPaymentMethodThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(null, 1, 123456789, "Emilia", address, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(null, 1, 123456789, "Emilia", address, productOrder));
     }
 }

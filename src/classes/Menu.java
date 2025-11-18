@@ -1,12 +1,12 @@
 package classes;
 
 import javax.management.AttributeNotFoundException;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
 
 public class Menu implements Serializable {
@@ -56,11 +56,11 @@ public class Menu implements Serializable {
         extent.remove(menu);
     }
 
-    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
         objectOutputStream.writeObject(extent);
     }
 
-    public static void readExtent(ObjectInputStream objectInputStream)
+    public static void readExtent(XMLDecoder objectInputStream)
             throws IOException, ClassNotFoundException {
         extent = (List<Menu>) objectInputStream.readObject();
     }

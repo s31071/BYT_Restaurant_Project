@@ -29,7 +29,7 @@ class WaiterTest {
 
     @Test
     void testCalculateSalaryAlwaysZero() {
-        assertEquals(0, waiter.calculateSalary(Contract.MANDATE_CONTRACT, LocalDate.now()));
+        assertEquals(0, waiter.calculateSalary());
     }
 
     @Test

@@ -1,12 +1,12 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
 
 public class Waiter extends Employee implements Serializable {
@@ -71,11 +71,11 @@ public class Waiter extends Employee implements Serializable {
         extent.remove(waiter);
     }
 
-    public static void writeExtent(ObjectOutputStream objectOutputStream) throws IOException {
+    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
         objectOutputStream.writeObject(extent);
     }
 
-    public static void readExtent(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Waiter>) objectInputStream.readObject();
     }
 }
