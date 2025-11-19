@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,6 +61,6 @@ public class ProductOrderTest {
 
     @Test
     void testSetProductsWithNullElementThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> order.setProducts(List.of(p1, null)));
+        assertThrows(IllegalArgumentException.class, () -> order.setProducts(Arrays.asList(p1, null)));
     }
 }

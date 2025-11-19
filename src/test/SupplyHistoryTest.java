@@ -47,7 +47,7 @@ public class SupplyHistoryTest {
         address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
         invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
 
-        today = LocalDate.now();
+        today = LocalDate.now().minusDays(2);
 
         supplyHistory = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
     }
@@ -67,7 +67,7 @@ public class SupplyHistoryTest {
 
     @Test
     void testSetDateFutureThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> supplyHistory.setDate(today.plusDays(1)));
+        assertThrows(IllegalArgumentException.class, () -> supplyHistory.setDate(today.plusDays(3)));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class SupplyHistoryTest {
     @Test
     void testDeliveredValidAfterOrdered() {
         LocalDate orderedDate = today.minusDays(2);
-        LocalDate deliveredDate = today;
+        LocalDate deliveredDate = today.plusDays(1);
 
         new SupplyHistory(orderedDate, SupplyStatus.ORDERED, invoice, productOrder);
 
