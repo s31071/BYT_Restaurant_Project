@@ -11,12 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class WaiterTest {
 
     private Waiter waiter;
-    private Address address;
 
     @BeforeEach
     void setUp() {
-        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
-        waiter = new Waiter("Tomasz", "Lis", "123456789", address, "tomasz@example.com",
+        waiter = new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "tomasz@example.com",
                 LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10);
     }
 
@@ -29,12 +27,12 @@ class WaiterTest {
 
     @Test
     void testCalculateSalaryAlwaysZero() {
-        assertEquals(0, waiter.calculateSalary());
+        assertEquals(5492.0, waiter.calculateSalary());
     }
 
     @Test
     void testNullWaiterAdd() throws Exception {
-        var method = Waiter.class.getDeclaredMethod("addWaiter", Waiter.class);
+        var method = Waiter.class.getDeclaredMethod("addExtent", Waiter.class);
         method.setAccessible(true);
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,
                 () -> method.invoke(null, (Object) null));

@@ -12,13 +12,13 @@ public abstract class Employee extends Person implements Serializable {
 
     private double baseSalary = 31.5;
 
-    public Employee(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract){
-        super(name, surname, phoneNumber, address, email);
+    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract){
+        super(name, surname, phoneNumber, street, city, postalCode, country, email);
         setEmploymentDate(employmentDate);
         setContract(contract);
     }
 
-    abstract double calculateSalary();
+    protected abstract double calculateSalary();
 
     public double getBaseSalary() {
         return baseSalary;

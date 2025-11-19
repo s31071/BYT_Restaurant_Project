@@ -14,8 +14,8 @@ public class FullTime extends Employee implements Serializable {
 
     private static final double hoursPerWeek = 40;
 
-    public FullTime(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract) {
-        super(name, surname, phoneNumber, address, email, employmentDate, contract);
+    public FullTime(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract) {
+        super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
         addExtent(this);
     }
 

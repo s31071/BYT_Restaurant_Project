@@ -11,12 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class PartTimeTest {
 
     private PartTime partTime;
-    private Address address;
 
     @BeforeEach
     void setUp() {
-        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
-        partTime = new PartTime("Ewa", "Lis", "123456789", address, "ewa@example.com",
+        partTime = new PartTime("Ewa", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com",
                 LocalDate.now(), Contract.B2B, Type.HALF_TIME);
     }
 
@@ -35,13 +33,13 @@ class PartTimeTest {
     @Test
     void testInvalidPhone() {
         assertThrows(IllegalArgumentException.class, () ->
-                new PartTime("Ewa", "Lis", "1234", address, "ewa@example.com",
+                new PartTime("Ewa", "Lis", "1234", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com",
                         LocalDate.now(), Contract.B2B, Type.ON_CALL));
     }
 
     @Test
     void testNullPartTimeAdd() throws Exception {
-        var method = PartTime.class.getDeclaredMethod("addPartTime", PartTime.class);
+        var method = PartTime.class.getDeclaredMethod("addExtent", PartTime.class);
         method.setAccessible(true);
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,
                 () -> method.invoke(null, (Object) null));

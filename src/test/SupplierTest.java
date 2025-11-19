@@ -14,7 +14,7 @@ class SupplierTest {
     }
     @Test
     void testConstructor() {
-        Supplier s = new Supplier("Adam", "Nowak", "123456789", address, "adam@example.com",
+        Supplier s = new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
                 "BestMeat", Category.MEAT, 120.0);
 
         assertEquals("Adam", s.getName());
@@ -25,21 +25,21 @@ class SupplierTest {
     @Test
     void shouldThrowExceptionForEmptyCompanyName() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", address, "adam@example.com",
+                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
                         "", Category.MEAT, 120.0));
     }
 
     @Test
     void shouldThrowExceptionForNullCompanyName() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", address, "adam@example.com",
+                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
                         null, Category.MEAT, 120.0));
     }
 
     @Test
     void shouldThrowExceptionForInvalidEmail() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", address, "adam#example.com",
+                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam#example.com",
                         "BestMeat", Category.MEAT, 120.0));
     }
 }

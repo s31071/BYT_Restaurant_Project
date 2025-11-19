@@ -19,9 +19,9 @@ public class DeliveryDriver extends Employee implements Serializable {
     private double kmsInDay;
     private double kmsInMonth;
 
-    public DeliveryDriver(String name, String surname, String phoneNumber, Address address, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply) {
-        super(name, surname, phoneNumber, address, email, employmentDate, contract);
-        setName(carModel);
+    public DeliveryDriver(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply) {
+        super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
+        setCarModel(carModel);
         setRegistrationNumber(registrationNumber);
         setBonusApply(bonusApply);
         kmsInDay = 0;

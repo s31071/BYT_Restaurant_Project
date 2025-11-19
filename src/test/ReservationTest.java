@@ -14,7 +14,7 @@ public class ReservationTest {
     @BeforeEach
     void setUp() {
         testTimestamp = LocalDateTime.of(2025, 11, 12, 18, 30);
-        Reservation.getReservations().clear();
+        Reservation.getExtent().clear();
         reservation = new Reservation(1, "Ania Szyr", testTimestamp, ReservationStatus.AVAILABLE);
     }
 
@@ -40,7 +40,7 @@ public class ReservationTest {
 
     @Test
     void testConstructorAddsToReservationsList() {
-        assertEquals(1, Reservation.getReservations().size());
-        assertTrue(Reservation.getReservations().contains(reservation));
+        assertEquals(1, Reservation.getExtent().size());
+        assertTrue(Reservation.getExtent().contains(reservation));
     }
 }

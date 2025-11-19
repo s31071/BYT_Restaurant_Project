@@ -10,12 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class CustomerTest {
 
     private Customer c1;
-    private Address address;
 
     @BeforeEach
     void setUp() {
-        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
-        c1 = new Customer("Ewa", "Kowalska", "987654321", address, "ewa@example.com");
+        c1 = new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com");
     }
 
     @Test
@@ -27,12 +25,12 @@ class CustomerTest {
     @Test
     void testInvalidPhoneThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Customer("Ewa", "Kowalska", "12", address, "ewa@example.com"));
+                new Customer("Ewa", "Kowalska", "12", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com"));
     }
 
     @Test
     void testInvalidEmailThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Customer("Ewa", "Kowalska", "123456789", address, "invalid"));
+                new Customer("Ewa", "Kowalska", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "invalid"));
     }
 }

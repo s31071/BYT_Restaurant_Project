@@ -15,11 +15,13 @@ public class Receipt extends Payment implements Serializable {
     public Double tip; //nullable
 
     private Order order;
+    private double sum;
 
     public Receipt(PaymentMethod method, Order order, Double tip) {
         super(method);
         setOrder(order);
         setTip(tip);
+        updateSum();
         addExtent(this);
     }
 
@@ -38,6 +40,7 @@ public class Receipt extends Payment implements Serializable {
             }
         }
         this.tip = tip;
+        updateSum();
     }
 
     public Order getOrder() {
@@ -49,20 +52,40 @@ public class Receipt extends Payment implements Serializable {
             throw new IllegalArgumentException("Order cannot be null");
         }
         this.order = order;
+        updateSum();
     }
-    @Override
-    public double getSum() {
+
+    private void updateSum() {
         double base = order.getTotalPrice();
         double total = base + (base * service);
         if (tip != null) total += tip;
-        return total;
+        this.sum = total;
     }
 
-    public static void addExtent(Receipt receipt) {
-        if (receipt == null) {
+    @Override
+    public double getSum() {
+        return sum;
+    }
+
+    public static void addExtent(Receipt newReceipt) {
+        if (newReceipt == null) {
             throw new IllegalArgumentException("Receipt cannot be null");
         }
-        extent.add(receipt);
+
+        for (Receipt existingReceipt : extent) {
+            boolean sameOrder = existingReceipt.order.equals(newReceipt.order);
+
+            boolean sameTip = (existingReceipt.tip == null && newReceipt.tip == null)
+                    || (existingReceipt.tip != null && newReceipt.tip != null && existingReceipt.tip.equals(newReceipt.tip));
+
+            boolean sameMethod = existingReceipt.getMethod() == newReceipt.getMethod();
+
+            if (sameOrder && sameTip && sameMethod) {
+                throw new IllegalArgumentException("This receipt already exists in extent");
+            }
+        }
+
+        extent.add(newReceipt);
     }
 
     public static List<Receipt> getExtent() {

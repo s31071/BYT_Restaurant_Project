@@ -8,10 +8,11 @@ public abstract class Person {
     public Address address;
     public String email;
 
-    public Person(String name, String surname, String phoneNumber, Address address, String email) {
+    public Person(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email) {
         setName(name);
         setSurname(surname);
         setPhoneNumber(phoneNumber);
+        Address address = new Address(street, city, postalCode, country);
         setAddress(address);
         setEmail(email);
     }
@@ -40,12 +41,22 @@ public abstract class Person {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        this.name =  name;
+        if (!name.matches("^[A-Za-z]+$")) {
+            throw new IllegalArgumentException(
+                    "Name can only contain letters A–Z or a–z"
+            );
+        }
+        this.name = name;
     }
 
     public void setSurname(String surname) {
         if (surname == null || surname.isBlank()) {
             throw new IllegalArgumentException("Surname cannot be empty");
+        }
+        if (!surname.matches("^[A-Za-z-]+$")) {
+            throw new IllegalArgumentException(
+                    "Surname can only contain letters and '-' sign"
+            );
         }
         this.surname = surname;
     }

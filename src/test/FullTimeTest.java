@@ -11,12 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class FullTimeTest {
 
     private FullTime emp;
-    private Address address;
 
     @BeforeEach
     void setUp() {
-        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
-        emp = new FullTime("Jan", "Nowak", "123456789", address, "jan@example.com",
+        emp = new FullTime("Jan", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "jan@example.com",
                 LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT);
     }
 
@@ -41,7 +39,7 @@ class FullTimeTest {
 
     @Test
     void testNullEmployeeAdd() throws Exception {
-        var method = FullTime.class.getDeclaredMethod("addFullTime", FullTime.class);
+        var method = FullTime.class.getDeclaredMethod("addExtent", FullTime.class);
         method.setAccessible(true);
 
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,

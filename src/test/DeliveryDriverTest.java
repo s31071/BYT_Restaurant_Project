@@ -11,11 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class DeliveryDriverTest {
 
     private DeliveryDriver driver;
-    private Address address;
     @BeforeEach
     void setUp() {
-        address = new Address("Markowskiego", "Piaseczno","05-500", "Poland");
-        driver = new DeliveryDriver("Piotr", "Nowak", "987654321", address, "piotr@example.com",
+        driver = new DeliveryDriver("Piotr", "Nowak", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "piotr@example.com",
                 LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true);
     }
 
@@ -35,7 +33,7 @@ class DeliveryDriverTest {
 
     @Test
     void testNullDriverAdd() throws Exception {
-        var method = DeliveryDriver.class.getDeclaredMethod("addDeliveryDriver", DeliveryDriver.class);
+        var method = DeliveryDriver.class.getDeclaredMethod("addExtent", DeliveryDriver.class);
         method.setAccessible(true);
         InvocationTargetException ex = assertThrows(InvocationTargetException.class,
                 () -> method.invoke(null, (Object) null));
