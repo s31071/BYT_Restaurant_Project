@@ -73,7 +73,7 @@ public class Cook extends Employee implements Serializable {
         extent.add(cook);
     }
 
-    public List<Cook> getExtent() {
+    public static List<Cook> getExtent() {
         return Collections.unmodifiableList(extent);
     }
 

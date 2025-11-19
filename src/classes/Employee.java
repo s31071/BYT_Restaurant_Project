@@ -90,8 +90,3 @@ public abstract class Employee extends Person implements Serializable {
     }
 }
 
-enum ManageEmployeeType{
-    ADD,
-    UPDATE,
-    DELETE
-}
