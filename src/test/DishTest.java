@@ -1,10 +1,10 @@
 package test;
-import classes.Dish;
 
+import classes.Dish;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,9 +17,9 @@ public class DishTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        Field dishExtent = Dish.class.getDeclaredField("extent");
-        dishExtent.setAccessible(true);
-        ((List<?>) dishExtent.get(null)).clear();
+        Method clearDish = Dish.class.getDeclaredMethod("clearExtent");
+        clearDish.setAccessible(true);
+        clearDish.invoke(null);
 
         dish1 = new Dish("Dish1", 15.50);
         dish2 = new Dish("Dish2", 10.50);
@@ -43,7 +43,6 @@ public class DishTest {
         assertEquals(initialSize + 1, dishes.size());
         assertTrue(dishes.contains(newDish));
     }
-
 
     @Test
     void testAddMultipleDishes() {

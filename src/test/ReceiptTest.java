@@ -4,6 +4,7 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +18,24 @@ public class ReceiptTest {
     private Receipt receiptWithTip;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
+
+        Method clearReceipt = Receipt.class.getDeclaredMethod("clearExtent");
+        clearReceipt.setAccessible(true);
+        clearReceipt.invoke(null);
+
+        Method clearOrder = Order.class.getDeclaredMethod("clearExtent");
+        clearOrder.setAccessible(true);
+        clearOrder.invoke(null);
+
+        Method clearDish = Dish.class.getDeclaredMethod("clearExtent");
+        clearDish.setAccessible(true);
+        clearDish.invoke(null);
+
+        Method clearTable = Table.class.getDeclaredMethod("clearExtent");
+        clearTable.setAccessible(true);
+        clearTable.invoke(null);
+
         Table table = new Table(1, 2, TableStatus.TAKEN, LocalDateTime.now());
 
         order100 = new Order(1, 2, OrderStatus.TAKEN, 1, LocalDateTime.now(), table);
@@ -77,7 +95,6 @@ public class ReceiptTest {
     @Test
     void testSumWithoutTip() {
         Receipt r = new Receipt(PaymentMethod.CARD, order101, null);
-
         double expected = 110 + (110 * Receipt.service);
         assertEquals(expected, r.getSum(), 0.0001);
     }
@@ -85,7 +102,6 @@ public class ReceiptTest {
     @Test
     void testSumWithTip() {
         Receipt r2 = new Receipt(PaymentMethod.CASH, order101, Double.valueOf(15.0));
-
         double expected = 110 + (110 * Receipt.service) + 15.0;
         assertEquals(expected, r2.getSum(), 0.0001);
     }

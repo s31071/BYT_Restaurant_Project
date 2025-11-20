@@ -112,11 +112,25 @@ public class Reservation implements Serializable {
     }
 
     public static void addExtent(Reservation reservation) {
-        if (reservation == null) {
-            throw new NullPointerException("Reservation cannot be null");
+        if(reservation == null){
+            throw new IllegalArgumentException("Reservation cannot be null");
+        }
+        if(extent.contains(reservation)){
+            throw new IllegalArgumentException("Such reservation is already in data base");
         }
         extent.add(reservation);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 
     public static List<Reservation> getExtent() {
         return Collections.unmodifiableList(extent);

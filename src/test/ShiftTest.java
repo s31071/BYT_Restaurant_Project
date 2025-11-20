@@ -1,10 +1,12 @@
 package test;
+
 import classes.Shift;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.lang.reflect.Field;
+
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ShiftTest {
@@ -14,10 +16,12 @@ public class ShiftTest {
     private LocalDateTime testEndTime;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
-        Field shiftExtent = Shift.class.getDeclaredField("extent");
-        shiftExtent.setAccessible(true);
-        ((List<?>) shiftExtent.get(null)).clear();
+    void setUp() throws Exception {
+
+        Method clearShift = Shift.class.getDeclaredMethod("clearExtent");
+        clearShift.setAccessible(true);
+        clearShift.invoke(null);
+
         testDate = LocalDateTime.of(2025, 11, 12, 0, 0);
         testStartTime = LocalDateTime.of(2025, 11, 12, 8, 0);
         testEndTime = LocalDateTime.of(2025, 11, 12, 16, 0);

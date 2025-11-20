@@ -101,23 +101,24 @@ public class SupplyHistory implements Serializable {
         }
     }
 
-    public static void addExtent(SupplyHistory newSupplyHistory) {
-        if (newSupplyHistory == null) {
+    public static void addExtent(SupplyHistory supplyHistory) {
+        if(supplyHistory == null){
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
-
-        for (SupplyHistory existing : extent) {
-            boolean sameDate = existing.date.equals(newSupplyHistory.date);
-            boolean sameStatus = existing.status == newSupplyHistory.status;
-            boolean sameInvoice = existing.invoice.equals(newSupplyHistory.invoice);
-            boolean sameProductOrder = existing.productOrder.equals(newSupplyHistory.productOrder);
-
-            if (sameDate && sameStatus && sameInvoice && sameProductOrder) {
-                throw new IllegalArgumentException("This SupplyHistory already exists in extent");
-            }
+        if(extent.contains(supplyHistory)){
+            throw new IllegalArgumentException("Such supplyHistory is already in data base");
         }
+        extent.add(supplyHistory);
+    }
 
-        extent.add(newSupplyHistory);
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<SupplyHistory> getExtent() {

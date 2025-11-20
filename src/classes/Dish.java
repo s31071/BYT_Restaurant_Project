@@ -61,10 +61,23 @@ public class Dish implements Serializable {
     }
 
     public static void addExtent(Dish dish) {
-        if (dish == null) {
+        if(dish == null){
             throw new IllegalArgumentException("Dish cannot be null");
         }
+        if(extent.contains(dish)){
+            throw new IllegalArgumentException("Such dish is already in data base");
+        }
         extent.add(dish);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Dish> getExtent() {
@@ -81,5 +94,9 @@ public class Dish implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Dish>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent() {
+        extent.clear();
     }
 }

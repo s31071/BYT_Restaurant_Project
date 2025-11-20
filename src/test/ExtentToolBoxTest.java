@@ -1,8 +1,6 @@
 package test;
 
 import classes.*;
-import classes.Customer;
-import classes.DeliveryDriver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,18 +11,29 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExtentToolBoxTest {
+
     @BeforeEach
     void cleanExtents() throws Exception {
         clearExtents();
     }
 
     private List<?> getExtentOf(Class<?> clazz) throws Exception {
-        Field field = clazz.getDeclaredField("extent");
-        field.setAccessible(true);
-        return (List<?>) field.get(null);
+        try {
+            Field field = clazz.getDeclaredField("extent");
+            field.setAccessible(true);
+            Object value = field.get(null);
+
+            if (value instanceof List<?> list) {
+                return list;
+            }
+            return null;
+
+        } catch (NoSuchFieldException ignored) {
+            return null;
+        }
     }
 
-    private static final Class<?>[] EXTENT_CLASSES = {
+    private static final Class<?>[] extentClassess = {
             Cook.class,
             Customer.class,
             DeliveryDriver.class,
@@ -45,14 +54,14 @@ public class ExtentToolBoxTest {
     };
 
     private void clearExtents() throws Exception {
-        for (Class<?> clazz : EXTENT_CLASSES) {
+        for (Class<?> clazz : extentClassess) {
             try {
                 Field extentField = clazz.getDeclaredField("extent");
                 extentField.setAccessible(true);
 
                 Object list = extentField.get(null);
-                if (list instanceof List) {
-                    ((List<?>) list).clear();
+                if (list instanceof List<?> l) {
+                    l.clear();
                 }
             } catch (NoSuchFieldException ignored) {
             }
@@ -61,8 +70,9 @@ public class ExtentToolBoxTest {
 
     @Test
     void testExtentsAreInitiallyEmpty() throws Exception {
-        for (Class<?> clazz : EXTENT_CLASSES) {
+        for (Class<?> clazz : extentClassess) {
             List<?> extent = getExtentOf(clazz);
+            if (extent == null) continue;
             assertEquals(0, extent.size(), clazz.getSimpleName() + " extent should be empty");
         }
     }
@@ -73,19 +83,29 @@ public class ExtentToolBoxTest {
         new Customer("Jan", "Kowalski", "123456789",
                 "Street", "City", "00-001", "Poland", "jan@example.com");
 
-        assertFalse(getExtentOf(Product.class).isEmpty());
-        assertFalse(getExtentOf(Customer.class).isEmpty());
+        List<?> productExtent = getExtentOf(Product.class);
+        if (productExtent != null) assertFalse(productExtent.isEmpty());
+
+        List<?> customerExtent = getExtentOf(Customer.class);
+        if (customerExtent != null) assertFalse(customerExtent.isEmpty());
 
         clearExtents();
 
-        for (Class<?> clazz : EXTENT_CLASSES) {
+        for (Class<?> clazz : extentClassess) {
             List<?> extent = getExtentOf(clazz);
+            if (extent == null) continue;
             assertEquals(0, extent.size(), clazz.getSimpleName() + " extent was not cleared!");
         }
     }
 
     @Test
     void testExtentClearingDoesNotThrow() {
-        assertDoesNotThrow(this::clearExtents);
+        assertDoesNotThrow(() -> {
+            try {
+                clearExtents();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

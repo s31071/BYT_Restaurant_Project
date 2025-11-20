@@ -67,44 +67,24 @@ public class ProductOrder implements Serializable {
         ProductOrder.extent = extent;
     }
 
-
-
-    public static void addExtent(ProductOrder newProductOrder) {
-        if (newProductOrder == null) {
+    public static void addExtent(ProductOrder productOrder) {
+        if(productOrder == null){
             throw new IllegalArgumentException("ProductOrder cannot be null");
         }
-
-        for (ProductOrder existingProductOrder : extent) {
-            if (existingProductOrder.products.size() == newProductOrder.products.size()) {
-
-                boolean identical = true;
-
-                for (int i = 0; i < existingProductOrder.products.size(); i++) {
-                    Product p1 = existingProductOrder.products.get(i);
-                    Product p2 = newProductOrder.products.get(i);
-
-                    boolean sameName = p1.name.equals(p2.name);
-
-                    boolean sameExpiry = (p1.expiryDate == null && p2.expiryDate == null)
-                            || (p1.expiryDate != null && p1.expiryDate.equals(p2.expiryDate));
-
-                    boolean sameWeight = p1.weight == p2.weight;
-                    boolean sameCategory = p1.category == p2.category;
-                    boolean samePrice = p1.price == p2.price;
-
-                    if (!(sameName && sameExpiry && sameWeight && sameCategory && samePrice)) {
-                        identical = false;
-                        break;
-                    }
-                }
-
-                if (identical) {
-                    throw new IllegalArgumentException("This ProductOrder already exists in extent");
-                }
-            }
+        if(extent.contains(productOrder)){
+            throw new IllegalArgumentException("Such productOrder is already in data base");
         }
+        extent.add(productOrder);
+    }
 
-        extent.add(newProductOrder);
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<ProductOrder> getExtent() {

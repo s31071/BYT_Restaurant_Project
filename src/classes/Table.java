@@ -93,10 +93,23 @@ public class Table implements Serializable {
     }
 
     public static void addExtent(Table table) {
-        if (table == null) {
+        if(table == null){
             throw new IllegalArgumentException("Table cannot be null");
         }
+        if(extent.contains(table)){
+            throw new IllegalArgumentException("Such table is already in data base");
+        }
         extent.add(table);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Table> getExtent() {
@@ -113,5 +126,9 @@ public class Table implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Table>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent() {
+        extent.clear();
     }
 }

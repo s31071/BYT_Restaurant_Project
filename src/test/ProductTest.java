@@ -4,9 +4,8 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,9 +15,10 @@ public class ProductTest {
 
     @BeforeEach
     void setup() throws Exception {
-        Field extentField = Product.class.getDeclaredField("extent");
-        extentField.setAccessible(true);
-        ((List<?>) extentField.get(null)).clear();
+
+        Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
+        clearProduct.setAccessible(true);
+        clearProduct.invoke(null);
 
         product = new Product(1L, "Milk", 1.0, Category.DAIRY, null, 10.0);
     }
