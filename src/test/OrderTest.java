@@ -29,10 +29,6 @@ public class OrderTest {
         orderExtent.setAccessible(true);
         ((List<?>) orderExtent.get(null)).clear();
 
-        Field dishesInOrders = Order.class.getDeclaredField("dishes");
-        dishesInOrders.setAccessible(true);
-        ((List<?>) dishesInOrders.get(null)).clear();
-
         Field tableExtent = Table.class.getDeclaredField("extent");
         tableExtent.setAccessible(true);
         ((List<?>) tableExtent.get(null)).clear();
@@ -263,12 +259,11 @@ public class OrderTest {
     @Test
     void testGetTotalPriceIsStatic() {
         Order order1 = new Order(2, 2, OrderStatus.TAKEN, 1, testTimestamp, testTable);
-        Order order2 = new Order(3, 3, OrderStatus.TAKEN, 1, testTimestamp, testTable);
 
         order1.addDish(pizza);
-        order2.addDish(pasta);
+        order1.addDish(pasta);
 
-        assertEquals(23.49, dineInOrder.getTotalPrice(), 0.01);
+        assertEquals(23.49, order1.getTotalPrice(), 0.01);
     }
 
     @Test
