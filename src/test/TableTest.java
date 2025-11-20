@@ -167,6 +167,17 @@ class TableTest {
         assertEquals(2, Table.getExtent().size());
     }
 
+    @Test
+    void testClearExtent() throws Exception {
+        assertEquals(3, Table.getExtent().size());
+
+        Method clearTable = Table.class.getDeclaredMethod("clearExtent");
+        clearTable.setAccessible(true);
+        clearTable.invoke(null);
+
+        assertEquals(0, Table.getExtent().size());
+    }
+
     private boolean containsStatus(TableStatus[] statuses, TableStatus target) {
         for (TableStatus status : statuses) {
             if (status == target) {

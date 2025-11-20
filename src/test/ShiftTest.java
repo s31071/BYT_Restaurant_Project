@@ -54,6 +54,12 @@ public class ShiftTest {
     }
 
     @Test
+    void testConstructorAddsToExtent() {
+        assertEquals(1, Shift.getExtent().size());
+        assertTrue(Shift.getExtent().contains(shift));
+    }
+
+    @Test
     void testSetNumberOfPeopleNeededUpdatesValue() {
         shift.setNumberOfPeopleNeeded(6);
         assertEquals(6, shift.getNumberOfPeopleNeeded());
@@ -110,5 +116,17 @@ public class ShiftTest {
         assertTrue(Shift.getExtent().contains(shift2));
         assertTrue(Shift.getExtent().contains(shift3));
     }
+
+    @Test
+    void testClearExtent() throws Exception {
+        assertEquals(1, Shift.getExtent().size());
+
+        Method clearShift = Shift.class.getDeclaredMethod("clearExtent");
+        clearShift.setAccessible(true);
+        clearShift.invoke(null);
+
+        assertEquals(0, Shift.getExtent().size());
+    }
+
 
 }

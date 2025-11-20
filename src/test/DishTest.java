@@ -141,4 +141,16 @@ public class DishTest {
         Dish.removeFromExtent(dishToRemove);
         assertFalse(Dish.getExtent().contains(dishToRemove));
     }
+
+    @Test
+    void testClearExtent() throws Exception {
+        assertEquals(3, Dish.getExtent().size());
+
+        Method clearDish = Dish.class.getDeclaredMethod("clearExtent");
+        clearDish.setAccessible(true);
+        clearDish.invoke(null);
+
+        assertEquals(0, Dish.getExtent().size());
+        assertEquals(0, Dish.getDishList().size());
+    }
 }

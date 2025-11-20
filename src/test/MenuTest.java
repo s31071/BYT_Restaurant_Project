@@ -134,4 +134,16 @@ class MenuTest {
             Menu.getExtent().add(new Menu("Test", MenuType.FOOD));
         });
     }
+
+    @Test
+    void testClearExtent() throws Exception {
+        assertEquals(3, Menu.getExtent().size());
+
+        Method clearMenu = Menu.class.getDeclaredMethod("clearExtent");
+        clearMenu.setAccessible(true);
+        clearMenu.invoke(null);
+
+        assertEquals(0, Menu.getExtent().size());
+    }
+
 }

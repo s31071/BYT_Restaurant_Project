@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -94,5 +95,16 @@ public class ReservationTest {
         assertTrue(Reservation.getExtent().contains(reservation));
         assertTrue(Reservation.getExtent().contains(reservation2));
         assertTrue(Reservation.getExtent().contains(reservation3));
+    }
+
+    @Test
+    void testClearExtent() throws Exception {
+        assertEquals(1, Reservation.getExtent().size());
+
+        Method reservationExtent = Reservation.class.getDeclaredMethod("clearExtent");
+        reservationExtent.setAccessible(true);
+        reservationExtent.invoke(null);
+
+        assertEquals(0, Reservation.getExtent().size());
     }
 }

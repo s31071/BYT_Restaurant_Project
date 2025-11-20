@@ -339,6 +339,17 @@ public class OrderTest {
         });
     }
 
+    @Test
+    void testClearExtent() throws Exception {
+        assertEquals(1, Order.getOrders().size());
+
+        Method clearOrder = Order.class.getDeclaredMethod("clearExtent");
+        clearOrder.setAccessible(true);
+        clearOrder.invoke(null);
+
+        assertEquals(0, Order.getOrders().size());
+    }
+
     private boolean containsStatus(OrderStatus[] statuses, OrderStatus target) {
         for (OrderStatus status : statuses) {
             if (status == target) {
@@ -347,4 +358,5 @@ public class OrderTest {
         }
         return false;
     }
+
 }
