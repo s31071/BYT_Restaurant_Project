@@ -136,7 +136,7 @@ class DeliveryDriverTest {
 
     @Test
     void testConfirmDeliveryUsingReflection() throws Exception {
-        Order order = new Order(1, 3, OrderStatus.READY, 5, LocalDateTime.now());
+        Order order = new Order(1, 3, OrderStatus.READY, LocalDateTime.now());
         Method method = DeliveryDriver.class.getDeclaredMethod("confirmDelivery", Order.class);
         method.setAccessible(true);
         method.invoke(driver, order);

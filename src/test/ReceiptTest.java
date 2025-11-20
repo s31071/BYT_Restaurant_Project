@@ -38,17 +38,23 @@ public class ReceiptTest {
 
         Table table = new Table(1, 2, TableStatus.TAKEN, LocalDateTime.now());
 
-        order100 = new Order(1, 2, OrderStatus.TAKEN, 1, LocalDateTime.now(), table);
-        order100.addDish(new Dish("DishA", 40.0));
-        order100.addDish(new Dish("DishB", 60.0));
+        Dish dishA = new Dish("DishA", 40.0);
+        Dish dishB = new Dish("DishB", 60.0);
+        order100 = new Order(1, 2, OrderStatus.TAKEN, LocalDateTime.now(), table);
+        order100.addDish(dishA, 1);
+        order100.addDish(dishB, 1);
 
-        order101 = new Order(1, 2, OrderStatus.TAKEN, 1, LocalDateTime.now(), table);
-        order101.addDish(new Dish("DishA", 30.0));
-        order101.addDish(new Dish("DishB", 80.0));
+        order101 = new Order(1, 2, OrderStatus.TAKEN, LocalDateTime.now(), table);
+        Dish dishC = new Dish("DishC", 30.0);
+        Dish dishD = new Dish("DishD", 80.0);
+        order101.addDish(dishC, 1);
+        order101.addDish(dishD, 1);
 
-        order50 = new Order(2, 2, OrderStatus.TAKEN, 1, LocalDateTime.now(), table);
-        order50.addDish(new Dish("DishX", 20.0));
-        order50.addDish(new Dish("DishY", 30.0));
+        order50 = new Order(2, 2, OrderStatus.TAKEN, LocalDateTime.now(), table);
+        Dish dishX = new Dish("DishX", 20.0);
+        Dish dishY = new Dish("DishY", 30.0);
+        order50.addDish(dishX, 1);
+        order50.addDish(dishY, 1);
 
         receiptNoTip = new Receipt(PaymentMethod.CARD, order100);
         receiptWithTip = new Receipt(PaymentMethod.CARD, order101, Double.valueOf(10.0));
@@ -159,7 +165,7 @@ public class ReceiptTest {
         Receipt r = new Receipt(PaymentMethod.CASH, order50, Double.valueOf(5.0));
         double initial = r.getSum();
 
-        order50.addDish(new Dish("Extra", 20.0));
+        order50.addDish(new Dish("Extra", 20.0), 1);
         r.setSum();
 
         assertNotEquals(initial, r.getSum());

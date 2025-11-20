@@ -11,32 +11,29 @@ import java.io.IOException;
 
 public class Order implements Serializable {
     private static List<Order> extent = new ArrayList<>();
-    private List<Dish> dishes = new ArrayList<>();
+    private List<DishOrder> dishes = new ArrayList<>();
 
     private int id;
     private int numberOfPeople;
     private OrderStatus status;
-    private int quantity;
     private LocalDateTime timestamp;
     private Table table;
     private DeliveryDriver deliveryDriver;
 
-    public Order(int id, int numberOfPeople, OrderStatus status, int quantity, LocalDateTime timestamp, Table table) {
+    public Order(int id, int numberOfPeople, OrderStatus status, LocalDateTime timestamp, Table table) {
         setId(id);
         setNumberOfPeople(numberOfPeople);
         setStatus(status);
-        setQuantity(quantity);
         setTimestamp(timestamp);
         setTable(table);
         setDeliveryDriver(null);
         addExtent(this);
     }
 
-    public Order(int id, int numberOfPeople, OrderStatus status, int quantity, LocalDateTime timestamp) {
+    public Order(int id, int numberOfPeople, OrderStatus status, LocalDateTime timestamp) {
         setId(id);
         setNumberOfPeople(numberOfPeople);
         setStatus(status);
-        setQuantity(quantity);
         setTimestamp(timestamp);
         setDeliveryDriver(null);
         addExtent(this);
@@ -61,13 +58,6 @@ public class Order implements Serializable {
             throw new NullPointerException("Invalid status");
         }
         this.status = status;
-    }
-
-    public void setQuantity(int quantity) {
-        if(quantity <= 0 && quantity >= extent.size()) {
-            throw new NullPointerException("Invalid quantity");
-        }
-        this.quantity = quantity;
     }
 
     public void setTable(Table table) {
@@ -117,8 +107,8 @@ public class Order implements Serializable {
 
     public double getTotalPrice(){
         double total = 0;
-        for (Dish dish : dishes) {
-            total += dish.getPrice();
+        for (DishOrder dish : dishes) {
+            total += dish.getDish().getPrice() * dish.getQuantity();
         }
         return total;
     }
@@ -159,20 +149,24 @@ public class Order implements Serializable {
         extent = (List<Order>) objectInputStream.readObject();
     }
 
-    public void addDish(Dish dish) {
+    public void addDish(Dish dish, int quantity) {
         if (dish == null) {
             throw new IllegalArgumentException("Dish cannot be null");
         }
-        if (!dishes.contains(dish)) {
-            dishes.add(dish);
+        for (DishOrder dishOrder : dishes) {
+            if (dishOrder.getDish().equals(dish)) {
+                dishOrder.setQuantity(dishOrder.getQuantity() + quantity);
+                return;
+            }
         }
+        dishes.add(new DishOrder(dish, quantity));
     }
 
     public void removeDish(Dish dish) {
         dishes.remove(dish);
     }
 
-    public List<Dish> getDishes() {
+    public List<DishOrder> getDishes() {
         return Collections.unmodifiableList(dishes);
     }
 

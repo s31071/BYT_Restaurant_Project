@@ -16,6 +16,7 @@ public class ExtentToolBox {
             Customer.writeExtent(encoder);
             DeliveryDriver.writeExtent(encoder);
             Dish.writeExtent(encoder);
+            DishOrder.writeExtent(encoder);
             FullTime.writeExtent(encoder);
             Invoice.writeExtent(encoder);
             Menu.writeExtent(encoder);
@@ -43,6 +44,7 @@ public class ExtentToolBox {
             Customer.readExtent(decoder);
             DeliveryDriver.readExtent(decoder);
             Dish.readExtent(decoder);
+            DishOrder.readExtent(decoder);
             FullTime.readExtent(decoder);
             Invoice.readExtent(decoder);
             Menu.readExtent(decoder);
