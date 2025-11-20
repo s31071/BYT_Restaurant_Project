@@ -144,7 +144,6 @@ public class ProductTest {
 
     @Test
     void testAddExtent() {
-        LocalDateTime timestamp = LocalDateTime.of(2025, 11, 13, 19, 0);
         Product newProduct = new Product(5, "Juice", 1.0, Category.BEVERAGES);
 
         assertTrue(Product.getExtent().contains(newProduct));
@@ -174,7 +173,7 @@ public class ProductTest {
     }
 
     @Test
-    void testMultipleProducts() throws Exception {
+    void testMultipleProducts() {
         Product product2 = new Product(2, "Milk", 3.0, Category.DAIRY);
         Product product3 = new Product(4, "Bread", 4.0, Category.BREAD);
 
