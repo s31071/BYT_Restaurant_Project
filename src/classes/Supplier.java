@@ -60,6 +60,9 @@ public class Supplier extends Person implements Serializable {
         if(supplier == null){
             throw new IllegalArgumentException("Supplier cannot be null");
         }
+        if(extent.contains(supplier)){
+            throw new IllegalArgumentException("Such supplier is already in data base");
+        }
         extent.add(supplier);
     }
 
@@ -77,5 +80,19 @@ public class Supplier extends Person implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Supplier>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

@@ -10,12 +10,13 @@ import java.io.Serializable;
 import java.io.IOException;
 
 public class Order implements Serializable {
-    private static List<Order> orders = new ArrayList<>();
-    private List<Dish> dishes = new ArrayList<>();
+    private static List<Order> extent = new ArrayList<>();
 
     private int id;
     private int numberOfPeople;
     private OrderStatus status;
+   //nie wiem co to opisuje
+    //może powinno być many to many Dish-Order
     private int quantity;
     private LocalDateTime timestamp;
     private Table table;
@@ -33,15 +34,19 @@ public class Order implements Serializable {
     }
 
     public void setId(int id) {
-        if(id < 0 && id >= orders.size()) {
-            throw new IllegalArgumentException("The given id is out of bounds.");
+        if(id < 0 || id >= extent.size()) {
+            try {
+                throw new IllegalIdException("Invalid ID");
+            } catch (IllegalIdException e) {
+                throw new RuntimeException(e);
+            }
         }
         this.id = id;
     }
 
     public void setNumberOfPeople(int numberOfPeople) {
-        if(numberOfPeople <= 0 && numberOfPeople >= orders.size()) {
-            throw new NullPointerException("Invalid number of people");
+        if(numberOfPeople < 0 || numberOfPeople >= extent.size()) {
+            throw new RuntimeException("Invalid number of people");
         }
         this.numberOfPeople = numberOfPeople;
     }
@@ -54,8 +59,8 @@ public class Order implements Serializable {
     }
 
     public void setQuantity(int quantity) {
-        if(quantity <= 0 && quantity >= orders.size()) {
-            throw new NullPointerException("Invalid quantity");
+        if(quantity < 0 || quantity >= extent.size()) {
+            throw new RuntimeException("Invalid quantity");
         }
         this.quantity = quantity;
     }
@@ -68,9 +73,9 @@ public class Order implements Serializable {
     }
 
     public void setDeliveryDriver(DeliveryDriver deliveryDriver) {
-//        if(deliveryDriver == null) {
-//            throw new NullPointerException("Invalid delivery driver");
-//        }
+        if(deliveryDriver == null) {
+            throw new NullPointerException("Invalid delivery driver");
+        }
         this.deliveryDriver = deliveryDriver;
     }
 
@@ -110,9 +115,6 @@ public class Order implements Serializable {
 
     public double getTotalPrice(){
         double total = 0;
-        for (Dish dish : dishes) {
-            total += dish.getPrice();
-        }
         return total;
     }
 
@@ -120,47 +122,22 @@ public class Order implements Serializable {
         if (order == null) {
             throw new IllegalArgumentException("Order cannot be null");
         }
-        orders.add(order);
+        extent.add(order);
     }
 
-    public static List<Order> getOrders() {
-        return Collections.unmodifiableList(orders);
+    public static List<Order> getExtent() {
+        return Collections.unmodifiableList(extent);
     }
 
     public static void removeFromExtent(Order order) {
-        orders.remove(order);
+        extent.remove(order);
     }
 
     public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(orders);
+        objectOutputStream.writeObject(extent);
     }
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        orders = (List<Order>) objectInputStream.readObject();
-    }
-
-    public void addDish(Dish dish) {
-        if (dish == null) {
-            throw new IllegalArgumentException("Dish cannot be null");
-        }
-        if (!dishes.contains(dish)) {
-            dishes.add(dish);
-        }
-    }
-
-    public void removeDish(Dish dish) {
-        dishes.remove(dish);
-    }
-
-    public List<Dish> getDishes() {
-        return Collections.unmodifiableList(dishes);
-    }
-
-    public boolean containsDish(Dish dish) {
-        return dishes.contains(dish);
-    }
-
-    public int getDishCount() {
-        return dishes.size();
+        extent = (List<Order>) objectInputStream.readObject();
     }
 }

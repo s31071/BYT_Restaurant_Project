@@ -1,9 +1,15 @@
 package test;
 
 import classes.Address;
+import classes.Contract;
+import classes.Cook;
 import classes.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +18,10 @@ class CustomerTest {
     private Customer c1;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method clearMethod = Customer.class.getDeclaredMethod("clearExtent");
+        clearMethod.setAccessible(true);
+        clearMethod.invoke(null);
         c1 = new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com");
     }
 
@@ -32,5 +41,36 @@ class CustomerTest {
     void testInvalidEmailThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Customer("Ewa", "Kowalska", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "invalid"));
+    }
+
+    @Test
+    void testAddExtentDuplicateCustomerThrowsException() throws Exception {
+        Method method = Customer.class.getDeclaredMethod("addExtent", Customer.class);
+        method.setAccessible(true);
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com"
+                )
+        );
+
+        assertEquals("Such customer is already in data base", ex.getMessage());
+    }
+
+    @Test
+    void testExtentContainsOnlyOneCustomerAfterDuplicateAttempt() throws Exception {
+        Method addMethod = Customer.class.getDeclaredMethod("addExtent", Customer.class);
+        addMethod.setAccessible(true);
+
+        Method getExtentMethod = Customer.class.getDeclaredMethod("getExtent");
+        getExtentMethod.setAccessible(true);
+
+        try {
+            Customer duplicate = new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com");
+        } catch (IllegalArgumentException ignored) {}
+
+        var extent = (java.util.List<Customer>) getExtentMethod.invoke(null);
+        assertEquals(1, extent.size());
+        assertEquals(c1, extent.get(0));
     }
 }

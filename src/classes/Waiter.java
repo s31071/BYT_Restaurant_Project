@@ -60,6 +60,9 @@ public class Waiter extends Employee implements Serializable {
         if(waiter == null){
             throw new IllegalArgumentException("Waiter cannot be null");
         }
+        if(extent.contains(waiter)){
+            throw new IllegalArgumentException("Such waiter is already in data base");
+        }
         extent.add(waiter);
     }
 
@@ -77,5 +80,19 @@ public class Waiter extends Employee implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Waiter>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
