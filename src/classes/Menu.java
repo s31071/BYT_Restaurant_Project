@@ -34,7 +34,7 @@ public class Menu implements Serializable {
     }
 
     public void setName(String name) {
-        if (name.isEmpty()) {
+        if (name.isEmpty() || name == null) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
         this.name = name;

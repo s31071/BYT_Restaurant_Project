@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ProductOrder implements Serializable {
     private static List<ProductOrder> extent = new ArrayList<>();
-    //potrzebuje dodatkowejn listy, żeby przechowywać co jest w tej konkretnej relacji
+    //potrzebuje dodatkowej listy, żeby przechowywać co jest w tej konkretnej relacji
     private List<Product> products = new ArrayList<>();
     private double totalWeight;
 
@@ -37,9 +37,11 @@ public class ProductOrder implements Serializable {
     }
 
     private void computeTotalWeight() {
-        this.totalWeight = products.stream()
-                .mapToDouble(Product::getWeight)
-                .sum();
+        this.totalWeight = Math.round(
+                products.stream()
+                        .mapToDouble(Product::getWeight)
+                        .sum() * 100.0
+        ) / 100.0;
     }
 
     public double getWeight() {

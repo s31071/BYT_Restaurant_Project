@@ -20,20 +20,16 @@ public class Reservation implements Serializable {
     private ReservationStatus status;
 
     public Reservation(int id, String nameOfThePerson, LocalDateTime timestamp, ReservationStatus status) {
-        try {
-            setId(id);
-        } catch (IllegalIdException e) {
-            throw new RuntimeException(e);
-        }
+        setId(id);
         setNameOfThePerson(nameOfThePerson);
         setTimestamp(timestamp);
         setStatus(status);
         addExtent(this);
     }
 
-    public void setId(int id) throws IllegalIdException {
-        if(id < 0 || id >= extent.size()) {
-            throw new IllegalIdException("Invalid ID");
+    public void setId(int id) {
+        if(id < 0 && id >= extent.size()) {
+            throw new IllegalArgumentException("The given id is out of bounds.");
         }
         this.id = id;
     }
@@ -117,7 +113,7 @@ public class Reservation implements Serializable {
 
     public static void addExtent(Reservation reservation) {
         if (reservation == null) {
-            throw new IllegalArgumentException("Reservation cannot be null");
+            throw new NullPointerException("Reservation cannot be null");
         }
         extent.add(reservation);
     }

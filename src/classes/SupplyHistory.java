@@ -23,8 +23,8 @@ public class SupplyHistory implements Serializable {
         setDate(date);
         setInvoice(invoice);
         setProductOrder(productOrder);
-        setStatus(status);
         addExtent(this);
+        setStatus(status);
     }
 
     public LocalDate getDate() {
@@ -76,33 +76,27 @@ public class SupplyHistory implements Serializable {
     }
 
     private void checkStatuses(SupplyStatus newStatus) {
-
         if (newStatus == SupplyStatus.DELIVERED) {
 
-            boolean hasOrderedBefore = extent.stream().anyMatch(
-                    sh -> sh.getInvoice().equals(this.invoice)
-                            && sh.getProductOrder().equals(this.productOrder)
-                            && sh.getStatus() == SupplyStatus.ORDERED
-                            && sh.getDate().isBefore(this.date)
-            );
+            List<SupplyHistory> orderedEntries = extent.stream()
+                    .filter(sh -> sh != this)
+                    .filter(sh ->
+                            sh.getInvoice().equals(this.invoice)
+                                    && sh.getProductOrder().equals(this.productOrder)
+                                    && sh.getStatus() == SupplyStatus.ORDERED)
+                    .toList();
 
-            if (!hasOrderedBefore) {
-                throw new IllegalArgumentException(
-                        "Cannot mark DELIVERED: no prior ORDERED entry exists."
-                );
+            if (orderedEntries.isEmpty()) {
+                throw new IllegalArgumentException("Cannot mark DELIVERED: no prior ORDERED entry exists.");
             }
 
-            boolean wrongDateOrder = extent.stream().anyMatch(
-                    sh -> sh.getInvoice().equals(this.invoice)
-                            && sh.getProductOrder().equals(this.productOrder)
-                            && sh.getStatus() == SupplyStatus.ORDERED
-                            && !sh.getDate().isBefore(this.date)
-            );
+            LocalDate latestOrderedDate = orderedEntries.stream()
+                    .map(SupplyHistory::getDate)
+                    .max(LocalDate::compareTo)
+                    .get();
 
-            if (wrongDateOrder) {
-                throw new IllegalArgumentException(
-                        "DELIVERED date must be after the ORDERED date."
-                );
+            if (!latestOrderedDate.isBefore(this.date)) {
+                throw new IllegalArgumentException("DELIVERED date must be after the ORDERED date.");
             }
         }
     }
@@ -112,11 +106,11 @@ public class SupplyHistory implements Serializable {
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
 
-        for (SupplyHistory existingSupplyHistory : extent) {
-            boolean sameDate = existingSupplyHistory.date.equals(newSupplyHistory.date);
-            boolean sameStatus = existingSupplyHistory.status == newSupplyHistory.status;
-            boolean sameInvoice = existingSupplyHistory.invoice.equals(newSupplyHistory.invoice);
-            boolean sameProductOrder = existingSupplyHistory.productOrder.equals(newSupplyHistory.productOrder);
+        for (SupplyHistory existing : extent) {
+            boolean sameDate = existing.date.equals(newSupplyHistory.date);
+            boolean sameStatus = existing.status == newSupplyHistory.status;
+            boolean sameInvoice = existing.invoice.equals(newSupplyHistory.invoice);
+            boolean sameProductOrder = existing.productOrder.equals(newSupplyHistory.productOrder);
 
             if (sameDate && sameStatus && sameInvoice && sameProductOrder) {
                 throw new IllegalArgumentException("This SupplyHistory already exists in extent");

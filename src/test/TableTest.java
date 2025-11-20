@@ -4,7 +4,9 @@ import classes.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +18,10 @@ class TableTest {
     private LocalDateTime testDate;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
+        Field tableExtent = Table.class.getDeclaredField("extent");
+        tableExtent.setAccessible(true);
+        ((List<?>) tableExtent.get(null)).clear();
         testDate = LocalDateTime.of(2025, 11, 12, 18, 30);
 
         availableTable = new Table(1, 4, TableStatus.AVAILABLE, testDate);
@@ -126,6 +131,38 @@ class TableTest {
     void testDifferentTableNumbers() {
         assertNotEquals(availableTable.getNumber(), takenTable.getNumber());
         assertNotEquals(takenTable.getNumber(), reservedTable.getNumber());
+    }
+
+    @Test
+    void testAddExtent() {
+        LocalDateTime date = LocalDateTime.of(2025, 11, 13, 18, 0);
+        Table newTable = new Table(4, 8, TableStatus.AVAILABLE, date);
+
+        assertEquals(4, Table.getExtent().size());
+        assertTrue(Table.getExtent().contains(newTable));
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Table.addExtent(null);
+        });
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Table.getExtent().add(availableTable);
+        });
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        assertTrue(Table.getExtent().contains(availableTable));
+
+        Table.removeFromExtent(availableTable);
+        assertFalse(Table.getExtent().contains(availableTable));
+        assertEquals(2, Table.getExtent().size());
     }
 
     private boolean containsStatus(TableStatus[] statuses, TableStatus target) {

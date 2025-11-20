@@ -6,6 +6,9 @@ import classes.MenuType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MenuTest {
@@ -17,8 +20,14 @@ class MenuTest {
     private Dish dish2;
 
     @BeforeEach
-    void setUp() {
-
+    void setUp() throws NoSuchFieldException {
+        Field menuExtent = Menu.class.getDeclaredField("extent");
+        menuExtent.setAccessible(true);
+        try {
+            ((List<?>) menuExtent.get(null)).clear();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         foodMenu = new Menu("Main Menu", MenuType.FOOD);
         beverageMenu = new Menu("Drink Menu", MenuType.BEVERAGE);
         seasonalMenu = new Menu("Seasonal Menu", MenuType.SEASONAL);
@@ -55,17 +64,8 @@ class MenuTest {
     }
 
     @Test
-    void testConstructorWithNullName() {
-        Menu nullNameMenu = new Menu(null, MenuType.FOOD);
-        assertNull(nullNameMenu.getName());
-        assertEquals(MenuType.FOOD, nullNameMenu.getType());
-    }
-
-    @Test
     void testConstructorWithEmptyName() {
-        Menu emptyNameMenu = new Menu("", MenuType.BEVERAGE);
-        assertEquals("", emptyNameMenu.getName());
-        assertEquals(MenuType.BEVERAGE, emptyNameMenu.getType());
+        assertThrows(IllegalArgumentException.class, () -> {new Menu("", MenuType.BEVERAGE);});
     }
 
     @Test
@@ -108,6 +108,30 @@ class MenuTest {
             }
         }
         return false;
+    }
+
+    @Test
+    void testAddExtent() {
+        int initialSize = Menu.getExtent().size();
+        Menu newMenu = new Menu("New Menu", MenuType.FOOD);
+        assertEquals(initialSize + 1, Menu.getExtent().size());
+        assertTrue(Menu.getExtent().contains(newMenu));
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        Menu menuToRemove = new Menu("Temporary Menu", MenuType.FOOD);
+        assertTrue(Menu.getExtent().contains(menuToRemove));
+
+        Menu.removeFromExtent(menuToRemove);
+        assertFalse(Menu.getExtent().contains(menuToRemove));
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Menu.getExtent().add(new Menu("Test", MenuType.FOOD));
+        });
     }
 
 }
