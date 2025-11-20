@@ -8,14 +8,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentTest {
-
+//we need a subclass to test abstract classes
     static class TestPayment extends Payment {
+
         private double sum;
 
         public TestPayment(PaymentMethod method, double sum) {
             super(method);
-            if (sum < 0) throw new IllegalArgumentException("Sum cannot be negative");
+            if (sum < 0) {
+                throw new IllegalArgumentException("Sum cannot be negative");
+            }
             this.sum = sum;
+        }
+
+        @Override
+        public void setSum() {
         }
 
         @Override
@@ -26,7 +33,6 @@ public class PaymentTest {
 
     private TestPayment payment;
 
-    //tutaj nie clearuje extentu, bo jest abstract, więc go nie ma
     @BeforeEach
     void setup() {
         payment = new TestPayment(PaymentMethod.CARD, 50);
@@ -58,11 +64,13 @@ public class PaymentTest {
 
     @Test
     void testConstructorNullPaymentMethodThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new TestPayment(null, 10.0));
+        assertThrows(IllegalArgumentException.class,
+                () -> new TestPayment(null, 10.0));
     }
 
     @Test
     void testConstructorNegativeSumThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new TestPayment(PaymentMethod.CARD, -10.0));
+        assertThrows(IllegalArgumentException.class,
+                () -> new TestPayment(PaymentMethod.CARD, -10.0));
     }
 }

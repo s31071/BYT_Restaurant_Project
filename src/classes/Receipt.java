@@ -21,7 +21,7 @@ public class Receipt extends Payment implements Serializable {
         super(method);
         setOrder(order);
         setTip(tip);
-        updateSum();
+        setSum();
         addExtent(this);
     }
 
@@ -40,7 +40,7 @@ public class Receipt extends Payment implements Serializable {
             }
         }
         this.tip = tip;
-        updateSum();
+        setSum();
     }
 
     public Order getOrder() {
@@ -52,10 +52,10 @@ public class Receipt extends Payment implements Serializable {
             throw new IllegalArgumentException("Order cannot be null");
         }
         this.order = order;
-        updateSum();
+        setSum();
     }
-
-    private void updateSum() {
+    @Override
+    public void setSum() {
         double base = order.getTotalPrice();
         double total = base + (base * service);
         if (tip != null) total += tip;
