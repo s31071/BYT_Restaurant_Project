@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -54,18 +55,77 @@ public class ExtentToolBoxTest {
     };
 
     private void clearExtents() throws Exception {
-        for (Class<?> clazz : extentClassess) {
-            try {
-                Field extentField = clazz.getDeclaredField("extent");
-                extentField.setAccessible(true);
+        Method clearCook = Cook.class.getDeclaredMethod("clearExtent");
+        clearCook.setAccessible(true);
+        clearCook.invoke(null);
 
-                Object list = extentField.get(null);
-                if (list instanceof List<?> l) {
-                    l.clear();
-                }
-            } catch (NoSuchFieldException ignored) {
-            }
-        }
+        Method clearCustomer = Customer.class.getDeclaredMethod("clearExtent");
+        clearCustomer.setAccessible(true);
+        clearCustomer.invoke(null);
+
+        Method clearDeliveryDriver = DeliveryDriver.class.getDeclaredMethod("clearExtent");
+        clearDeliveryDriver.setAccessible(true);
+        clearDeliveryDriver.invoke(null);
+
+        Method clearDish = Dish.class.getDeclaredMethod("clearExtent");
+        clearDish.setAccessible(true);
+        clearDish.invoke(null);
+
+        Method clearFullTime = FullTime.class.getDeclaredMethod("clearExtent");
+        clearFullTime.setAccessible(true);
+        clearFullTime.invoke(null);
+
+        Method clearInvoice = Invoice.class.getDeclaredMethod("clearExtent");
+        clearInvoice.setAccessible(true);
+        clearInvoice.invoke(null);
+
+        Method clearMenu = Menu.class.getDeclaredMethod("clearExtent");
+        clearMenu.setAccessible(true);
+        clearMenu.invoke(null);
+
+        Method clearOrder = Order.class.getDeclaredMethod("clearExtent");
+        clearOrder.setAccessible(true);
+        clearOrder.invoke(null);
+
+        Method clearPartTime = PartTime.class.getDeclaredMethod("clearExtent");
+        clearPartTime.setAccessible(true);
+        clearPartTime.invoke(null);
+
+        Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
+        clearProduct.setAccessible(true);
+        clearProduct.invoke(null);
+
+        Method clearProductOrder = ProductOrder.class.getDeclaredMethod("clearExtent");
+        clearProductOrder.setAccessible(true);
+        clearProductOrder.invoke(null);
+
+        Method clearReceipt = Receipt.class.getDeclaredMethod("clearExtent");
+        clearReceipt.setAccessible(true);
+        clearReceipt.invoke(null);
+
+        Method clearReservation = Reservation.class.getDeclaredMethod("clearExtent");
+        clearReservation.setAccessible(true);
+        clearReservation.invoke(null);
+
+        Method clearShift = Shift.class.getDeclaredMethod("clearExtent");
+        clearShift.setAccessible(true);
+        clearShift.invoke(null);
+
+        Method clearSupplier = Supplier.class.getDeclaredMethod("clearExtent");
+        clearSupplier.setAccessible(true);
+        clearSupplier.invoke(null);
+
+        Method clearSupplyHistory = SupplyHistory.class.getDeclaredMethod("clearExtent");
+        clearSupplyHistory.setAccessible(true);
+        clearSupplyHistory.invoke(null);
+
+        Method clearTable = Table.class.getDeclaredMethod("clearExtent");
+        clearTable.setAccessible(true);
+        clearTable.invoke(null);
+
+        Method clearWaiter = Waiter.class.getDeclaredMethod("clearExtent");
+        clearWaiter.setAccessible(true);
+        clearWaiter.invoke(null);
     }
 
     @Test

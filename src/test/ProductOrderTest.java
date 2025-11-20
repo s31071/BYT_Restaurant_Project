@@ -76,4 +76,58 @@ public class ProductOrderTest {
     void testSetProductsContainsNullThrows() {
         assertThrows(IllegalArgumentException.class, () -> order.setProducts(Arrays.asList(p1, null)));
     }
+
+    @Test
+    void testAddExtent() {
+        ProductOrder order2 = new ProductOrder(List.of(p1));
+        assertEquals(2, ProductOrder.getExtent().size());
+        assertTrue(ProductOrder.getExtent().contains(order2));
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> ProductOrder.addExtent(null));
+    }
+
+    @Test
+    void testAddExtentDuplicateThrows() {
+        assertThrows(IllegalArgumentException.class, () -> ProductOrder.addExtent(order));
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () ->
+                ProductOrder.getExtent().add(order));
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        assertTrue(ProductOrder.getExtent().contains(order));
+        ProductOrder.removeFromExtent(order);
+        assertFalse(ProductOrder.getExtent().contains(order));
+    }
+
+    @Test
+    void testMultipleOrdersInExtent() {
+        ProductOrder o1 = new ProductOrder(List.of(p1));
+        ProductOrder o2 = new ProductOrder(List.of(p2));
+        assertEquals(3, ProductOrder.getExtent().size());
+        assertTrue(ProductOrder.getExtent().contains(order));
+        assertTrue(ProductOrder.getExtent().contains(o1));
+        assertTrue(ProductOrder.getExtent().contains(o2));
+    }
+
+
+    @Test
+    void testTotalsRecomputeAfterEachCall() {
+        Product p3 = new Product(3, "Chocolate", 2.0, Category.DAIRY, null, 6.0);
+
+        order.setProducts(List.of(p1));
+        assertEquals(1.0, order.getTotalWeight());
+        assertEquals(3.50, order.getTotalSum());
+
+        order.setProducts(List.of(p1, p3));
+        assertEquals(3.0, order.getTotalWeight());
+        assertEquals(9.50, order.getTotalSum());
+    }
 }

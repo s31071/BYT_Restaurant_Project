@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
-import classes.IllegalIdException;
 
 public class Reservation implements Serializable {
     private static List<Reservation> extent = new ArrayList<>();
@@ -146,5 +145,9 @@ public class Reservation implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Reservation>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent(){
+        extent.clear();
     }
 }

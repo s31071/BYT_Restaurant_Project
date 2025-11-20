@@ -73,4 +73,60 @@ public class PaymentTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new TestPayment(PaymentMethod.CARD, -10.0));
     }
+
+    @Test
+    void testMethodPreservesStateAcrossChanges() {
+        payment.setMethod(PaymentMethod.CARD);
+        assertEquals(PaymentMethod.CARD, payment.getMethod());
+
+        payment.setMethod(PaymentMethod.CASH);
+        assertEquals(PaymentMethod.CASH, payment.getMethod());
+    }
+
+    @Test
+    void testMultipleInstancesHoldIndependentValues() {
+        TestPayment p1 = new TestPayment(PaymentMethod.CARD, 10);
+        TestPayment p2 = new TestPayment(PaymentMethod.CASH, 20);
+
+        assertNotEquals(p1.getSum(), p2.getSum());
+        assertNotEquals(p1.getMethod(), p2.getMethod());
+    }
+
+    @Test
+    void testSumGetterDoesNotChangeValue() {
+        double s = payment.getSum();
+        assertEquals(s, payment.getSum());
+    }
+
+    @Test
+    void testSetSumDoesNotThrow() {
+        assertDoesNotThrow(() -> payment.setSum());
+    }
+
+    @Test
+    void testValidMethodEnumValues() {
+        PaymentMethod[] methods = PaymentMethod.values();
+        assertEquals(3, methods.length);
+
+        assertTrue(containsMethod(methods, PaymentMethod.CARD));
+        assertTrue(containsMethod(methods, PaymentMethod.CASH));
+    }
+
+    private boolean containsMethod(PaymentMethod[] methods, PaymentMethod target) {
+        for (PaymentMethod m : methods) {
+            if (m == target) return true;
+        }
+        return false;
+    }
+
+    @Test
+    void testPaymentMethodValueOf() {
+        assertEquals(PaymentMethod.CARD, PaymentMethod.valueOf("CARD"));
+        assertEquals(PaymentMethod.CASH, PaymentMethod.valueOf("CASH"));
+    }
+
+    @Test
+    void testPaymentMethodValueOfInvalid() {
+        assertThrows(IllegalArgumentException.class, () -> PaymentMethod.valueOf("INVALID"));
+    }
 }

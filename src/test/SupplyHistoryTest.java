@@ -94,8 +94,15 @@ public class SupplyHistoryTest {
 
     @Test
     void testDeliveredWithoutPreviousOrderedThrowsException() {
+        Product p3 = new Product(3, "Butter", 0.3, Category.DAIRY, null, 8.0);
+        Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
+        ProductOrder otherOrder = new ProductOrder(List.of(p3, p4));
+
+        Address otherAddress = new Address("Test", "City", "1111", "Poland");
+        Invoice otherInvoice = new Invoice(PaymentMethod.CARD, 2, 987654321, "Someone", otherAddress, otherOrder);
+
         assertThrows(IllegalArgumentException.class, () ->
-                new SupplyHistory(today, SupplyStatus.DELIVERED, invoice, productOrder));
+                new SupplyHistory(today, SupplyStatus.DELIVERED, otherInvoice, otherOrder));
     }
 
     @Test

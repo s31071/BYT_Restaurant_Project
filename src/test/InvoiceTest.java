@@ -48,6 +48,22 @@ public class InvoiceTest {
     }
 
     @Test
+    void testFullConstructor() {
+        assertEquals(10, invoice.getID());
+        assertEquals(123456789, invoice.getTaxIdentificationNumber());
+        assertEquals("Emilia", invoice.getName());
+        assertEquals(address, invoice.getAddress());
+        assertEquals(productOrder, invoice.getProductOrder());
+        assertEquals(productOrder.getTotalSum(), invoice.getSum());
+    }
+
+    @Test
+    void testConstructorAddsToExtent() {
+        assertEquals(1, Invoice.getExtent().size());
+        assertTrue(Invoice.getExtent().contains(invoice));
+    }
+
+    @Test
     void testSetIDValid() {
         invoice.setID(20);
         assertEquals(20, invoice.getID());
@@ -95,6 +111,7 @@ public class InvoiceTest {
     void testSetProductOrderValid() {
         invoice.setProductOrder(newProductOrder);
         assertEquals(newProductOrder, invoice.getProductOrder());
+        assertEquals(newProductOrder.getTotalSum(), invoice.getSum());
     }
 
     @Test
@@ -127,14 +144,31 @@ public class InvoiceTest {
     }
 
     @Test
+    void testGetSumReflectsProductOrder() {
+        assertEquals(productOrder.getTotalSum(), invoice.getSum());
+    }
+
+    @Test
+    void testSumUpdatesWhenProductOrderChanges() {
+        invoice.setProductOrder(newProductOrder);
+        assertEquals(newProductOrder.getTotalSum(), invoice.getSum());
+    }
+
+    @Test
     void testAddExtent() {
         Invoice invoice1 = new Invoice(PaymentMethod.CASH, 30, 555555555, "Anna", newAddress, newProductOrder);
         assertTrue(Invoice.getExtent().contains(invoice1));
+        assertEquals(2, Invoice.getExtent().size());
     }
 
     @Test
     void testAddExtentWithNull() {
         assertThrows(IllegalArgumentException.class, () -> Invoice.addExtent(null));
+    }
+
+    @Test
+    void testAddExtentDuplicateThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> Invoice.addExtent(invoice));
     }
 
     @Test
@@ -156,13 +190,13 @@ public class InvoiceTest {
     }
 
     @Test
-    void testInvoiceSumMatchesProductOrder() {
-        assertEquals(productOrder.getTotalSum(), invoice.getSum());
-    }
+    void testMultipleInvoices() {
+        Invoice i1 = new Invoice(PaymentMethod.CASH, 100, 111111111, "A", address, productOrder);
+        Invoice i2 = new Invoice(PaymentMethod.CARD, 200, 222222222, "B", address, newProductOrder);
 
-    @Test
-    void testInvoiceSumUpdatesWhenProductOrderChanges() {
-        invoice.setProductOrder(newProductOrder);
-        assertEquals(newProductOrder.getTotalSum(), invoice.getSum());
+        assertEquals(3, Invoice.getExtent().size());
+        assertTrue(Invoice.getExtent().contains(invoice));
+        assertTrue(Invoice.getExtent().contains(i1));
+        assertTrue(Invoice.getExtent().contains(i2));
     }
 }

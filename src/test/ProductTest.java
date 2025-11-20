@@ -130,4 +130,66 @@ public class ProductTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new Product(10L, "Juice", 1.5, Category.BEVERAGES, null, -3.0));
     }
+
+    @Test
+    void testAddExtentAddsProduct() {
+        assertEquals(1, Product.getExtent().size());
+        assertTrue(Product.getExtent().contains(product));
+    }
+
+    @Test
+    void testAddExtentWithNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> Product.addExtent(null));
+    }
+
+    @Test
+    void testAddExtentDuplicateThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> Product.addExtent(product));
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Product.getExtent().add(product);
+        });
+    }
+
+    @Test
+    void testRemoveFromExtentRemovesProduct() {
+        assertTrue(Product.getExtent().contains(product));
+        Product.removeFromExtent(product);
+        assertFalse(Product.getExtent().contains(product));
+    }
+
+    @Test
+    void testRemoveMethodRemovesFromExtent() {
+        assertTrue(Product.getExtent().contains(product));
+        product.remove();
+        assertFalse(Product.getExtent().contains(product));
+    }
+
+    @Test
+    void testClearExtentEmptiesExtent() throws Exception {
+        Product p2 = new Product(2L, "Cheese", 1.0, Category.DAIRY, null, 5.0);
+        assertEquals(2, Product.getExtent().size());
+
+        Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
+        clearProduct.setAccessible(true);
+        clearProduct.invoke(null);
+
+        assertEquals(0, Product.getExtent().size());
+    }
+
+    @Test
+    void testConstructorWithoutPriceWithExpiryThrowsException() {
+        LocalDate expiry = LocalDate.now().plusDays(3);
+        assertThrows(IllegalArgumentException.class,
+                () -> new Product(3L, "Rice", 1.0, Category.DAIRY, expiry));
+    }
+
+    @Test
+    void testConstructorWithoutPriceAndExpiryThrowsException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Product(4L, "Rice", 1.0, Category.DAIRY));
+    }
 }

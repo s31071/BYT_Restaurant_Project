@@ -115,4 +115,84 @@ public class ReceiptTest {
     void testConstructorNullPaymentMethodThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> new Receipt(null, order50));
     }
+
+    @Test
+    void testReceiptAddedToExtent() {
+        assertEquals(2, Receipt.getExtent().size());
+        assertTrue(Receipt.getExtent().contains(receiptNoTip));
+        assertTrue(Receipt.getExtent().contains(receiptWithTip));
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> Receipt.addExtent(null));
+    }
+
+    @Test
+    void testAddExtentDuplicateThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> Receipt.addExtent(receiptNoTip));
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Receipt.getExtent().add(receiptNoTip);
+        });
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        assertTrue(Receipt.getExtent().contains(receiptNoTip));
+        Receipt.removeFromExtent(receiptNoTip);
+        assertFalse(Receipt.getExtent().contains(receiptNoTip));
+    }
+
+    @Test
+    void testTipDoesNotAffectOtherReceipts() {
+        double original = receiptNoTip.getSum();
+        receiptWithTip.setTip(Double.valueOf(50.0));
+        assertEquals(original, receiptNoTip.getSum());
+    }
+
+    @Test
+    void testSumUpdatesWhenOrderPriceChanges() {
+        Receipt r = new Receipt(PaymentMethod.CASH, order50, Double.valueOf(5.0));
+        double initial = r.getSum();
+
+        order50.addDish(new Dish("Extra", 20.0));
+        r.setSum();
+
+        assertNotEquals(initial, r.getSum());
+    }
+
+    @Test
+    void testTipZeroIsAllowed() {
+        Receipt r = new Receipt(PaymentMethod.CARD, order50, Double.valueOf(0.0));
+        assertEquals(Double.valueOf(0.0), r.getTip());
+    }
+
+    @Test
+    void testChangingOrderUpdatesSum() {
+        Receipt r = new Receipt(PaymentMethod.CASH, order100, null);
+        double oldSum = r.getSum();
+
+        r.setOrder(order50);
+        assertNotEquals(oldSum, r.getSum());
+    }
+
+    @Test
+    void testGetOrder() {
+        assertEquals(order100, receiptNoTip.getOrder());
+        assertEquals(order101, receiptWithTip.getOrder());
+    }
+
+    @Test
+    void testMultipleReceipts() {
+        Receipt r1 = new Receipt(PaymentMethod.CARD, order50);
+        Receipt r2 = new Receipt(PaymentMethod.CASH, order100, Double.valueOf(5.0));
+
+        assertEquals(4, Receipt.getExtent().size());
+        assertTrue(Receipt.getExtent().contains(r1));
+        assertTrue(Receipt.getExtent().contains(r2));
+    }
 }
