@@ -39,6 +39,9 @@ public class Waiter extends Employee implements Serializable {
     }
 
     public void setWorkwearSize(WorkwearSize workwearSize) {
+        if(workwearSize == null){
+            throw new IllegalArgumentException("Work wear size cannot be null");
+        }
         this.workwearSize = workwearSize;
     }
 

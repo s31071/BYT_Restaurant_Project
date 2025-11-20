@@ -49,6 +49,11 @@ public class Customer extends Person implements Serializable {
         extent = (List<Customer>) objectInputStream.readObject();
     }
 
+    public double getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+
     public void displayCustomerInfo(){
         System.out.println("Name: "+this.getName());
         System.out.println("Surname: "+this.getSurname());

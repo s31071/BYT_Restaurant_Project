@@ -50,6 +50,9 @@ public abstract class Employee extends Person implements Serializable {
     }
 
     public void setSalary(double salary) {
+        if(salary < 0){
+            throw new IllegalArgumentException("Salary cannot be 0");
+        }
         this.salary = salary;
     }
 

@@ -25,6 +25,66 @@ class CookTest {
                 "michal@example.com", LocalDate.now(), Contract.B2B,
                 8, "Head Chef", "French");
     }
+    @Test
+    void testSetYearsOfExperienceValid() {
+        cook.setYearsOfExperience(5);
+        assertDoesNotThrow(() -> cook.setYearsOfExperience(10));
+    }
+
+    @Test
+    void testSetYearsOfExperienceInvalidNegative() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cook.setYearsOfExperience(-1)
+        );
+        assertEquals("Years of experience cannot be negative", ex.getMessage());
+    }
+
+    @Test
+    void testSetTitleValid() {
+        assertDoesNotThrow(() -> cook.setTitle("Sous Chef"));
+    }
+
+    @Test
+    void testSetTitleInvalidNull() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cook.setTitle(null)
+        );
+        assertEquals("Title cannot be empty", ex.getMessage());
+    }
+
+    @Test
+    void testSetTitleInvalidBlank() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cook.setTitle(" ")
+        );
+        assertEquals("Title cannot be empty", ex.getMessage());
+    }
+
+    @Test
+    void testSetSpecializationValid() {
+        assertDoesNotThrow(() -> cook.setSpecialization("Italian"));
+    }
+
+    @Test
+    void testSetSpecializationInvalidNull() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cook.setSpecialization(null)
+        );
+        assertEquals("Specialization cannot be empty", ex.getMessage());
+    }
+
+    @Test
+    void testSetSpecializationInvalidBlank() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> cook.setSpecialization(" ")
+        );
+        assertEquals("Specialization cannot be empty", ex.getMessage());
+    }
 
     @Test
     void testConstructor() {
@@ -33,7 +93,7 @@ class CookTest {
     }
 
     @Test
-    void testCalculateSalaryZero() {
+    void testCalculateSalary() {
         assertEquals(8474.496, cook.calculateSalary());
     }
 

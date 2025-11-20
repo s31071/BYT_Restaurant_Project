@@ -53,6 +53,40 @@ class FullTimeTest {
         assertTrue(cause instanceof IllegalArgumentException);
         assertEquals("Full time cannot be null", cause.getMessage());
     }
+
+    @Test
+    void testCalculateSalaryB2BContract() {
+        FullTime ft = new FullTime("Adam", "Nowak", "987654321", "Kwiatowa", "Warszawa", "00-001",
+                "Poland", "adam@example.com", LocalDate.of(2018, 1, 1), Contract.B2B);
+        assertTrue(ft.calculateSalary() > 0);
+    }
+
+    @Test
+    void testCalculateSalaryIncreasesWithYearsWorked() {
+        FullTime older = new FullTime("Anna", "Zielinska", "555666777", "Lesna", "Krakow", "30-001",
+                "Poland", "anna@example.com", LocalDate.of(2010, 1, 1), Contract.EMPLOYMENT_CONTRACT);
+        double s1 = older.calculateSalary();
+        FullTime newer = new FullTime("Piotr", "Lewandowski", "222333444", "Polna", "Gdansk", "80-001",
+                "Poland", "piotr@example.com", LocalDate.of(2023, 1, 1), Contract.EMPLOYMENT_CONTRACT);
+        double s2 = newer.calculateSalary();
+        assertTrue(s1 > s2);
+    }
+
+    @Test
+    void testConstructorAllFieldsSetCorrectly() {
+        FullTime f = new FullTime("Kamil", "Kowalski", "111222333", "Dluga", "Lublin",
+                "20-001", "Poland", "kamil@example.com", LocalDate.of(2019, 5, 10), Contract.MANDATE_CONTRACT);
+        assertEquals("Kamil", f.getName());
+        assertEquals("Kowalski", f.getSurname());
+        assertEquals("111222333", f.getPhoneNumber());
+    }
+
+    @Test
+    void testCalculateSalaryZeroIfJustEmployed() {
+        FullTime f = new FullTime("Marek", "Nowak", "777888999", "Krotka", "Poznan",
+                "60-001", "Poland", "marek@example.com", LocalDate.now(), Contract.B2B);
+        assertEquals(0, f.calculateSalary());
+    }
     @Test
     void testAddExtentDuplicateFullTimeThrowsException() throws Exception {
         Method method = FullTime.class.getDeclaredMethod("addExtent", FullTime.class);

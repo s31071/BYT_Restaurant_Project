@@ -78,7 +78,10 @@ public abstract class Person {
     }
 
     public void setEmail(String email) {
-        if (email == null || !email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+        if(email == null){
+            throw new IllegalArgumentException("Email cannot be null");
+        }
+        if (!email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             throw new IllegalArgumentException("Incorrect email format");
         }
         this.email = email;

@@ -50,6 +50,49 @@ class SupplierTest {
     }
 
     @Test
+    void shouldThrowExceptionForNullCategory() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500",
+                        "Poland", "adam@example.com", "BestMeat", null, 120.0));
+    }
+
+    @Test
+    void shouldThrowExceptionForNegativeDeliveryCost() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno", "05-500",
+                        "Poland", "adam@example.com", "BestMeat", Category.MEAT, -1.0));
+    }
+
+    @Test
+    void testSetDeliveryCostZeroValid() {
+        s.setDeliveryCost(0.0);
+        assertEquals(0.0, s.getDeliveryCost());
+    }
+
+    @Test
+    void testSetCompanyNameValid() {
+        s.setCompanyName("FreshFood");
+        assertEquals("FreshFood", s.getCompanyName());
+    }
+
+    @Test
+    void testSetCompanyNameBlankThrows() {
+        assertThrows(IllegalArgumentException.class, () -> s.setCompanyName(" "));
+    }
+
+    @Test
+    void testSetCategoryValid() {
+        s.setCategory(Category.VEGETABLES);
+        assertEquals(Category.VEGETABLES, s.getCategory());
+    }
+
+    @Test
+    void testSetDeliveryCostValid() {
+        s.setDeliveryCost(50.0);
+        assertEquals(50.0, s.getDeliveryCost());
+    }
+
+    @Test
     void testAddExtentDuplicateSupplierThrowsException() throws Exception {
         Method method = Supplier.class.getDeclaredMethod("addExtent", Supplier.class);
         method.setAccessible(true);

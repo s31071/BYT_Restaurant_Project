@@ -18,6 +18,7 @@ public class DeliveryDriver extends Employee implements Serializable {
     private boolean bonusApply;
     private double kmsInDay;
     private double kmsInMonth;
+    private List<Order> orders;
 
     public DeliveryDriver(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply) {
         super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
@@ -27,6 +28,7 @@ public class DeliveryDriver extends Employee implements Serializable {
         kmsInDay = 0;
         kmsInMonth = 0;
         addExtent(this);
+        orders = new ArrayList<>();
     }
 
     @Override
@@ -40,15 +42,14 @@ public class DeliveryDriver extends Employee implements Serializable {
         return (base + kmPay) * contractFactor;
     }
 
-    private void confirmDelivery(){}
+    private void confirmDelivery(Order order){
+        order.setStatus(OrderStatus.DELIVERED);
+    }
 
     private void saveDailyKms(){
         kmsInMonth += kmsInDay;
         kmsInDay = 0;
     }
-
-    private void reportIssue(){}
-
 
     public String getCarModel() {
         return carModel;

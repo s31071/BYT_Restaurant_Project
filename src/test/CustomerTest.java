@@ -44,6 +44,32 @@ class CustomerTest {
     }
 
     @Test
+    void testLoyaltyPointsInitialValue() {
+        double points = c1.getLoyaltyPoints();
+        assertEquals(0.0, points);
+    }
+
+    @Test
+    void testUpdateLoyaltyPointsAddsCorrectly() throws Exception {
+        Method updateMethod = Customer.class.getDeclaredMethod("updateLoyaltyPoints", double.class);
+        updateMethod.setAccessible(true);
+        updateMethod.invoke(c1, 20.0);
+        updateMethod.invoke(c1, 30.0);
+        double points = c1.getLoyaltyPoints();
+        assertEquals(50.0, points);
+    }
+
+    @Test
+    void testUpdateLoyaltyPointsAcceptsNegative() throws Exception {
+        Method updateMethod = Customer.class.getDeclaredMethod("updateLoyaltyPoints", double.class);
+        updateMethod.setAccessible(true);
+        updateMethod.invoke(c1, 100.0);
+        updateMethod.invoke(c1, -40.0);
+        double points = c1.getLoyaltyPoints();
+        assertEquals(60.0, points);
+    }
+
+    @Test
     void testAddExtentDuplicateCustomerThrowsException() throws Exception {
         Method method = Customer.class.getDeclaredMethod("addExtent", Customer.class);
         method.setAccessible(true);

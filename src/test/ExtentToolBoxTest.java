@@ -32,7 +32,6 @@ public class ExtentToolBoxTest {
             FullTime.class,
             Invoice.class,
             Menu.class,
-            Order.class,
             PartTime.class,
             Product.class,
             ProductOrder.class,

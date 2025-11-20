@@ -46,6 +46,74 @@ class WaiterTest {
     }
 
     @Test
+    void shouldThrowExceptionForNullWorkwearSize() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
+                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        Contract.EMPLOYMENT_CONTRACT, null, 10));
+    }
+
+    @Test
+    void shouldThrowExceptionForZeroMaximumTables() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
+                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 0));
+    }
+
+    @Test
+    void shouldThrowExceptionForNegativeMaximumTables() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
+                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, -5));
+    }
+
+    @Test
+    void shouldThrowExceptionForTooManyTables() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
+                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 30));
+    }
+
+    @Test
+    void testSetWorkwearSizeValid() {
+        waiter.setWorkwearSize(WorkwearSize.L);
+        assertEquals(WorkwearSize.L, waiter.getWorkwearSize());
+    }
+
+    @Test
+    void testSetMaximumTablesValidLowerRange() {
+        waiter.setMaximumTables(1);
+        assertEquals(1, waiter.getMaximumTables());
+    }
+
+    @Test
+    void testSetMaximumTablesValid() {
+        waiter.setMaximumTables(15);
+        assertEquals(15, waiter.getMaximumTables());
+    }
+
+    @Test
+    void testCalculateSalaryIncreasesWithTables() {
+        double baseSalary = waiter.calculateSalary();
+        waiter.setMaximumTables(20);
+        double higherSalary = waiter.calculateSalary();
+        assertTrue(higherSalary > baseSalary);
+    }
+
+    @Test
+    void testCalculateSalaryIncreasesWithYearsWorked() {
+        Waiter w = new Waiter("Anna", "Kowal", "987654321", "Dluga", "Warszawa", "00-001",
+                "Poland", "anna@example.com", LocalDate.now().minusYears(5),
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 10);
+
+        double salary = w.calculateSalary();
+        assertTrue(salary > waiter.calculateSalary());
+    }
+
+    @Test
     void testAddExtentDuplicateWaiterThrowsException() throws Exception {
         Method method = Waiter.class.getDeclaredMethod("addExtent", Waiter.class);
         method.setAccessible(true);

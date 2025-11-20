@@ -32,6 +32,16 @@ public class Order implements Serializable {
         addExtent(this);
     }
 
+    public Order(int id, int numberOfPeople, OrderStatus status, int quantity, LocalDateTime timestamp) {
+        setId(id);
+        setNumberOfPeople(numberOfPeople);
+        setStatus(status);
+        setQuantity(quantity);
+        setTimestamp(timestamp);
+        setDeliveryDriver(null);
+        addExtent(this);
+    }
+
     public void setId(int id) {
         if(id < 0 && id >= orders.size()) {
             throw new IllegalArgumentException("The given id is out of bounds.");
