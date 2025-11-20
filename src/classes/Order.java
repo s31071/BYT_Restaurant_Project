@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.io.IOException;
 
 public class Order implements Serializable {
-    private static List<Order> orders = new ArrayList<>();
+    private static List<Order> extent = new ArrayList<>();
     private List<Dish> dishes = new ArrayList<>();
 
     private int id;
@@ -43,14 +43,14 @@ public class Order implements Serializable {
     }
 
     public void setId(int id) {
-        if(id < 0 && id >= orders.size()) {
+        if(id < 0 && id >= extent.size()) {
             throw new IllegalArgumentException("The given id is out of bounds.");
         }
         this.id = id;
     }
 
     public void setNumberOfPeople(int numberOfPeople) {
-        if(numberOfPeople <= 0 && numberOfPeople >= orders.size()) {
+        if(numberOfPeople <= 0 && numberOfPeople >= extent.size()) {
             throw new NullPointerException("Invalid number of people");
         }
         this.numberOfPeople = numberOfPeople;
@@ -64,7 +64,7 @@ public class Order implements Serializable {
     }
 
     public void setQuantity(int quantity) {
-        if(quantity <= 0 && quantity >= orders.size()) {
+        if(quantity <= 0 && quantity >= extent.size()) {
             throw new NullPointerException("Invalid quantity");
         }
         this.quantity = quantity;
@@ -127,10 +127,10 @@ public class Order implements Serializable {
         if(order == null){
             throw new IllegalArgumentException("Order cannot be null");
         }
-        if(orders.contains(order)){
+        if(extent.contains(order)){
             throw new IllegalArgumentException("Such order is already in data base");
         }
-        orders.add(order);
+        extent.add(order);
     }
 
     @Override
@@ -144,19 +144,19 @@ public class Order implements Serializable {
     }
 
     public static List<Order> getOrders() {
-        return Collections.unmodifiableList(orders);
+        return Collections.unmodifiableList(extent);
     }
 
     public static void removeFromExtent(Order order) {
-        orders.remove(order);
+        extent.remove(order);
     }
 
     public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(orders);
+        objectOutputStream.writeObject(extent);
     }
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        orders = (List<Order>) objectInputStream.readObject();
+        extent = (List<Order>) objectInputStream.readObject();
     }
 
     public void addDish(Dish dish) {
@@ -185,6 +185,6 @@ public class Order implements Serializable {
     }
 
     public static void clearExtent() {
-        orders.clear();
+        extent.clear();
     }
 }
