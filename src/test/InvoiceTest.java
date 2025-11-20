@@ -16,7 +16,6 @@ public class InvoiceTest {
     private ProductOrder productOrder;
     private ProductOrder newProductOrder;
     private Invoice invoice;
-    private Category category;
 
     @BeforeEach
     void setup() throws Exception {
@@ -36,25 +35,24 @@ public class InvoiceTest {
         invoiceExtent.setAccessible(true);
         ((List<?>) invoiceExtent.get(null)).clear();
 
-        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY);
-        Product p2 = new Product(2, "Bread", 0.5, Category.DAIRY);
+        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
+        Product p2 = new Product(2, "Bread", 0.5, Category.DAIRY, null, 5.0);
         productOrder = new ProductOrder(List.of(p1, p2));
 
-        Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY);
-        Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY);
+        Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY, null, 12.0);
+        Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY, null, 7.0);
         newProductOrder = new ProductOrder(List.of(p3, p4));
 
         address = new Address("Koszykowa", "Warsaw", "12345", "Poland");
         newAddress = new Address("Koszykowa", "Warsaw", "00-001", "Poland");
 
-        invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder
-        );
+        invoice = new Invoice(PaymentMethod.CARD, 10, 123456789, "Emilia", address, productOrder);
     }
 
     @Test
     void testSetIDValid() {
-        invoice.setID(10);
-        assertEquals(10, invoice.getID());
+        invoice.setID(20);
+        assertEquals(20, invoice.getID());
     }
 
     @Test
@@ -75,8 +73,8 @@ public class InvoiceTest {
 
     @Test
     void testSetNameValid() {
-        invoice.setName("Emilia");
-        assertEquals("Emilia", invoice.getName());
+        invoice.setName("Anna");
+        assertEquals("Anna", invoice.getName());
     }
 
     @Test
@@ -108,50 +106,66 @@ public class InvoiceTest {
 
     @Test
     void testConstructorNullAddressThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", null, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, "Emilia", null, productOrder));
     }
 
     @Test
     void testConstructorNullProductOrderThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, null));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, "Emilia", address, null));
     }
 
     @Test
     void testConstructorNullNameThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(PaymentMethod.CARD, 1, 123456789, null, address, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, null, address, productOrder));
     }
 
     @Test
     void testConstructorNullPaymentMethodThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new Invoice(null, 1, 123456789, "Emilia", address, productOrder));
+        assertThrows(IllegalArgumentException.class,
+                () -> new Invoice(null, 20, 999999999, "Emilia", address, productOrder));
     }
 
     @Test
     void testAddExtent() {
-        Invoice invoice1 = new Invoice(PaymentMethod.CASH, 1, 123456789, "Emilia", address, productOrder);
+        Invoice invoice1 = new Invoice(PaymentMethod.CASH, 30, 555555555, "Anna", newAddress, newProductOrder);
         assertTrue(Invoice.getExtent().contains(invoice1));
     }
 
     @Test
     void testAddExtentWithNull() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Invoice.addExtent(null);
-        });
+        assertThrows(IllegalArgumentException.class, () -> Invoice.addExtent(null));
     }
 
     @Test
     void testGetExtentIsUnmodifiable() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            Invoice.getExtent().add(new Invoice(PaymentMethod.VOUCHER, 1, 123456789, "Emilia", address, productOrder));
-        });
+        Invoice valid = new Invoice(PaymentMethod.VOUCHER, 50, 888888888, "John", address, newProductOrder);
+        assertThrows(UnsupportedOperationException.class, () ->
+                Invoice.getExtent().add(valid));
     }
 
     @Test
     void testRemoveFromExtent() {
-        Invoice invoiceToRemove = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+        Invoice invoiceToRemove =
+                new Invoice(PaymentMethod.CARD, 40, 999888777, "Mark", address, newProductOrder);
+
         assertTrue(Invoice.getExtent().contains(invoiceToRemove));
 
         Invoice.removeFromExtent(invoiceToRemove);
         assertFalse(Invoice.getExtent().contains(invoiceToRemove));
+    }
+
+
+    @Test
+    void testInvoiceSumMatchesProductOrder() {
+        assertEquals(productOrder.getTotalSum(), invoice.getSum());
+    }
+
+    @Test
+    void testInvoiceSumUpdatesWhenProductOrderChanges() {
+        invoice.setProductOrder(newProductOrder);
+        assertEquals(newProductOrder.getTotalSum(), invoice.getSum());
     }
 }

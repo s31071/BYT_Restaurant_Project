@@ -12,11 +12,29 @@ public class ProductOrder implements Serializable {
     //potrzebuje dodatkowej listy, żeby przechowywać co jest w tej konkretnej relacji
     private List<Product> products = new ArrayList<>();
     private double totalWeight;
+    private double totalSum;
 
     public ProductOrder(List<Product> products) {
         setProducts(products);
-        computeTotalWeight();
+        setTotalWeight();
+        setTotalSum();
         addExtent(this);
+    }
+
+    private void setTotalSum() {
+        this.totalSum = Math.round(
+                products.stream()
+                        .mapToDouble(Product::getPrice)
+                        .sum() * 100.0
+        ) / 100.0;
+    }
+
+    public double getTotalWeight() {
+        return totalWeight;
+    }
+
+    public double getTotalSum() {
+        return totalSum;
     }
 
     public void setProducts(List<Product> products) {
@@ -29,14 +47,15 @@ public class ProductOrder implements Serializable {
             }
         }
         this.products = new ArrayList<>(products);
-        computeTotalWeight();
+        setTotalWeight();
+        setTotalSum();
     }
 
     public List<Product> getProducts() {
         return products;
     }
 
-    private void computeTotalWeight() {
+    private void setTotalWeight() {
         this.totalWeight = Math.round(
                 products.stream()
                         .mapToDouble(Product::getWeight)
@@ -44,14 +63,10 @@ public class ProductOrder implements Serializable {
         ) / 100.0;
     }
 
-    public double getWeight() {
-        return totalWeight;
+    public static void setExtent(List<ProductOrder> extent) {
+        ProductOrder.extent = extent;
     }
 
-
-//    public double getTotalPrice() {
-//
-//    }
 
 
     public static void addExtent(ProductOrder newProductOrder) {
@@ -73,12 +88,9 @@ public class ProductOrder implements Serializable {
                     boolean sameExpiry = (p1.expiryDate == null && p2.expiryDate == null)
                             || (p1.expiryDate != null && p1.expiryDate.equals(p2.expiryDate));
 
-                    boolean sameWeight = p1.weight.equals(p2.weight);
-
+                    boolean sameWeight = p1.weight == p2.weight;
                     boolean sameCategory = p1.category == p2.category;
-
-                    boolean samePrice = (p1.price == null && p2.price == null)
-                            || (p1.price != null && p2.price != null && p1.price.equals(p2.price));
+                    boolean samePrice = p1.price == p2.price;
 
                     if (!(sameName && sameExpiry && sameWeight && sameCategory && samePrice)) {
                         identical = false;

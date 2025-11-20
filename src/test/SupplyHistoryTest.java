@@ -40,8 +40,8 @@ public class SupplyHistoryTest {
         supplyExtent.setAccessible(true);
         ((List<?>) supplyExtent.get(null)).clear();
 
-        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY);
-        Product p2 = new Product(2, "Bread", 0.5, Category.BREAD);
+        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
+        Product p2 = new Product(2, "Bread", 0.5, Category.BREAD, null, 5.0);
         productOrder = new ProductOrder(List.of(p1, p2));
 
         address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
@@ -97,7 +97,8 @@ public class SupplyHistoryTest {
 
     @Test
     void testDeliveredWithoutPreviousOrderedThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(today, SupplyStatus.DELIVERED, invoice, productOrder));
+        assertThrows(IllegalArgumentException.class, () ->
+                new SupplyHistory(today, SupplyStatus.DELIVERED, invoice, productOrder));
     }
 
     @Test
@@ -107,7 +108,8 @@ public class SupplyHistoryTest {
 
         new SupplyHistory(orderedDate, SupplyStatus.ORDERED, invoice, productOrder);
 
-        assertThrows(IllegalArgumentException.class, () -> new SupplyHistory(deliveredBefore, SupplyStatus.DELIVERED, invoice, productOrder));
+        assertThrows(IllegalArgumentException.class, () ->
+                new SupplyHistory(deliveredBefore, SupplyStatus.DELIVERED, invoice, productOrder));
     }
 
     @Test
@@ -124,30 +126,29 @@ public class SupplyHistoryTest {
 
     @Test
     void testAddExtent() {
-        SupplyHistory supplyHistory= new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-        assertTrue(SupplyHistory.getExtent().contains(supplyHistory));
+        SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
+        assertTrue(SupplyHistory.getExtent().contains(sh));
     }
 
     @Test
     void testAddExtentWithNull() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            SupplyHistory.addExtent(null);
-        });
+        assertThrows(IllegalArgumentException.class, () -> SupplyHistory.addExtent(null));
     }
 
     @Test
     void testGetExtentIsUnmodifiable() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            SupplyHistory.getExtent().add(new SupplyHistory(today, SupplyStatus.DELIVERED, invoice, productOrder));
+        SupplyHistory valid = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
+
+        assertThrows(UnsupportedOperationException.class, () -> {SupplyHistory.getExtent().add(valid);
         });
     }
 
     @Test
     void testRemoveFromExtent() {
-        SupplyHistory SupplyHistoryToRemove = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-        assertTrue(SupplyHistory.getExtent().contains(SupplyHistoryToRemove));
+        SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
+        assertTrue(SupplyHistory.getExtent().contains(sh));
 
-        SupplyHistory.removeFromExtent(SupplyHistoryToRemove);
-        assertFalse(SupplyHistory.getExtent().contains(SupplyHistoryToRemove));
+        SupplyHistory.removeFromExtent(sh);
+        assertFalse(SupplyHistory.getExtent().contains(sh));
     }
 }

@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public abstract class Payment implements Serializable {
 
-    //derived attributes nie mają settera, tylko get
-    public abstract double getSum(); //derived attribute
+    public abstract void setSum();   // derived attribute setter
+    public abstract double getSum(); // derived attribute getter
 
     private PaymentMethod method;
 
