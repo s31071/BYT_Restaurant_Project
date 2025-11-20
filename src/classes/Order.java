@@ -113,7 +113,7 @@ public class Order implements Serializable {
         return numberOfPeople;
     }
 
-    public static double getTotalPrice(){
+    public double getTotalPrice(){
         double total = 0;
         return total;
     }

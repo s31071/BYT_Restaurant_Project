@@ -93,6 +93,9 @@ public class DeliveryDriver extends Employee implements Serializable {
     }
 
     public void setKmsInDay(double kmsInDay) {
+        if(kmsInDay < 0){
+            throw new IllegalArgumentException("Kms driven in a day cannot be negative");
+        }
         this.kmsInDay = kmsInDay;
     }
 
@@ -101,12 +104,18 @@ public class DeliveryDriver extends Employee implements Serializable {
     }
 
     public void setKmsInMonth(double kmsInMonth) {
+        if(kmsInMonth < 0){
+            throw new IllegalArgumentException("Kms driven in a month cannot be negative");
+        }
         this.kmsInMonth = kmsInMonth;
     }
 
     public static void addExtent(DeliveryDriver deliveryDriver) {
         if (deliveryDriver == null) {
             throw new IllegalArgumentException("Delivery driver cannot be null");
+        }
+        if(extent.contains(deliveryDriver)){
+            throw new IllegalArgumentException("Such delivery driver is already in data base");
         }
         extent.add(deliveryDriver);
     }
@@ -125,5 +134,19 @@ public class DeliveryDriver extends Employee implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<DeliveryDriver>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

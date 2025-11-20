@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Cook extends Employee implements Serializable {
     private static List<Cook> extent = new ArrayList<>();
@@ -70,8 +71,22 @@ public class Cook extends Employee implements Serializable {
         if(cook == null){
             throw new IllegalArgumentException("Cook cannot be null");
         }
+        if(extent.contains(cook)){
+            throw new IllegalArgumentException("Such cook is already in data base");
+        }
         extent.add(cook);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 
     public static List<Cook> getExtent() {
         return Collections.unmodifiableList(extent);
@@ -79,6 +94,10 @@ public class Cook extends Employee implements Serializable {
 
     public static void removeFromExtent(Cook cook) {
         extent.remove(cook);
+    }
+
+    public static void clearExtent() {
+        extent.clear();
     }
 
     public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {

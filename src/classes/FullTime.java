@@ -33,6 +33,9 @@ public class FullTime extends Employee implements Serializable {
         if(fullTime == null){
             throw new IllegalArgumentException("Full time cannot be null");
         }
+        if(extent.contains(fullTime)){
+            throw new IllegalArgumentException("Such full time employee is already in data base");
+        }
         extent.add(fullTime);
     }
 
@@ -50,5 +53,19 @@ public class FullTime extends Employee implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<FullTime>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

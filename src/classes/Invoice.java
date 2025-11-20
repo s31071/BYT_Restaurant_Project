@@ -30,7 +30,7 @@ public class Invoice extends Payment implements Serializable {
     @Override
     public double getSum() {
         if (productOrder == null) return 0;
-        return Order.getTotalPrice();
+        return 0;
     }
 
     public long getID() {

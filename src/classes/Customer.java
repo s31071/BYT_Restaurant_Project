@@ -27,6 +27,9 @@ public class Customer extends Person implements Serializable {
         if(customer == null){
             throw new IllegalArgumentException("Customer cannot be null");
         }
+        if(extent.contains(customer)){
+            throw new IllegalArgumentException("Such customer is already in data base");
+        }
         extent.add(customer);
     }
 
@@ -53,5 +56,19 @@ public class Customer extends Person implements Serializable {
         System.out.println("Address: "+this.getAddress());
         System.out.println("Email: "+this.getEmail());
         System.out.println("Loyalty points: "+this.loyaltyPoints);
+    }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

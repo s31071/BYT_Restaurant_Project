@@ -51,6 +51,9 @@ public class PartTime extends Employee implements Serializable {
         if (partTime == null) {
             throw new IllegalArgumentException("Part time cannot be null");
         }
+        if(extent.contains(partTime)){
+            throw new IllegalArgumentException("Such part time employee is already in data base");
+        }
         extent.add(partTime);
     }
 
@@ -68,5 +71,19 @@ public class PartTime extends Employee implements Serializable {
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<PartTime>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
