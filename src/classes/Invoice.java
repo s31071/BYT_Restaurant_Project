@@ -36,7 +36,7 @@ public class Invoice extends Payment implements Serializable {
         if (productOrder != null) {
             value = productOrder.getTotalSum();
         }
-        this.sum = value;   // sum is inherited from Payment
+        this.sum = value;
     }
 
     public long getID() {
@@ -100,24 +100,24 @@ public class Invoice extends Payment implements Serializable {
         return sum;
     }
 
-    public static void addExtent(Invoice newInvoice) {
-        if (newInvoice == null) {
+    public static void addExtent(Invoice invoice) {
+        if(invoice == null){
             throw new IllegalArgumentException("Invoice cannot be null");
         }
-
-        for (Invoice existingInvoice : extent) {
-            boolean sameName = existingInvoice.name.equals(newInvoice.name);
-            boolean sameTIN = existingInvoice.taxIdentificationNumber == newInvoice.taxIdentificationNumber;
-            boolean sameAddress = existingInvoice.address.equals(newInvoice.address);
-            boolean sameProductOrder = existingInvoice.productOrder.equals(newInvoice.productOrder);
-            boolean sameMethod = existingInvoice.getMethod() == newInvoice.getMethod();
-
-            if (sameName && sameTIN && sameAddress && sameProductOrder && sameMethod) {
-                throw new IllegalArgumentException("This Invoice already exists in extent");
-            }
+        if(extent.contains(invoice)){
+            throw new IllegalArgumentException("Such invoice is already in data base");
         }
+        extent.add(invoice);
+    }
 
-        extent.add(newInvoice);
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Invoice> getExtent() {

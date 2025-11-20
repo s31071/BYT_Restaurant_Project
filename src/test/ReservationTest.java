@@ -20,6 +20,7 @@ public class ReservationTest {
         Field reservationExtent = Reservation.class.getDeclaredField("extent");
         reservationExtent.setAccessible(true);
         ((List<?>) reservationExtent.get(null)).clear();
+
         testTimestamp = LocalDateTime.of(2025, 11, 12, 18, 30);
         reservation = new Reservation(1, "Ania Szyr", testTimestamp, ReservationStatus.AVAILABLE);
     }
@@ -61,7 +62,7 @@ public class ReservationTest {
 
     @Test
     void testAddExtentWithNull() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             Reservation.addExtent(null);
         });
     }
@@ -82,7 +83,7 @@ public class ReservationTest {
     }
 
     @Test
-    void testMultipleReservations() throws Exception {
+    void testMultipleReservations() {
         LocalDateTime timestamp2 = LocalDateTime.of(2025, 11, 13, 19, 0);
         LocalDateTime timestamp3 = LocalDateTime.of(2025, 11, 14, 20, 0);
 

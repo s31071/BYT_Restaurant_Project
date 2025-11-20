@@ -6,7 +6,7 @@ import classes.MenuType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,14 +20,16 @@ class MenuTest {
     private Dish dish2;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException {
-        Field menuExtent = Menu.class.getDeclaredField("extent");
-        menuExtent.setAccessible(true);
-        try {
-            ((List<?>) menuExtent.get(null)).clear();
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    void setUp() throws Exception {
+
+        Method clearMenu = Menu.class.getDeclaredMethod("clearExtent");
+        clearMenu.setAccessible(true);
+        clearMenu.invoke(null);
+
+        Method clearDish = Dish.class.getDeclaredMethod("clearExtent");
+        clearDish.setAccessible(true);
+        clearDish.invoke(null);
+
         foodMenu = new Menu("Main Menu", MenuType.FOOD);
         beverageMenu = new Menu("Drink Menu", MenuType.BEVERAGE);
         seasonalMenu = new Menu("Seasonal Menu", MenuType.SEASONAL);
@@ -65,7 +67,7 @@ class MenuTest {
 
     @Test
     void testConstructorWithEmptyName() {
-        assertThrows(IllegalArgumentException.class, () -> {new Menu("", MenuType.BEVERAGE);});
+        assertThrows(IllegalArgumentException.class, () -> new Menu("", MenuType.BEVERAGE));
     }
 
     @Test
@@ -97,10 +99,9 @@ class MenuTest {
 
     @Test
     void testMenuTypeValueOfInvalid() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            MenuType.valueOf("INVALID");
-        });
+        assertThrows(IllegalArgumentException.class, () -> MenuType.valueOf("INVALID"));
     }
+
     private boolean containsType(MenuType[] types, MenuType target) {
         for (MenuType type : types) {
             if (type == target) {
@@ -133,6 +134,4 @@ class MenuTest {
             Menu.getExtent().add(new Menu("Test", MenuType.FOOD));
         });
     }
-
 }
-

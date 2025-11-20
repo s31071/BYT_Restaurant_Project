@@ -14,7 +14,7 @@ public class Product implements Serializable {
 
     public long ID;
     public String name;
-    public LocalDate expiryDate; //nullable
+    public LocalDate expiryDate;
     public double weight;
     public Category category;
     public double price;
@@ -107,27 +107,24 @@ public class Product implements Serializable {
         extent.remove(this);
     }
 
-    public static void addExtent(Product newProduct) {
-        if (newProduct == null) {
+    public static void addExtent(Product product) {
+        if(product == null){
             throw new IllegalArgumentException("Product cannot be null");
         }
-
-        for (Product existingProduct : extent) {
-            boolean sameName = existingProduct.name.equals(newProduct.name);
-
-            boolean sameExpiry = (existingProduct.expiryDate == null && newProduct.expiryDate == null)
-                    || (existingProduct.expiryDate != null && existingProduct.expiryDate.equals(newProduct.expiryDate));
-
-            boolean sameWeight = existingProduct.weight == newProduct.weight;
-            boolean sameCategory = existingProduct.category == newProduct.category;
-            boolean samePrice = existingProduct.price == newProduct.price;
-
-            if (sameName && sameExpiry && sameWeight && sameCategory && samePrice) {
-                throw new IllegalArgumentException("This product already exists.");
-            }
+        if(extent.contains(product)){
+            throw new IllegalArgumentException("Such product is already in data base");
         }
+        extent.add(product);
+    }
 
-        extent.add(newProduct);
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Product> getExtent() {

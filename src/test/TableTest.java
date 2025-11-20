@@ -1,12 +1,12 @@
 package test;
+
 import classes.Table;
 import classes.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,10 +18,12 @@ class TableTest {
     private LocalDateTime testDate;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
-        Field tableExtent = Table.class.getDeclaredField("extent");
-        tableExtent.setAccessible(true);
-        ((List<?>) tableExtent.get(null)).clear();
+    void setUp() throws Exception {
+
+        Method clearTable = Table.class.getDeclaredMethod("clearExtent");
+        clearTable.setAccessible(true);
+        clearTable.invoke(null);
+
         testDate = LocalDateTime.of(2025, 11, 12, 18, 30);
 
         availableTable = new Table(1, 4, TableStatus.AVAILABLE, testDate);
@@ -172,6 +174,5 @@ class TableTest {
             }
         }
         return false;
-        //test
     }
 }

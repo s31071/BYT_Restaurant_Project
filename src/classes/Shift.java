@@ -101,9 +101,12 @@ public class Shift implements Serializable {
         return numberOfPeopleNeeded;
     }
 
-    public static void addExtent(Shift shift) {
-        if (shift == null) {
+    public static void addExtent(Shift shift){
+        if(shift == null){
             throw new IllegalArgumentException("Shift cannot be null");
+        }
+        if(extent.contains(shift)){
+            throw new IllegalArgumentException("Such shift is already in data base");
         }
         extent.add(shift);
     }
@@ -116,11 +119,25 @@ public class Shift implements Serializable {
         extent.remove(shift);
     }
 
+    public static void clearExtent(){
+        extent.clear();
+    }
+
     public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
         objectOutputStream.writeObject(extent);
     }
 
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Shift>) objectInputStream.readObject();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

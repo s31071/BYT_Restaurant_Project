@@ -68,9 +68,6 @@ public class Order implements Serializable {
     }
 
     public void setDeliveryDriver(DeliveryDriver deliveryDriver) {
-//        if(deliveryDriver == null) {
-//            throw new NullPointerException("Invalid delivery driver");
-//        }
         this.deliveryDriver = deliveryDriver;
     }
 
@@ -117,10 +114,23 @@ public class Order implements Serializable {
     }
 
     public static void addExtent(Order order) {
-        if (order == null) {
+        if(order == null){
             throw new IllegalArgumentException("Order cannot be null");
         }
+        if(orders.contains(order)){
+            throw new IllegalArgumentException("Such order is already in data base");
+        }
         orders.add(order);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Order> getOrders() {
@@ -162,5 +172,9 @@ public class Order implements Serializable {
 
     public int getDishCount() {
         return dishes.size();
+    }
+
+    public static void clearExtent() {
+        orders.clear();
     }
 }

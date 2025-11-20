@@ -4,8 +4,7 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,13 +18,14 @@ public class ProductOrderTest {
 
     @BeforeEach
     void setup() throws Exception {
-        Field productExtent = Product.class.getDeclaredField("extent");
-        productExtent.setAccessible(true);
-        ((List<?>) productExtent.get(null)).clear();
 
-        Field orderExtent = ProductOrder.class.getDeclaredField("extent");
-        orderExtent.setAccessible(true);
-        ((List<?>) orderExtent.get(null)).clear();
+        Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
+        clearProduct.setAccessible(true);
+        clearProduct.invoke(null);
+
+        Method clearProductOrder = ProductOrder.class.getDeclaredMethod("clearExtent");
+        clearProductOrder.setAccessible(true);
+        clearProductOrder.invoke(null);
 
         p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 3.50);
         p2 = new Product(2, "Bread", 0.5, Category.BREAD, null, 2.00);

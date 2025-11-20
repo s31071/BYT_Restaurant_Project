@@ -56,10 +56,23 @@ public class Menu implements Serializable {
     }
 
     public static void addExtent(Menu menu) {
-        if (menu == null) {
+        if(menu == null){
             throw new IllegalArgumentException("Menu cannot be null");
         }
+        if(extent.contains(menu)){
+            throw new IllegalArgumentException("Such menu is already in data base");
+        }
         extent.add(menu);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Menu> getExtent() {
@@ -77,5 +90,9 @@ public class Menu implements Serializable {
     public static void readExtent(XMLDecoder objectInputStream)
             throws IOException, ClassNotFoundException {
         extent = (List<Menu>) objectInputStream.readObject();
+    }
+
+    public static void clearExtent() {
+        extent.clear();
     }
 }

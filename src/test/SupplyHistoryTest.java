@@ -4,7 +4,7 @@ import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,21 +21,21 @@ public class SupplyHistoryTest {
     @BeforeEach
     void setup() throws Exception {
 
-        Field prodExtent = Product.class.getDeclaredField("extent");
-        prodExtent.setAccessible(true);
-        ((List<?>) prodExtent.get(null)).clear();
+        Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
+        clearProduct.setAccessible(true);
+        clearProduct.invoke(null);
 
-        Field orderExtent = ProductOrder.class.getDeclaredField("extent");
-        orderExtent.setAccessible(true);
-        ((List<?>) orderExtent.get(null)).clear();
+        Method clearProductOrder = ProductOrder.class.getDeclaredMethod("clearExtent");
+        clearProductOrder.setAccessible(true);
+        clearProductOrder.invoke(null);
 
-        Field invoiceExtent = Invoice.class.getDeclaredField("extent");
-        invoiceExtent.setAccessible(true);
-        ((List<?>) invoiceExtent.get(null)).clear();
+        Method clearInvoice = Invoice.class.getDeclaredMethod("clearExtent");
+        clearInvoice.setAccessible(true);
+        clearInvoice.invoke(null);
 
-        Field supplyExtent = SupplyHistory.class.getDeclaredField("extent");
-        supplyExtent.setAccessible(true);
-        ((List<?>) supplyExtent.get(null)).clear();
+        Method clearSupplyHistory = SupplyHistory.class.getDeclaredMethod("clearExtent");
+        clearSupplyHistory.setAccessible(true);
+        clearSupplyHistory.invoke(null);
 
         Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
         Product p2 = new Product(2, "Bread", 0.5, Category.BREAD, null, 5.0);
@@ -135,9 +135,8 @@ public class SupplyHistoryTest {
     @Test
     void testGetExtentIsUnmodifiable() {
         SupplyHistory valid = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-
-        assertThrows(UnsupportedOperationException.class, () -> {SupplyHistory.getExtent().add(valid);
-        });
+        assertThrows(UnsupportedOperationException.class, () ->
+                SupplyHistory.getExtent().add(valid));
     }
 
     @Test

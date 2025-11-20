@@ -8,7 +8,7 @@ import classes.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,17 +25,18 @@ public class OrderTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        Field orderExtent = Order.class.getDeclaredField("orders");
-        orderExtent.setAccessible(true);
-        ((List<?>) orderExtent.get(null)).clear();
 
-        Field tableExtent = Table.class.getDeclaredField("extent");
-        tableExtent.setAccessible(true);
-        ((List<?>) tableExtent.get(null)).clear();
+        Method clearOrder = Order.class.getDeclaredMethod("clearExtent");
+        clearOrder.setAccessible(true);
+        clearOrder.invoke(null);
 
-        Field dishExtent = Dish.class.getDeclaredField("extent");
-        dishExtent.setAccessible(true);
-        ((List<?>) dishExtent.get(null)).clear();
+        Method clearTable = Table.class.getDeclaredMethod("clearExtent");
+        clearTable.setAccessible(true);
+        clearTable.invoke(null);
+
+        Method clearDish = Dish.class.getDeclaredMethod("clearExtent");
+        clearDish.setAccessible(true);
+        clearDish.invoke(null);
 
         testTimestamp = LocalDateTime.of(2025, 11, 12, 19, 30);
         testTable = new Table(1, 4, TableStatus.AVAILABLE, testTimestamp);

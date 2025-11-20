@@ -11,8 +11,8 @@ import java.io.IOException;
 public class Receipt extends Payment implements Serializable {
     private static List<Receipt> extent = new ArrayList<>();
 
-    public static final double service = 0.1; //cosntant value
-    public Double tip; //nullable
+    public static final double service = 0.1;
+    public Double tip;
 
     private Order order;
     private double sum;
@@ -54,6 +54,7 @@ public class Receipt extends Payment implements Serializable {
         this.order = order;
         setSum();
     }
+
     @Override
     public void setSum() {
         double base = order.getTotalPrice();
@@ -67,25 +68,24 @@ public class Receipt extends Payment implements Serializable {
         return sum;
     }
 
-    public static void addExtent(Receipt newReceipt) {
-        if (newReceipt == null) {
+    public static void addExtent(Receipt receipt) {
+        if(receipt == null){
             throw new IllegalArgumentException("Receipt cannot be null");
         }
-
-        for (Receipt existingReceipt : extent) {
-            boolean sameOrder = existingReceipt.order.equals(newReceipt.order);
-
-            boolean sameTip = (existingReceipt.tip == null && newReceipt.tip == null)
-                    || (existingReceipt.tip != null && newReceipt.tip != null && existingReceipt.tip.equals(newReceipt.tip));
-
-            boolean sameMethod = existingReceipt.getMethod() == newReceipt.getMethod();
-
-            if (sameOrder && sameTip && sameMethod) {
-                throw new IllegalArgumentException("This receipt already exists in extent");
-            }
+        if(extent.contains(receipt)){
+            throw new IllegalArgumentException("Such receipt is already in data base");
         }
+        extent.add(receipt);
+    }
 
-        extent.add(newReceipt);
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
     public static List<Receipt> getExtent() {
