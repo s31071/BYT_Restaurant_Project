@@ -130,4 +130,22 @@ public class ProductOrderTest {
         assertEquals(3.0, order.getTotalWeight());
         assertEquals(9.50, order.getTotalSum());
     }
+
+
+    @Test
+    void testClearExtentWorksProperly() throws Exception {
+        ProductOrder o1 = new ProductOrder(List.of(p1));
+        ProductOrder o2 = new ProductOrder(List.of(p2));
+
+        assertEquals(3, ProductOrder.getExtent().size());
+        assertTrue(ProductOrder.getExtent().contains(order));
+        assertTrue(ProductOrder.getExtent().contains(o1));
+        assertTrue(ProductOrder.getExtent().contains(o2));
+
+        Method clearProductOrder = ProductOrder.class.getDeclaredMethod("clearExtent");
+        clearProductOrder.setAccessible(true);
+        clearProductOrder.invoke(null);
+
+        assertEquals(0, ProductOrder.getExtent().size());
+    }
 }

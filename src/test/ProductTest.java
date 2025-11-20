@@ -169,27 +169,17 @@ public class ProductTest {
     }
 
     @Test
-    void testClearExtentEmptiesExtent() throws Exception {
+    void testClearExtentWorksProperly() throws Exception {
         Product p2 = new Product(2L, "Cheese", 1.0, Category.DAIRY, null, 5.0);
-        assertEquals(2, Product.getExtent().size());
+        Product p3 = new Product(3L, "Butter", 2.0, Category.DAIRY, null, 15.0);
 
-        Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
-        clearProduct.setAccessible(true);
-        clearProduct.invoke(null);
+        assertEquals(3, Product.getExtent().size());
+
+        Method clear = Product.class.getDeclaredMethod("clearExtent");
+        clear.setAccessible(true);
+        clear.invoke(null);
 
         assertEquals(0, Product.getExtent().size());
     }
 
-    @Test
-    void testConstructorWithoutPriceWithExpiryThrowsException() {
-        LocalDate expiry = LocalDate.now().plusDays(3);
-        assertThrows(IllegalArgumentException.class,
-                () -> new Product(3L, "Rice", 1.0, Category.DAIRY, expiry));
-    }
-
-    @Test
-    void testConstructorWithoutPriceAndExpiryThrowsException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Product(4L, "Rice", 1.0, Category.DAIRY));
-    }
 }

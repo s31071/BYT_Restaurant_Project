@@ -199,4 +199,20 @@ public class InvoiceTest {
         assertTrue(Invoice.getExtent().contains(i1));
         assertTrue(Invoice.getExtent().contains(i2));
     }
+
+    @Test
+    void testClearExtentWorksProperly() throws Exception {
+        Invoice i1 = new Invoice(PaymentMethod.CASH, 300, 333333333, "Adam", address, productOrder);
+        Invoice i2 = new Invoice(PaymentMethod.CARD, 400, 444444444, "Eva", address, newProductOrder);
+
+        assertEquals(3, Invoice.getExtent().size());
+        assertTrue(Invoice.getExtent().contains(i1));
+        assertTrue(Invoice.getExtent().contains(i2));
+
+        Method clearInvoice = Invoice.class.getDeclaredMethod("clearExtent");
+        clearInvoice.setAccessible(true);
+        clearInvoice.invoke(null);
+
+        assertEquals(0, Invoice.getExtent().size());
+    }
 }

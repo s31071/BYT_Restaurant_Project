@@ -154,4 +154,17 @@ public class SupplyHistoryTest {
         SupplyHistory.removeFromExtent(sh);
         assertFalse(SupplyHistory.getExtent().contains(sh));
     }
+    @Test
+    void testClearExtentWorksProperly() throws Exception {
+        SupplyHistory sh1 = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
+        SupplyHistory sh2 = new SupplyHistory(today.minusDays(1), SupplyStatus.ORDERED, invoice, productOrder);
+
+        assertEquals(3, SupplyHistory.getExtent().size());
+
+        Method clear = SupplyHistory.class.getDeclaredMethod("clearExtent");
+        clear.setAccessible(true);
+        clear.invoke(null);
+
+        assertEquals(0, SupplyHistory.getExtent().size());
+    }
 }

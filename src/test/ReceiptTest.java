@@ -195,4 +195,18 @@ public class ReceiptTest {
         assertTrue(Receipt.getExtent().contains(r1));
         assertTrue(Receipt.getExtent().contains(r2));
     }
+
+    @Test
+    void testClearExtentWorksProperly() throws Exception {
+        Receipt r1 = new Receipt(PaymentMethod.CARD, order50);
+        Receipt r2 = new Receipt(PaymentMethod.CASH, order100, Double.valueOf(5.0));
+
+        assertEquals(4, Receipt.getExtent().size());
+
+        Method clear = Receipt.class.getDeclaredMethod("clearExtent");
+        clear.setAccessible(true);
+        clear.invoke(null);
+
+        assertEquals(0, Receipt.getExtent().size());
+    }
 }
