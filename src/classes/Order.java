@@ -153,17 +153,34 @@ public class Order implements Serializable {
         if (dish == null) {
             throw new IllegalArgumentException("Dish cannot be null");
         }
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be positive");
+        }
+
         for (DishOrder dishOrder : dishes) {
             if (dishOrder.getDish().equals(dish)) {
                 dishOrder.setQuantity(dishOrder.getQuantity() + quantity);
                 return;
             }
         }
+
         dishes.add(new DishOrder(dish, quantity));
     }
 
     public void removeDish(Dish dish) {
-        dishes.remove(dish);
+        if (dish == null) return;
+
+        DishOrder toRemove = null;
+        for (DishOrder dishOrder : dishes) {
+            if (dishOrder.getDish().equals(dish)) {
+                toRemove = dishOrder;
+                break;
+            }
+        }
+
+        if (toRemove != null) {
+            dishes.remove(toRemove);
+        }
     }
 
     public List<DishOrder> getDishes() {
@@ -171,7 +188,13 @@ public class Order implements Serializable {
     }
 
     public boolean containsDish(Dish dish) {
-        return dishes.contains(dish);
+        if (dish == null) return false;
+        for (DishOrder dishOrder : dishes) {
+            if (dishOrder.getDish().equals(dish)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getDishCount() {
