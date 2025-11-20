@@ -125,4 +125,33 @@ public class InvoiceTest {
     void testConstructorNullPaymentMethodThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> new Invoice(null, 1, 123456789, "Emilia", address, productOrder));
     }
+
+    @Test
+    void testAddExtent() {
+        Invoice invoice1 = new Invoice(PaymentMethod.CASH, 1, 123456789, "Emilia", address, productOrder);
+        assertTrue(Invoice.getExtent().contains(invoice1));
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Invoice.addExtent(null);
+        });
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Invoice.getExtent().add(new Invoice(PaymentMethod.VOUCHER, 1, 123456789, "Emilia", address, productOrder));
+        });
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        Invoice invoiceToRemove = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+        assertTrue(Invoice.getExtent().contains(invoiceToRemove));
+
+        Invoice.removeFromExtent(invoiceToRemove);
+        assertFalse(Invoice.getExtent().contains(invoiceToRemove));
+    }
 }

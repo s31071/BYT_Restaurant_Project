@@ -1,5 +1,6 @@
 package test;
 
+import classes.Dish;
 import classes.Order;
 import classes.OrderStatus;
 import classes.Table;
@@ -7,7 +8,9 @@ import classes.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,14 +19,36 @@ public class OrderTest {
     private Order dineInOrder;
     private Table testTable;
     private LocalDateTime testTimestamp;
+    private Dish pizza;
+    private Dish pasta;
+    private Dish salad;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
+        Field orderExtent = Order.class.getDeclaredField("orders");
+        orderExtent.setAccessible(true);
+        ((List<?>) orderExtent.get(null)).clear();
+
+        Field dishesInOrders = Order.class.getDeclaredField("dishes");
+        dishesInOrders.setAccessible(true);
+        ((List<?>) dishesInOrders.get(null)).clear();
+
+        Field tableExtent = Table.class.getDeclaredField("extent");
+        tableExtent.setAccessible(true);
+        ((List<?>) tableExtent.get(null)).clear();
+
+        Field dishExtent = Dish.class.getDeclaredField("extent");
+        dishExtent.setAccessible(true);
+        ((List<?>) dishExtent.get(null)).clear();
+
         testTimestamp = LocalDateTime.of(2025, 11, 12, 19, 30);
         testTable = new Table(1, 4, TableStatus.AVAILABLE, testTimestamp);
 
-        dineInOrder = new Order(1, 4, OrderStatus.TAKEN, 3, testTimestamp, testTable);
+        pizza = new Dish("Pizza", 12.99);
+        pasta = new Dish("Pasta", 10.50);
+        salad = new Dish("Salad", 7.99);
 
+        dineInOrder = new Order(1, 4, OrderStatus.TAKEN, 3, testTimestamp, testTable);
     }
 
     @Test
@@ -34,16 +59,13 @@ public class OrderTest {
         assertEquals(testTable, dineInOrder.getTable());
         assertNotNull(dineInOrder.getTimestamp());
     }
-    @Test
-    void testFullConstructorIgnoresTimestampParameter() {
-        LocalDateTime beforeCreation = LocalDateTime.now();
-        Order order = new Order(100, 2, OrderStatus.TAKEN, 1,
-                LocalDateTime.of(2020, 1, 1, 0, 0), testTable);
-        LocalDateTime afterCreation = LocalDateTime.now();
 
-        assertTrue(order.getTimestamp().isAfter(beforeCreation.minusSeconds(1)));
-        assertTrue(order.getTimestamp().isBefore(afterCreation.plusSeconds(1)));
+    @Test
+    void testConstructorAddsToExtent() {
+        assertEquals(1, Order.getOrders().size());
+        assertTrue(Order.getOrders().contains(dineInOrder));
     }
+
     @Test
     void testGetId() {
         assertEquals(1, dineInOrder.getId());
@@ -83,37 +105,214 @@ public class OrderTest {
     }
 
     @Test
-    void testGetTotalPrice() {
-        assertEquals(0.0, dineInOrder.getTotalPrice(), 0.001);
-    }
-    @Test
-    void testConstructorWithZeroPeople() {
-        Order order = new Order(10, 0, OrderStatus.TAKEN, 1, LocalDateTime.now(), testTable);
-        assertEquals(0, order.getNumberOfPeople());
+    void testSetStatus() {
+        dineInOrder.setStatus(OrderStatus.IN_PREPARATION);
+        assertEquals(OrderStatus.IN_PREPARATION, dineInOrder.getStatus());
     }
 
     @Test
-    void testConstructorWithNegativePeople() {
-        Order order = new Order(10, -5, OrderStatus.TAKEN, 1, LocalDateTime.now(), testTable);
-        assertEquals(-5, order.getNumberOfPeople());
+    void testSetStatusNull() {
+        assertThrows(NullPointerException.class, () -> {
+            dineInOrder.setStatus(null);
+        });
     }
 
     @Test
-    void testConstructorWithZeroQuantity() {
-        Order order = new Order(10, 2, OrderStatus.TAKEN, 0, LocalDateTime.now(), testTable);
-        assertNotNull(order);
+    void testSetTable() {
+        Table newTable = new Table(2, 6, TableStatus.AVAILABLE, testTimestamp);
+        dineInOrder.setTable(newTable);
+        assertEquals(newTable, dineInOrder.getTable());
     }
 
     @Test
-    void testConstructorWithNegativeQuantity() {
-        Order order = new Order(10, 2, OrderStatus.TAKEN, -3, LocalDateTime.now(), testTable);
-        assertNotNull(order);
+    void testSetTableNull() {
+        assertThrows(NullPointerException.class, () -> {
+            dineInOrder.setTable(null);
+        });
+    }
+
+    @Test
+    void testUpdateOrderStatus() {
+        dineInOrder.updateOrderStatus(OrderStatus.READY);
+        assertEquals(OrderStatus.READY, dineInOrder.getStatus());
     }
 
     @Test
     void testConstructorWithNullTable() {
-        Order order = new Order(10, 2, OrderStatus.TAKEN, 1, testTimestamp, null);
-        assertNull(order.getTable());
+        assertThrows(NullPointerException.class, () -> {
+            new Order(0, 0, OrderStatus.TAKEN, 0, testTimestamp, null);
+        });
+    }
+
+    @Test
+    void testConstructorWithNullStatus() {
+        assertThrows(NullPointerException.class, () -> {
+            new Order(0, 1, null, 1, testTimestamp, testTable);
+        });
+    }
+
+    @Test
+    void testAddDish() {
+        dineInOrder.addDish(pizza);
+
+        assertEquals(1, dineInOrder.getDishCount());
+        assertTrue(dineInOrder.containsDish(pizza));
+    }
+
+    @Test
+    void testAddMultipleDishes() {
+        dineInOrder.addDish(pizza);
+        dineInOrder.addDish(pasta);
+        dineInOrder.addDish(salad);
+
+        assertEquals(3, dineInOrder.getDishCount());
+        assertTrue(dineInOrder.containsDish(pizza));
+        assertTrue(dineInOrder.containsDish(pasta));
+        assertTrue(dineInOrder.containsDish(salad));
+    }
+
+    @Test
+    void testAddDuplicateDish() {
+        dineInOrder.addDish(pizza);
+        dineInOrder.addDish(pizza);
+
+        assertEquals(1, dineInOrder.getDishCount());
+    }
+
+    @Test
+    void testAddNullDish() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            dineInOrder.addDish(null);
+        });
+    }
+
+    @Test
+    void testRemoveDish() {
+        dineInOrder.addDish(pizza);
+        dineInOrder.addDish(pasta);
+
+        assertEquals(2, dineInOrder.getDishCount());
+
+        dineInOrder.removeDish(pizza);
+
+        assertEquals(1, dineInOrder.getDishCount());
+        assertFalse(dineInOrder.containsDish(pizza));
+        assertTrue(dineInOrder.containsDish(pasta));
+    }
+
+    @Test
+    void testRemoveNonExistentDish() {
+        dineInOrder.addDish(pizza);
+        dineInOrder.removeDish(pasta);
+        assertEquals(1, dineInOrder.getDishCount());
+    }
+
+    @Test
+    void testGetDishes() {
+        dineInOrder.addDish(pizza);
+        dineInOrder.addDish(pasta);
+
+        List<Dish> dishes = dineInOrder.getDishes();
+
+        assertEquals(2, dishes.size());
+        assertTrue(dishes.contains(pizza));
+        assertTrue(dishes.contains(pasta));
+    }
+
+    @Test
+    void testGetDishesIsUnmodifiable() {
+        dineInOrder.addDish(pizza);
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            dineInOrder.getDishes().add(pasta);
+        });
+    }
+
+    @Test
+    void testContainsDish() {
+        dineInOrder.addDish(pizza);
+
+        assertTrue(dineInOrder.containsDish(pizza));
+        assertFalse(dineInOrder.containsDish(pasta));
+    }
+
+    @Test
+    void testGetDishCount() {
+        assertEquals(0, dineInOrder.getDishCount());
+
+        dineInOrder.addDish(pizza);
+        assertEquals(1, dineInOrder.getDishCount());
+
+        dineInOrder.addDish(pasta);
+        assertEquals(2, dineInOrder.getDishCount());
+    }
+
+    @Test
+    void testGetTotalPriceWithNoDishes() {
+        assertEquals(0.0, dineInOrder.getTotalPrice(), 0.001);
+    }
+
+    @Test
+    void testGetTotalPriceWithDishes() {
+        dineInOrder.addDish(pizza);
+        dineInOrder.addDish(pasta);
+        dineInOrder.addDish(salad);
+        assertEquals(31.48, dineInOrder.getTotalPrice(), 0.01);
+    }
+
+    @Test
+    void testGetTotalPriceIsStatic() {
+        Order order1 = new Order(2, 2, OrderStatus.TAKEN, 1, testTimestamp, testTable);
+        Order order2 = new Order(3, 3, OrderStatus.TAKEN, 1, testTimestamp, testTable);
+
+        order1.addDish(pizza);
+        order2.addDish(pasta);
+
+        assertEquals(23.49, dineInOrder.getTotalPrice(), 0.01);
+    }
+
+    @Test
+    void testAddExtent() {
+        Order newOrder = new Order(5, 2, OrderStatus.IN_PREPARATION, 1, testTimestamp, testTable);
+
+        assertEquals(2, Order.getOrders().size());
+        assertTrue(Order.getOrders().contains(newOrder));
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Order.addExtent(null);
+        });
+    }
+
+    @Test
+    void testGetOrdersIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Order.getOrders().add(dineInOrder);
+        });
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        assertTrue(Order.getOrders().contains(dineInOrder));
+
+        Order.removeFromExtent(dineInOrder);
+        assertFalse(Order.getOrders().contains(dineInOrder));
+    }
+
+    @Test
+    void testMultipleOrders() {
+        LocalDateTime time2 = LocalDateTime.of(2025, 11, 12, 20, 0);
+        LocalDateTime time3 = LocalDateTime.of(2025, 11, 12, 21, 0);
+
+        Order order2 = new Order(8, 2, OrderStatus.IN_PREPARATION, 2, time2, testTable);
+        Order order3 = new Order(9, 3, OrderStatus.READY, 3, time3, testTable);
+
+        assertEquals(3, Order.getOrders().size());
+        assertTrue(Order.getOrders().contains(dineInOrder));
+        assertTrue(Order.getOrders().contains(order2));
+        assertTrue(Order.getOrders().contains(order3));
     }
 
     @Test

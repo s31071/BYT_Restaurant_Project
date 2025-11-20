@@ -2,7 +2,9 @@ package test;
 import classes.Shift;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ShiftTest {
@@ -12,7 +14,10 @@ public class ShiftTest {
     private LocalDateTime testEndTime;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
+        Field shiftExtent = Shift.class.getDeclaredField("extent");
+        shiftExtent.setAccessible(true);
+        ((List<?>) shiftExtent.get(null)).clear();
         testDate = LocalDateTime.of(2025, 11, 12, 0, 0);
         testStartTime = LocalDateTime.of(2025, 11, 12, 8, 0);
         testEndTime = LocalDateTime.of(2025, 11, 12, 16, 0);
@@ -49,4 +54,57 @@ public class ShiftTest {
         shift.setNumberOfPeopleNeeded(6);
         assertEquals(6, shift.getNumberOfPeopleNeeded());
     }
+
+    @Test
+    void testAddExtent() {
+        LocalDateTime date = LocalDateTime.of(2025, 11, 13, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2025, 11, 13, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 11, 13, 18, 0);
+        Shift newShift = new Shift("Shift 2", date, start, end, 6);
+
+        assertEquals(2, Shift.getExtent().size());
+        assertTrue(Shift.getExtent().contains(newShift));
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Shift.addExtent(null);
+        });
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Shift.getExtent().add(shift);
+        });
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        assertTrue(Shift.getExtent().contains(shift));
+
+        Shift.removeFromExtent(shift);
+        assertFalse(Shift.getExtent().contains(shift));
+    }
+
+    @Test
+    void testMultipleShifts() {
+        LocalDateTime date2 = LocalDateTime.of(2025, 11, 13, 0, 0);
+        LocalDateTime start2 = LocalDateTime.of(2025, 11, 13, 10, 0);
+        LocalDateTime end2 = LocalDateTime.of(2025, 11, 13, 18, 0);
+
+        LocalDateTime date3 = LocalDateTime.of(2025, 11, 14, 0, 0);
+        LocalDateTime start3 = LocalDateTime.of(2025, 11, 14, 12, 0);
+        LocalDateTime end3 = LocalDateTime.of(2025, 11, 14, 20, 0);
+
+        Shift shift2 = new Shift("Shift 3", date2, start2, end2, 4);
+        Shift shift3 = new Shift("Shift 4", date3, start3, end3, 7);
+
+        assertEquals(3, Shift.getExtent().size());
+        assertTrue(Shift.getExtent().contains(shift));
+        assertTrue(Shift.getExtent().contains(shift2));
+        assertTrue(Shift.getExtent().contains(shift3));
+    }
+
 }

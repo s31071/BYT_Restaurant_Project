@@ -2,11 +2,13 @@ package test;
 
 import classes.Category;
 import classes.Product;
+import classes.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -137,5 +139,48 @@ public class ProductTest {
     @Test
     void testConstructorPriceNegativeThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> new Product(10L, "Juice", 1.5, Category.BEVERAGES, null, -3.0));
+    }
+
+
+    @Test
+    void testAddExtent() {
+        LocalDateTime timestamp = LocalDateTime.of(2025, 11, 13, 19, 0);
+        Product newProduct = new Product(5, "Juice", 1.0, Category.BEVERAGES);
+
+        assertTrue(Product.getExtent().contains(newProduct));
+        assertEquals(2, Product.getExtent().size());
+    }
+
+    @Test
+    void testAddExtentWithNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Product.addExtent(null);
+        });
+    }
+
+    @Test
+    void testGetExtentIsUnmodifiable() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Product.getExtent().add(product);
+        });
+    }
+
+    @Test
+    void testRemoveFromExtent() {
+        assertTrue(Product.getExtent().contains(product));
+
+        Product.removeFromExtent(product);
+        assertFalse(Product.getExtent().contains(product));
+    }
+
+    @Test
+    void testMultipleProducts() throws Exception {
+        Product product2 = new Product(2, "Milk", 3.0, Category.DAIRY);
+        Product product3 = new Product(4, "Bread", 4.0, Category.BREAD);
+
+        assertEquals(3, Product.getExtent().size());
+        assertTrue(Product.getExtent().contains(product));
+        assertTrue(Product.getExtent().contains(product2));
+        assertTrue(Product.getExtent().contains(product3));
     }
 }
