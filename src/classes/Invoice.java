@@ -16,21 +16,27 @@ public class Invoice extends Payment implements Serializable {
     public String name;
     private Address address;
     private ProductOrder productOrder;
+    private double sum;
 
-    public Invoice(PaymentMethod method, long ID, long taxIdentificationNumber, String name, Address address, ProductOrder productOrder) {
+    public Invoice(PaymentMethod method, long ID, long taxIdentificationNumber, String name,
+                   Address address, ProductOrder productOrder) {
         super(method);
         setID(ID);
         setTaxIdentificationNumber(taxIdentificationNumber);
         setName(name);
         setAddress(address);
         setProductOrder(productOrder);
+        setSum();
         addExtent(this);
     }
 
     @Override
-    public double getSum() {
-        if (productOrder == null) return 0;
-        return 0;
+    public void setSum() {
+        double value = 0.0;
+        if (productOrder != null) {
+            value = productOrder.getTotalSum();
+        }
+        this.sum = value;   // sum is inherited from Payment
     }
 
     public long getID() {
@@ -86,9 +92,13 @@ public class Invoice extends Payment implements Serializable {
             throw new IllegalArgumentException("ProductOrder cannot be empty");
         }
         this.productOrder = productOrder;
+        setSum();
     }
 
-
+    @Override
+    public double getSum() {
+        return sum;
+    }
 
     public static void addExtent(Invoice newInvoice) {
         if (newInvoice == null) {
@@ -97,13 +107,9 @@ public class Invoice extends Payment implements Serializable {
 
         for (Invoice existingInvoice : extent) {
             boolean sameName = existingInvoice.name.equals(newInvoice.name);
-
             boolean sameTIN = existingInvoice.taxIdentificationNumber == newInvoice.taxIdentificationNumber;
-
             boolean sameAddress = existingInvoice.address.equals(newInvoice.address);
-
             boolean sameProductOrder = existingInvoice.productOrder.equals(newInvoice.productOrder);
-
             boolean sameMethod = existingInvoice.getMethod() == newInvoice.getMethod();
 
             if (sameName && sameTIN && sameAddress && sameProductOrder && sameMethod) {
