@@ -135,4 +135,8 @@ public class SupplyHistory implements Serializable {
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<SupplyHistory>) objectInputStream.readObject();
     }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
 }

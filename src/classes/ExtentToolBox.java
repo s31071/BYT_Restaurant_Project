@@ -12,7 +12,6 @@ public class ExtentToolBox {
         try (XMLEncoder encoder = new XMLEncoder(
                 new BufferedOutputStream(new FileOutputStream(allExtentFile)))) {
 
-            Address.writeExtent(encoder);
             Cook.writeExtent(encoder);
             Customer.writeExtent(encoder);
             DeliveryDriver.writeExtent(encoder);
@@ -40,7 +39,6 @@ public class ExtentToolBox {
         try (XMLDecoder decoder = new XMLDecoder(
                 new BufferedInputStream(new FileInputStream(allExtentFile)))) {
 
-            Address.readExtent(decoder);
             Cook.readExtent(decoder);
             Customer.readExtent(decoder);
             DeliveryDriver.readExtent(decoder);

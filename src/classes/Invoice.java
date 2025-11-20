@@ -135,4 +135,8 @@ public class Invoice extends Payment implements Serializable {
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Invoice>) objectInputStream.readObject();
     }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
 }

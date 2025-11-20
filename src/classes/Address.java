@@ -14,8 +14,6 @@ import java.util.Objects;
 
 public class Address implements Serializable {
 
-    private static List<Address> extent = new ArrayList<>();
-
     private String street;
     private String city;
     private String postalCode;
@@ -26,7 +24,6 @@ public class Address implements Serializable {
         setCity(city);
         setPostalCode(postalCode);
         setCountry(country);
-        addExtent(this);
     }
 
     public String getStreet() {
@@ -71,29 +68,6 @@ public class Address implements Serializable {
             throw new IllegalArgumentException("Country cannot be empty");
         }
         this.country = country;
-    }
-
-    public static void addExtent(Address address) {
-        if (address == null) {
-            throw new IllegalArgumentException("Address cannot be null");
-        }
-        extent.add(address);
-    }
-
-    public static List<Address> getExtent() {
-        return Collections.unmodifiableList(extent);
-    }
-
-    public static void removeFromExtent(Address address) {
-        extent.remove(address);
-    }
-
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
-    }
-
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<Address>) objectInputStream.readObject();
     }
 
     @Override

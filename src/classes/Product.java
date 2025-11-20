@@ -145,4 +145,8 @@ public class Product implements Serializable {
     public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Product>) objectInputStream.readObject();
     }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
 }

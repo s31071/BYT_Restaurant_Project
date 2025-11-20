@@ -122,4 +122,8 @@ public class ProductOrder implements Serializable {
     public static void readExtent(XMLDecoder in) throws java.io.IOException, ClassNotFoundException {
         extent = (List<ProductOrder>) in.readObject();
     }
+
+    public static void clearExtent(){
+        extent.clear();
+    }
 }

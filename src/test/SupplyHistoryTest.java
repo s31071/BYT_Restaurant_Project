@@ -20,9 +20,6 @@ public class SupplyHistoryTest {
 
     @BeforeEach
     void setup() throws Exception {
-        Field addrExtent = Address.class.getDeclaredField("extent");
-        addrExtent.setAccessible(true);
-        ((List<?>) addrExtent.get(null)).clear();
 
         Field prodExtent = Product.class.getDeclaredField("extent");
         prodExtent.setAccessible(true);
