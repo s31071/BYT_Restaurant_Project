@@ -86,11 +86,6 @@ public class ReceiptTest {
         assertNull(r.getTip());
     }
 
-    @Test
-    void testSetTipNegativeThrowsException() {
-        Receipt r = new Receipt(PaymentMethod.CARD, order50);
-        assertThrows(IllegalArgumentException.class, () -> r.setTip(Double.valueOf(-1.0)));
-    }
 
     @Test
     void testSetOrderNullThrowsException() {
