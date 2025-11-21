@@ -15,6 +15,8 @@ public class Waiter extends Employee implements Serializable {
     public WorkwearSize workwearSize;
     public double maximumTables;
 
+    public Waiter(){}
+
     public Waiter(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, WorkwearSize workwearSize, double maximumTables) {
         super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
         setWorkwearSize(workwearSize);

@@ -18,6 +18,7 @@ public class Reservation implements Serializable {
     private LocalDateTime timestamp;
     private ReservationStatus status;
 
+    public Reservation(){}
     public Reservation(int id, String nameOfThePerson, LocalDateTime timestamp, ReservationStatus status) {
         setId(id);
         setNameOfThePerson(nameOfThePerson);

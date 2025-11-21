@@ -18,12 +18,15 @@ public class Invoice extends Payment implements Serializable {
     private ProductOrder productOrder;
     private double sum;
 
+    public Invoice(){}
+
     public Invoice(PaymentMethod method, long ID, long taxIdentificationNumber, String name,
-                   Address address, ProductOrder productOrder) {
+                   String street, String city, String postalCode, String country, ProductOrder productOrder) {
         super(method);
         setID(ID);
         setTaxIdentificationNumber(taxIdentificationNumber);
         setName(name);
+        Address address = new Address(street, city, postalCode, country);
         setAddress(address);
         setProductOrder(productOrder);
         setSum();

@@ -14,6 +14,7 @@ public class ProductOrder implements Serializable {
     private double totalWeight;
     private double totalSum;
 
+    public ProductOrder(){}
     public ProductOrder(List<Product> products) {
         setProducts(products);
         setTotalWeight();

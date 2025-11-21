@@ -9,6 +9,7 @@ public abstract class Payment implements Serializable {
 
     private PaymentMethod method;
 
+    public Payment(){}
     public Payment(PaymentMethod method) {
         if (method == null) {
             throw new IllegalArgumentException("Payment method cannot be null");

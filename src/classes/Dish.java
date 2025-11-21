@@ -14,6 +14,7 @@ public class Dish implements Serializable {
     private String name;
     private double price;
 
+    public Dish(){}
     public Dish(String name, double price) {
         setName(name);
         setPrice(price);

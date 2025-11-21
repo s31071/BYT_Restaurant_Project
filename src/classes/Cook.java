@@ -13,6 +13,8 @@ public class Cook extends Employee implements Serializable {
     private double yearsOfExperience;
     private String title;
     private String specialization;
+
+    public Cook(){}
     public Cook(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, double yearsOfExperience, String title, String specialization) {
         super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
         setYearsOfExperience(yearsOfExperience);

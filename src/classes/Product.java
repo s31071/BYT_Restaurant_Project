@@ -19,6 +19,7 @@ public class Product implements Serializable {
     public Category category;
     public double price;
 
+    public Product(){}
     public Product(long ID, String name, double weight, Category category, LocalDate expiryDate, double price) {
         setID(ID);
         setName(name);

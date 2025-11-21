@@ -25,6 +25,7 @@ public class Receipt extends Payment implements Serializable {
         addExtent(this);
     }
 
+    public Receipt(){}
     public Receipt(PaymentMethod method, Order order) {
         this(method, order, null);
     }

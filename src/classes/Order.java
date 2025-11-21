@@ -20,6 +20,7 @@ public class Order implements Serializable {
     private Table table;
     private DeliveryDriver deliveryDriver;
 
+    public Order(){}
     public Order(int id, int numberOfPeople, OrderStatus status, LocalDateTime timestamp, Table table) {
         setId(id);
         setNumberOfPeople(numberOfPeople);

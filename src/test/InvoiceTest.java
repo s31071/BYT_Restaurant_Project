@@ -44,7 +44,7 @@ public class InvoiceTest {
         address = new Address("Koszykowa", "Warsaw", "12345", "Poland");
         newAddress = new Address("Koszykowa", "Warsaw", "00-001", "Poland");
 
-        invoice = new Invoice(PaymentMethod.CARD, 10, 123456789, "Emilia", address, productOrder);
+        invoice = new Invoice(PaymentMethod.CARD, 10, 123456789, "Emilia", "Koszykowa", "Warsaw", "12345", "Poland", productOrder);
     }
 
     @Test
@@ -119,28 +119,23 @@ public class InvoiceTest {
         assertThrows(IllegalArgumentException.class, () -> invoice.setProductOrder(null));
     }
 
-    @Test
-    void testConstructorNullAddressThrowsException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, "Emilia", null, productOrder));
-    }
 
     @Test
     void testConstructorNullProductOrderThrowsException() {
         assertThrows(IllegalArgumentException.class,
-                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, "Emilia", address, null));
+                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, "Emilia", "Koszykowa", "Warsaw", "12345", "Poland", null));
     }
 
     @Test
     void testConstructorNullNameThrowsException() {
         assertThrows(IllegalArgumentException.class,
-                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, null, address, productOrder));
+                () -> new Invoice(PaymentMethod.CARD, 20, 999999999, null, "Koszykowa", "Warsaw", "12345", "Poland", productOrder));
     }
 
     @Test
     void testConstructorNullPaymentMethodThrowsException() {
         assertThrows(IllegalArgumentException.class,
-                () -> new Invoice(null, 20, 999999999, "Emilia", address, productOrder));
+                () -> new Invoice(null, 20, 999999999, "Emilia", "Koszykowa", "Warsaw", "12345", "Poland", productOrder));
     }
 
     @Test
@@ -156,7 +151,7 @@ public class InvoiceTest {
 
     @Test
     void testAddExtent() {
-        Invoice invoice1 = new Invoice(PaymentMethod.CASH, 30, 555555555, "Anna", newAddress, newProductOrder);
+        Invoice invoice1 = new Invoice(PaymentMethod.CASH, 30, 555555555, "Anna", "Koszykowa", "Warsaw", "00-001", "Poland", newProductOrder);
         assertTrue(Invoice.getExtent().contains(invoice1));
         assertEquals(2, Invoice.getExtent().size());
     }
@@ -173,7 +168,7 @@ public class InvoiceTest {
 
     @Test
     void testGetExtentIsUnmodifiable() {
-        Invoice valid = new Invoice(PaymentMethod.VOUCHER, 50, 888888888, "John", address, newProductOrder);
+        Invoice valid = new Invoice(PaymentMethod.VOUCHER, 50, 888888888, "John", "Koszykowa", "Warsaw", "12345", "Poland", newProductOrder);
         assertThrows(UnsupportedOperationException.class, () ->
                 Invoice.getExtent().add(valid));
     }
@@ -181,7 +176,7 @@ public class InvoiceTest {
     @Test
     void testRemoveFromExtent() {
         Invoice invoiceToRemove =
-                new Invoice(PaymentMethod.CARD, 40, 999888777, "Mark", address, newProductOrder);
+                new Invoice(PaymentMethod.CARD, 40, 999888777, "Mark", "Koszykowa", "Warsaw", "12345", "Poland", newProductOrder);
 
         assertTrue(Invoice.getExtent().contains(invoiceToRemove));
 
@@ -191,8 +186,8 @@ public class InvoiceTest {
 
     @Test
     void testMultipleInvoices() {
-        Invoice i1 = new Invoice(PaymentMethod.CASH, 100, 111111111, "A", address, productOrder);
-        Invoice i2 = new Invoice(PaymentMethod.CARD, 200, 222222222, "B", address, newProductOrder);
+        Invoice i1 = new Invoice(PaymentMethod.CASH, 100, 111111111, "A", "Koszykowa", "Warsaw", "12345", "Poland", productOrder);
+        Invoice i2 = new Invoice(PaymentMethod.CARD, 200, 222222222, "B", "Koszykowa", "Warsaw", "12345", "Poland", newProductOrder);
 
         assertEquals(3, Invoice.getExtent().size());
         assertTrue(Invoice.getExtent().contains(invoice));
@@ -202,8 +197,8 @@ public class InvoiceTest {
 
     @Test
     void testClearExtentWorksProperly() throws Exception {
-        Invoice i1 = new Invoice(PaymentMethod.CASH, 300, 333333333, "Adam", address, productOrder);
-        Invoice i2 = new Invoice(PaymentMethod.CARD, 400, 444444444, "Eva", address, newProductOrder);
+        Invoice i1 = new Invoice(PaymentMethod.CASH, 300, 333333333, "Adam", "Koszykowa", "Warsaw", "12345", "Poland", productOrder);
+        Invoice i2 = new Invoice(PaymentMethod.CARD, 400, 444444444, "Eva", "Koszykowa", "Warsaw", "12345", "Poland", newProductOrder);
 
         assertEquals(3, Invoice.getExtent().size());
         assertTrue(Invoice.getExtent().contains(i1));

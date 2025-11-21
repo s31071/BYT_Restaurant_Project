@@ -12,6 +12,8 @@ public abstract class Employee extends Person implements Serializable {
 
     private double baseSalary = 31.5;
 
+    public Employee(){}
+
     public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract){
         super(name, surname, phoneNumber, street, city, postalCode, country, email);
         setEmploymentDate(employmentDate);
@@ -23,13 +25,6 @@ public abstract class Employee extends Person implements Serializable {
     public double getBaseSalary() {
         return baseSalary;
     }
-
-    /*private void ManageEmployee(ManageEmployeeType type){
-        switch (type){
-            case UPDATE -> {}
-            case DELETE  -> extent.remove(this);
-        }
-    }*/
 
     private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
         employee.setName(newName);

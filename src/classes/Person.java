@@ -10,6 +10,7 @@ public abstract class Person {
     public Address address;
     public String email;
 
+    public Person(){}
     public Person(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email) {
         setName(name);
         setSurname(surname);

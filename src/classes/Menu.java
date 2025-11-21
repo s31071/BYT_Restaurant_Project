@@ -15,6 +15,7 @@ public class Menu implements Serializable {
     private String name;
     private MenuType type;
 
+    public Menu(){}
     public Menu(String name, MenuType type) {
         setName(name);
         setType(type);

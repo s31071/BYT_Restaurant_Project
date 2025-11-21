@@ -168,4 +168,68 @@ public class ExtentToolBoxTest {
             }
         });
     }
+
+    @Test
+    void testSaveAndLoadExtents() throws Exception {
+        clearExtents();
+
+        new Customer("Jan", "Kowalski", "123456789",
+                "Street", "City", "00-001", "Poland", "jan@example.com");
+
+        new Product(11, "Milk", 2.0, Category.DAIRY, LocalDate.now().plusDays(2), 7.99);
+
+        List<?> beforeCustomer = getExtentOf(Customer.class);
+        List<?> beforeProduct = getExtentOf(Product.class);
+
+        assertNotNull(beforeCustomer);
+        assertNotNull(beforeProduct);
+        assertEquals(1, beforeCustomer.size());
+        assertEquals(1, beforeProduct.size());
+
+        ExtentToolBox.saveAllExtents();
+
+        clearExtents();
+
+        List<?> emptyCustomer = getExtentOf(Customer.class);
+        List<?> emptyProduct = getExtentOf(Product.class);
+
+        assertNotNull(emptyCustomer);
+        assertNotNull(emptyProduct);
+        assertEquals(0, emptyCustomer.size());
+        assertEquals(0, emptyProduct.size());
+
+        ExtentToolBox.loadAllExtents();
+
+        List<?> afterCustomer = getExtentOf(Customer.class);
+        List<?> afterProduct = getExtentOf(Product.class);
+
+        assertNotNull(afterCustomer);
+        assertNotNull(afterProduct);
+        assertEquals(1, afterCustomer.size());
+        assertEquals(1, afterProduct.size());
+    }
+
+    @Test
+    void testMultipleExtentsSavedAndLoaded() throws Exception {
+        clearExtents();
+
+        new Customer("Adam", "Nowak", "987654321",
+                "Long", "Town", "01-234", "Poland", "asd@gmail.com");
+
+        new Supplier("Ewa", "Nowak", "555444333",
+                "Road", "City", "02-222", "Poland", "ewa@gmail.com",
+                "SupplyCo", Category.MEAT, 20.0);
+        new Waiter("Tom", "Wait", "333222111", "Street", "Village", "00-050", "Poland", "some@email.com", LocalDate.now(), Contract.MANDATE_CONTRACT, WorkwearSize.M,10);
+
+        ExtentToolBox.saveAllExtents();
+
+        clearExtents();
+
+        ExtentToolBox.loadAllExtents();
+
+        assertEquals(1, getExtentOf(Customer.class).size());
+        assertEquals(1, getExtentOf(Supplier.class).size());
+        assertEquals(1, getExtentOf(Waiter.class).size());
+    }
+
 }

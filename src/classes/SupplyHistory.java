@@ -19,6 +19,7 @@ public class SupplyHistory implements Serializable {
     private ProductOrder productOrder;
     private SupplyStatus status;
 
+    public SupplyHistory(){}
     public SupplyHistory(LocalDate date, SupplyStatus status, Invoice invoice, ProductOrder productOrder) {
         setDate(date);
         setInvoice(invoice);

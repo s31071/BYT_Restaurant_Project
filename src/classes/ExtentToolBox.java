@@ -3,6 +3,7 @@ package classes;
 import java.io.*;
 import java.beans.XMLEncoder;
 import java.beans.XMLDecoder;
+import java.time.LocalDate;
 
 public class ExtentToolBox {
 
@@ -11,6 +12,22 @@ public class ExtentToolBox {
     public static void saveAllExtents() throws IOException {
         try (XMLEncoder encoder = new XMLEncoder(
                 new BufferedOutputStream(new FileOutputStream(allExtentFile)))) {
+
+            encoder.setPersistenceDelegate(
+                    java.time.LocalDate.class,
+                    new java.beans.PersistenceDelegate() {
+                        @Override
+                        protected java.beans.Expression instantiate(Object obj, java.beans.Encoder enc) {
+                            LocalDate date = (LocalDate) obj;
+                            return new java.beans.Expression(
+                                    date,
+                                    LocalDate.class,
+                                    "of",
+                                    new Object[]{date.getYear(), date.getMonthValue(), date.getDayOfMonth()}
+                            );
+                        }
+                    }
+            );
 
             Cook.writeExtent(encoder);
             Customer.writeExtent(encoder);
@@ -35,6 +52,7 @@ public class ExtentToolBox {
             encoder.flush();
         }
     }
+
 
     public static void loadAllExtents() throws IOException, ClassNotFoundException {
         try (XMLDecoder decoder = new XMLDecoder(

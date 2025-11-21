@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SupplyHistoryTest {
 
-    private Address address;
     private ProductOrder productOrder;
     private Invoice invoice;
     private SupplyHistory supplyHistory;
@@ -41,8 +40,7 @@ public class SupplyHistoryTest {
         Product p2 = new Product(2, "Bread", 0.5, Category.BREAD, null, 5.0);
         productOrder = new ProductOrder(List.of(p1, p2));
 
-        address = new Address("Koszykowa", "Warsaw", "0000", "Poland");
-        invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", address, productOrder);
+        invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia", "Koszykowa", "Warsaw", "12345", "Poland", productOrder);
 
         today = LocalDate.now().minusDays(2);
 
@@ -98,8 +96,7 @@ public class SupplyHistoryTest {
         Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
         ProductOrder otherOrder = new ProductOrder(List.of(p3, p4));
 
-        Address otherAddress = new Address("Test", "City", "1111", "Poland");
-        Invoice otherInvoice = new Invoice(PaymentMethod.CARD, 2, 987654321, "Someone", otherAddress, otherOrder);
+        Invoice otherInvoice = new Invoice(PaymentMethod.CARD, 2, 987654321, "Someone", "Test", "City", "1111", "Poland", otherOrder);
 
         assertThrows(IllegalArgumentException.class, () ->
                 new SupplyHistory(today, SupplyStatus.DELIVERED, otherInvoice, otherOrder));

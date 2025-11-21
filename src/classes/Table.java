@@ -17,6 +17,7 @@ public class Table implements Serializable {
     //tą hash mape tzreba wywalić i użyć extent, ale to już usisz sama sobie dostosować, bo ja nie chce nic zepsuć
     private HashMap<LocalDateTime,Order> orders;
 
+    public Table(){}
     public Table(int number, int numberOfSeats, TableStatus status, LocalDateTime date) {
         setNumber(number);
         setNumberOfSeats(numberOfSeats);

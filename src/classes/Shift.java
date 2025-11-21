@@ -18,6 +18,7 @@ public class Shift implements Serializable {
     private LocalDateTime endTime;
     private int numberOfPeopleNeeded;
 
+    public Shift(){}
     public Shift(String title, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, int numberOfPeopleNeeded) {
         setTitle(title);
         setDate(date);

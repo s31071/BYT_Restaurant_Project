@@ -11,7 +11,8 @@ public class DishOrder implements Serializable {
     private Dish dish;
     private int quantity;
     private static List<DishOrder> extent = new ArrayList<>();
-    
+
+    public DishOrder(){}
     public DishOrder(Dish dish, int quantity) {
         this.dish = dish;
         this.quantity = quantity;
