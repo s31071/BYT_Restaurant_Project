@@ -80,7 +80,9 @@ public class Order implements Serializable {
         this.deliveryDriver = deliveryDriver;
     }
 
-    private void finalizeOrder(){}
+    private void finalizeOrder(){
+        this.status = OrderStatus.SERVED;
+    }
 
     public LocalDateTime getTimestamp(){
         return timestamp;

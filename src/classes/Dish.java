@@ -50,7 +50,7 @@ public class Dish implements Serializable {
     }
 
     public static List<Dish> getDishList() {
-        return extent;
+        return Collections.unmodifiableList(extent);
     }
 
     public String getName() {
