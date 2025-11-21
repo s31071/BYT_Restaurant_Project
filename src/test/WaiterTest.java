@@ -49,7 +49,7 @@ class WaiterTest {
     void shouldThrowExceptionForNullWorkwearSize() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
-                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        "Poland", "tomaszlis@gmail.com", LocalDate.now(),
                         Contract.EMPLOYMENT_CONTRACT, null, 10));
     }
 
@@ -57,7 +57,7 @@ class WaiterTest {
     void shouldThrowExceptionForZeroMaximumTables() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
-                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        "Poland", "tomaszlis@gmail.com", LocalDate.now(),
                         Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 0));
     }
 
@@ -65,7 +65,7 @@ class WaiterTest {
     void shouldThrowExceptionForNegativeMaximumTables() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
-                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        "Poland", "tomaszlis@egmail.com", LocalDate.now(),
                         Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, -5));
     }
 
@@ -73,7 +73,7 @@ class WaiterTest {
     void shouldThrowExceptionForTooManyTables() {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
-                        "Poland", "tomasz@example.com", LocalDate.now(),
+                        "Poland", "tomaszlis@gmail.com", LocalDate.now(),
                         Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 30));
     }
 
@@ -106,7 +106,7 @@ class WaiterTest {
     @Test
     void testCalculateSalaryIncreasesWithYearsWorked() {
         Waiter w = new Waiter("Anna", "Kowal", "987654321", "Dluga", "Warszawa", "00-001",
-                "Poland", "anna@example.com", LocalDate.now().minusYears(5),
+                "Poland", "annakowal@gmail.com", LocalDate.now().minusYears(5),
                 Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 10);
 
         double salary = w.calculateSalary();
@@ -145,6 +145,63 @@ class WaiterTest {
         var extent = (java.util.List<Waiter>) getExtentMethod.invoke(null);
         assertEquals(1, extent.size());
         assertEquals(waiter, extent.get(0));
+    }
+
+    @Test
+    void testRemoveFromExtent() throws Exception {
+        Waiter w2 = new Waiter(
+                "Anna", "Szyr", "987654321",
+                "Lechicka", "Warszawa", "00-001", "Poland",
+                "annaszyr@gmail.com", LocalDate.now(),
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 8
+        );
+
+        Method getExtent = Waiter.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+
+        var extent = (java.util.List<Waiter>) getExtent.invoke(null);
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(w2));
+
+        Waiter.removeFromExtent(w2);
+
+        extent = (java.util.List<Waiter>) getExtent.invoke(null);
+        assertEquals(1, extent.size());
+        assertFalse(extent.contains(w2));
+        assertTrue(extent.contains(waiter));
+    }
+
+    @Test
+    void testClearExtent() throws Exception {
+        Waiter w2 = new Waiter(
+                "Eva", "Nowak", "555444333",
+                "Koszykowa", "Warszawa", "00-001", "Poland",
+                "s31431@gmail.com", LocalDate.now(),
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.L, 12
+        );
+
+        Waiter w3 = new Waiter(
+                "Adam", "Nowak", "222333444",
+                "Nowogrodzka", "Warszawa", "00-002", "Poland",
+                "adamnowak@gmail.com", LocalDate.now(),
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 14
+        );
+
+        Method getExtent = Waiter.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+
+        var extent = (java.util.List<Waiter>) getExtent.invoke(null);
+        assertEquals(3, extent.size());
+        assertTrue(extent.contains(w2));
+        assertTrue(extent.contains(w3));
+        assertTrue(extent.contains(waiter));
+
+        Method clearMethod = Waiter.class.getDeclaredMethod("clearExtent");
+        clearMethod.setAccessible(true);
+        clearMethod.invoke(null);
+
+        extent = (java.util.List<Waiter>) getExtent.invoke(null);
+        assertEquals(0, extent.size());
     }
 }
 

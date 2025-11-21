@@ -186,5 +186,54 @@ class DeliveryDriverTest {
         assertEquals(1, extent.size());
         assertEquals(driver, extent.get(0));
     }
+
+    @Test
+    void testRemoveFromExtent() throws Exception {
+        DeliveryDriver d2 = new DeliveryDriver(
+                "Eva", "Nowak", "555444333",
+                "Koszykowa", "Warszawa", "00-001", "Poland",
+                "eva@example.com", LocalDate.now(), Contract.B2B,
+                "Toyota", "WA12345", true
+        );
+
+        Method getExtent = DeliveryDriver.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+        var extent = (java.util.List<DeliveryDriver>) getExtent.invoke(null);
+
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(d2));
+
+        DeliveryDriver.removeFromExtent(d2);
+
+        extent = (java.util.List<DeliveryDriver>) getExtent.invoke(null);
+        assertEquals(1, extent.size());
+        assertFalse(extent.contains(d2));
+        assertTrue(extent.contains(driver));
+    }
+
+    @Test
+    void testClearExtent() throws Exception {
+        DeliveryDriver d2 = new DeliveryDriver(
+                "Eva", "Nowak", "555444333",
+                "Koszykowa", "Warszawa", "00-001", "Poland",
+                "s31431@pjwstk.pl", LocalDate.now(), Contract.B2B,
+                "Toyota", "WA12345", true
+        );
+
+        Method getExtent = DeliveryDriver.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+        var extent = (java.util.List<DeliveryDriver>) getExtent.invoke(null);
+
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(driver));
+        assertTrue(extent.contains(d2));
+
+        Method clearMethod = DeliveryDriver.class.getDeclaredMethod("clearExtent");
+        clearMethod.setAccessible(true);
+        clearMethod.invoke(null);
+
+        extent = (java.util.List<DeliveryDriver>) getExtent.invoke(null);
+        assertEquals(0, extent.size());
+    }
 }
 

@@ -125,4 +125,49 @@ class SupplierTest {
         assertEquals(1, extent.size());
         assertEquals(s, extent.get(0));
     }
+
+    @Test
+    void testRemoveFromExtent() throws Exception {
+        Supplier s2 = new Supplier(
+                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
+                "s31431@pjwstk.edu.pl", "GreenVeg", Category.VEGETABLES, 75.0
+        );
+
+        Method getExtent = Supplier.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+        var extent = (java.util.List<Supplier>) getExtent.invoke(null);
+
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(s2));
+
+        Supplier.removeFromExtent(s2);
+
+        extent = (java.util.List<Supplier>) getExtent.invoke(null);
+        assertEquals(1, extent.size());
+        assertFalse(extent.contains(s2));
+        assertTrue(extent.contains(s));
+    }
+    @Test
+    void testClearExtent() throws Exception {
+        Supplier s2 = new Supplier(
+                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
+                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
+        );
+
+        Method getExtent = Supplier.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+        var extent = (java.util.List<Supplier>) getExtent.invoke(null);
+
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(s));
+        assertTrue(extent.contains(s2));
+
+        Method clearMethod = Supplier.class.getDeclaredMethod("clearExtent");
+        clearMethod.setAccessible(true);
+        clearMethod.invoke(null);
+
+        extent = (java.util.List<Supplier>) getExtent.invoke(null);
+        assertEquals(0, extent.size());
+    }
+
 }

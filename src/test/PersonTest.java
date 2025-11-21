@@ -24,9 +24,9 @@ class PersonTest {
     @BeforeEach
     void setUp() {
         person1 = new TestPerson("Jan", "Kowalski", "123456789",
-                "Markowskiego", "Piaseczno", "05-500", "Poland", "jan@example.com");
+                "Markowskiego", "Piaseczno", "05-500", "Poland", "jankowalski@gmail.com");
         person2 = new TestPerson("Anna", "Nowak", "987654321",
-                "Markowskiego", "Piaseczno", "05-500", "Poland", "anna@example.com");
+                "Markowskiego", "Piaseczno", "05-500", "Poland", "annanowak@gmail.com");
         address = new Address("Markowskiego", "Piaseczno", "05-500", "Poland");
     }
 
@@ -36,7 +36,7 @@ class PersonTest {
         assertEquals("Kowalski", person1.getSurname());
         assertEquals("123456789", person1.getPhoneNumber());
         assertEquals(address, person1.getAddress());
-        assertEquals("jan@example.com", person1.getEmail());
+        assertEquals("jankowalski@gmail.com", person1.getEmail());
     }
 
     @Test

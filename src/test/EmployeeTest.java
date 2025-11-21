@@ -34,7 +34,7 @@ class EmployeeTest {
         hireDate = LocalDate.now().minusYears(5);
         employee = new TestEmployee("Jan", "Kowalski", "123456789",
                 "Markowskiego", "Piaseczno", "05-500", "Poland",
-                "jan@example.com", hireDate, Contract.EMPLOYMENT_CONTRACT);
+                "jankowalski@gmail.com", hireDate, Contract.EMPLOYMENT_CONTRACT);
 
         address = new Address("Markowskiego", "Piaseczno", "05-500", "Poland");
     }
@@ -45,7 +45,7 @@ class EmployeeTest {
         assertEquals("Kowalski", employee.getSurname());
         assertEquals("123456789", employee.getPhoneNumber());
         assertEquals(address, employee.getAddress());
-        assertEquals("jan@example.com", employee.getEmail());
+        assertEquals("jankowalski@gmail.com", employee.getEmail());
         assertEquals(hireDate, employee.getEmploymentDate());
         assertEquals(Contract.EMPLOYMENT_CONTRACT, employee.getContract());
     }
@@ -55,7 +55,7 @@ class EmployeeTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new TestEmployee("Jan", "Kowalski", "123456789",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "jan@example.com", null, Contract.EMPLOYMENT_CONTRACT));
+                        "jankowalski@gmail.com", null, Contract.EMPLOYMENT_CONTRACT));
     }
 
     @Test
@@ -65,7 +65,7 @@ class EmployeeTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new TestEmployee("Jan", "Kowalski", "123456789",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "jan@example.com", future, Contract.EMPLOYMENT_CONTRACT));
+                        "jankowalski@gmail.com", future, Contract.EMPLOYMENT_CONTRACT));
     }
 
     @Test
@@ -73,7 +73,7 @@ class EmployeeTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new TestEmployee("Jan", "Kowalski", "123456789",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "jan@example.com", hireDate, null));
+                        "jankowalski@gmail.com", hireDate, null));
     }
 
     @Test
@@ -113,7 +113,7 @@ class EmployeeTest {
                 "Nowak",
                 "987654321",
                 newAddress,
-                "adam@example.com",
+                "adamnowak@gmail.com",
                 newDate,
                 Contract.B2B
         );
@@ -122,7 +122,7 @@ class EmployeeTest {
         assertEquals("Nowak", employee.getSurname());
         assertEquals("987654321", employee.getPhoneNumber());
         assertEquals(newAddress, employee.getAddress());
-        assertEquals("adam@example.com", employee.getEmail());
+        assertEquals("adamnowak@gmail.com", employee.getEmail());
         assertEquals(newDate, employee.getEmploymentDate());
         assertEquals(Contract.B2B, employee.getContract());
     }

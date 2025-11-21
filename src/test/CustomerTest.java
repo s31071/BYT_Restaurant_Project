@@ -99,4 +99,51 @@ class CustomerTest {
         assertEquals(1, extent.size());
         assertEquals(c1, extent.get(0));
     }
+
+    @Test
+    void testRemoveFromExtent() throws Exception {
+        Customer c2 = new Customer(
+                "Eva", "Nowak", "555444333",
+                "Koszykowa", "Warszawa", "00-001", "Poland",
+                "eva@example.com"
+        );
+
+        Method getExtent = Customer.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+        var extent = (java.util.List<Customer>) getExtent.invoke(null);
+
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(c2));
+
+        Customer.removeFromExtent(c2);
+
+        extent = (java.util.List<Customer>) getExtent.invoke(null);
+        assertEquals(1, extent.size());
+        assertFalse(extent.contains(c2));
+        assertTrue(extent.contains(c1));
+    }
+
+    @Test
+    void testClearExtent() throws Exception {
+        Customer c2 = new Customer(
+                "Eva", "Nowak", "555444333",
+                "Koszykowa", "Warszawa", "00-001", "Poland",
+                "s31431@pjwstk.pl"
+        );
+
+        Method getExtent = Customer.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+        var extent = (java.util.List<Customer>) getExtent.invoke(null);
+
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(c1));
+        assertTrue(extent.contains(c2));
+
+        Method clearMethod = Customer.class.getDeclaredMethod("clearExtent");
+        clearMethod.setAccessible(true);
+        clearMethod.invoke(null);
+
+        extent = (java.util.List<Customer>) getExtent.invoke(null);
+        assertEquals(0, extent.size());
+    }
 }

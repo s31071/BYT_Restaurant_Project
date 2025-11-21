@@ -22,7 +22,7 @@ class CookTest {
 
         cook = new Cook("Michal", "Kowal", "111222333",
                 "Markowskiego", "Piaseczno", "05-500", "Poland",
-                "michal@example.com", LocalDate.now(), Contract.B2B,
+                "michal@gmail.com", LocalDate.now(), Contract.B2B,
                 8, "Head Chef", "French");
     }
     @Test
@@ -122,7 +122,7 @@ class CookTest {
                 () -> new Cook(
                         "Michal", "Kowal", "111222333",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "michal@example.com", LocalDate.now(), Contract.B2B,
+                        "michal@gmail.com", LocalDate.now(), Contract.B2B,
                         8, "Head Chef", "French"
                 )
         );
@@ -141,12 +141,69 @@ class CookTest {
         try {
             Cook duplicate = new Cook("Michal", "Kowal", "111222333",
                     "Markowskiego", "Piaseczno", "05-500", "Poland",
-                    "michal@example.com", LocalDate.now(), Contract.B2B,
+                    "michal@gmail.com", LocalDate.now(), Contract.B2B,
                     8, "Head Chef", "French");
         } catch (IllegalArgumentException ignored) {}
 
         var extent = (java.util.List<Cook>) getExtentMethod.invoke(null);
         assertEquals(1, extent.size());
         assertEquals(cook, extent.get(0));
+    }
+
+    @Test
+    void testRemoveFromExtentWorksProperly() throws Exception {
+        Cook c2 = new Cook(
+                "Adam", "Nowak", "999888777",
+                "Koszykowa", "Warszawa", "00-000", "Poland",
+                "s31431@pjwstk.edu.pl", LocalDate.now(), Contract.B2B,
+                4, "Sous Chef", "Italian"
+        );
+
+        Method getExtent = Cook.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+
+        var extent = (java.util.List<Cook>) getExtent.invoke(null);
+        assertEquals(2, extent.size());
+        assertTrue(extent.contains(c2));
+
+        Cook.removeFromExtent(c2);
+
+        extent = (java.util.List<Cook>) getExtent.invoke(null);
+        assertEquals(1, extent.size());
+        assertFalse(extent.contains(c2));
+        assertTrue(extent.contains(cook));
+    }
+
+    @Test
+    void testClearExtentWorksProperly() throws Exception {
+        Cook c2 = new Cook(
+                "Eva", "Nowak", "555444333",
+                "Koszykowa", "Warszawa", "00-001", "Poland",
+                "s31431@pjwstk.edu.pl", LocalDate.now(), Contract.B2B,
+                6, "Pastry Chef", "Desserts"
+        );
+
+        Cook c3 = new Cook(
+                "Adam", "Kowalski", "111555999",
+                "Nowogrodzka", "Warszawa", "00-002", "Poland",
+                "decemilka@gmail.com", LocalDate.now(), Contract.B2B,
+                3, "Junior Chef", "Breakfast"
+        );
+
+        Method getExtent = Cook.class.getDeclaredMethod("getExtent");
+        getExtent.setAccessible(true);
+
+        var extent = (java.util.List<Cook>) getExtent.invoke(null);
+        assertEquals(3, extent.size());
+        assertTrue(extent.contains(c2));
+        assertTrue(extent.contains(c3));
+        assertTrue(extent.contains(cook));
+
+        Method clear = Cook.class.getDeclaredMethod("clearExtent");
+        clear.setAccessible(true);
+        clear.invoke(null);
+
+        extent = (java.util.List<Cook>) getExtent.invoke(null);
+        assertEquals(0, extent.size());
     }
 }
