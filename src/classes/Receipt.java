@@ -35,6 +35,9 @@ public class Receipt extends Payment implements Serializable {
     }
 
     public void setTip(Double tip) {
+        if (tip != null && tip < 0) {
+            throw new IllegalArgumentException("Tip cannot be negative");
+        }
         this.tip = tip;
         setSum();
     }

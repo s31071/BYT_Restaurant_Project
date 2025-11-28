@@ -86,6 +86,31 @@ public class ReceiptTest {
         assertNull(r.getTip());
     }
 
+    @Test
+    void testSetTipNegativeThrowsException() {
+        Receipt r = new Receipt(PaymentMethod.CARD, order50);
+        assertThrows(IllegalArgumentException.class, () -> r.setTip(-1.0));
+    }
+
+    @Test
+    void testConstructorNegativeTipThrowsException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Receipt(PaymentMethod.CARD, order50, -5.0)
+        );
+    }
+
+    @Test
+    void testTipNullAllowedInConstructor() {
+        Receipt r = new Receipt(PaymentMethod.CARD, order50, null);
+        assertNull(r.getTip());
+    }
+
+    @Test
+    void testTipZeroAllowedInConstructor() {
+        Receipt r = new Receipt(PaymentMethod.CARD, order50, 0.0);
+        assertEquals(Double.valueOf(0.0), r.getTip());
+    }
+
 
     @Test
     void testSetOrderNullThrowsException() {
