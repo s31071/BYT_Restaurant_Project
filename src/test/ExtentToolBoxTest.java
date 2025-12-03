@@ -219,7 +219,7 @@ public class ExtentToolBoxTest {
         new Supplier("Ewa", "Nowak", "555444333",
                 "Road", "City", "02-222", "Poland", "ewa@gmail.com",
                 "SupplyCo", Category.MEAT, 20.0);
-        new Waiter("Tom", "Wait", "333222111", "Street", "Village", "00-050", "Poland", "some@email.com", LocalDate.now(), Contract.MANDATE_CONTRACT, WorkwearSize.M,10);
+        new Waiter("Tom", "Wait", "333222111", "Street", "Village", "00-050", "Poland", "some@email.com", LocalDate.now(), Contract.MANDATE_CONTRACT, WorkwearSize.M,10, null);
 
         ExtentToolBox.saveAllExtents();
 

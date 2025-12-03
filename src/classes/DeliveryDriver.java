@@ -21,8 +21,8 @@ public class DeliveryDriver extends Employee implements Serializable {
     private List<Order> orders;
 
     public DeliveryDriver(){}
-    public DeliveryDriver(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply) {
-        super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
+    public DeliveryDriver(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply, Employee manager) {
+        super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract, manager);
         setCarModel(carModel);
         setRegistrationNumber(registrationNumber);
         setBonusApply(bonusApply);

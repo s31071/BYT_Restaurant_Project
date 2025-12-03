@@ -5,6 +5,7 @@ import java.beans.XMLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class Shift implements Serializable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int numberOfPeopleNeeded;
+    public HashSet<Employee> employees;
 
     public Shift(){}
     public Shift(String title, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, int numberOfPeopleNeeded) {
@@ -27,6 +29,8 @@ public class Shift implements Serializable {
         setNumberOfPeopleNeeded(numberOfPeopleNeeded);
         addExtent(this);
     }
+
+
 
     private void manageShift(String action, int numberOfPeopleNeeded, LocalDateTime startTime, LocalDateTime endTime) {
         switch(action) {

@@ -19,7 +19,7 @@ class FullTimeTest {
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
         emp = new FullTime("Jan", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "jan@example.com",
-                LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT);
+                LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT, null);
     }
 
     @Test
@@ -57,17 +57,17 @@ class FullTimeTest {
     @Test
     void testCalculateSalaryB2BContract() {
         FullTime ft = new FullTime("Adam", "Nowak", "987654321", "Kwiatowa", "Warszawa", "00-001",
-                "Poland", "adam@example.com", LocalDate.of(2018, 1, 1), Contract.B2B);
+                "Poland", "adam@example.com", LocalDate.of(2018, 1, 1), Contract.B2B, null);
         assertTrue(ft.calculateSalary() > 0);
     }
 
     @Test
     void testCalculateSalaryIncreasesWithYearsWorked() {
         FullTime older = new FullTime("Anna", "Zielinska", "555666777", "Lesna", "Krakow", "30-001",
-                "Poland", "anna@example.com", LocalDate.of(2010, 1, 1), Contract.EMPLOYMENT_CONTRACT);
+                "Poland", "anna@example.com", LocalDate.of(2010, 1, 1), Contract.EMPLOYMENT_CONTRACT, null);
         double s1 = older.calculateSalary();
         FullTime newer = new FullTime("Piotr", "Lewandowski", "222333444", "Polna", "Gdansk", "80-001",
-                "Poland", "piotr@example.com", LocalDate.of(2023, 1, 1), Contract.EMPLOYMENT_CONTRACT);
+                "Poland", "piotr@example.com", LocalDate.of(2023, 1, 1), Contract.EMPLOYMENT_CONTRACT, null);
         double s2 = newer.calculateSalary();
         assertTrue(s1 > s2);
     }
@@ -75,7 +75,7 @@ class FullTimeTest {
     @Test
     void testConstructorAllFieldsSetCorrectly() {
         FullTime f = new FullTime("Kamil", "Kowalski", "111222333", "Dluga", "Lublin",
-                "20-001", "Poland", "kamil@example.com", LocalDate.of(2019, 5, 10), Contract.MANDATE_CONTRACT);
+                "20-001", "Poland", "kamil@example.com", LocalDate.of(2019, 5, 10), Contract.MANDATE_CONTRACT, null);
         assertEquals("Kamil", f.getName());
         assertEquals("Kowalski", f.getSurname());
         assertEquals("111222333", f.getPhoneNumber());
@@ -84,7 +84,7 @@ class FullTimeTest {
     @Test
     void testCalculateSalaryZeroIfJustEmployed() {
         FullTime f = new FullTime("Marek", "Nowak", "777888999", "Krotka", "Poznan",
-                "60-001", "Poland", "marek@example.com", LocalDate.now(), Contract.B2B);
+                "60-001", "Poland", "marek@example.com", LocalDate.now(), Contract.B2B, null);
         assertEquals(0, f.calculateSalary());
     }
     @Test
@@ -96,7 +96,7 @@ class FullTimeTest {
                 IllegalArgumentException.class,
                 () -> new FullTime(
                         "Jan", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "jan@example.com",
-                        LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT
+                        LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT, null
                 )
         );
 
@@ -113,7 +113,7 @@ class FullTimeTest {
 
         try {
             FullTime duplicate = new FullTime("Jan", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "jan@example.com",
-                    LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT);
+                    LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT, null);
         } catch (IllegalArgumentException ignored) {}
 
         var extent = (java.util.List<FullTime>) getExtentMethod.invoke(null);

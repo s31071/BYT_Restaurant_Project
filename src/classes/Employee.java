@@ -1,6 +1,7 @@
 package classes;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.io.Serializable;
 
@@ -9,15 +10,53 @@ public abstract class Employee extends Person implements Serializable {
     private double salary;
     private LocalDate employmentDate;
     private Contract contract;
-
     private double baseSalary = 31.5;
+
+    //reflex association
+    private Employee manager;
+    private HashSet<Employee> managedEmployees;
+
+    private HashSet<Shift> shiftsAssigned;
 
     public Employee(){}
 
-    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract){
+    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager){
         super(name, surname, phoneNumber, street, city, postalCode, country, email);
         setEmploymentDate(employmentDate);
         setContract(contract);
+
+        if(manager == null){
+            managedEmployees = new HashSet<>();
+        }
+        shiftsAssigned = new HashSet<>();
+    }
+
+    public void addWorkedInShift(Shift shift) throws Exception {
+        if(shift == null){
+            throw new Exception("Shift cannot be null");
+        }
+        shiftsAssigned.add(shift);
+        shift.employees.add(this);
+    }
+
+    public void removeWorkedInShift(Shift shift) throws Exception {
+        if(shift == null){
+            throw new Exception("Shift cannot be null");
+        }
+        shiftsAssigned.remove(shift);
+        shift.employees.remove(this);
+    }
+    public void setManager(Employee manager){
+        this.manager = manager;
+    }
+
+    public void addManagedEmployee(Employee managed) throws Exception {
+        if(manager == null){
+            managedEmployees.add(managed);
+            managed.setManager(this);
+        }else{
+            throw new Exception("An employee who already has manager cannot be a manager of any other employees");
+        }
     }
 
     protected abstract double calculateSalary();

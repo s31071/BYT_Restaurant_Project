@@ -23,7 +23,7 @@ class CookTest {
         cook = new Cook("Michal", "Kowal", "111222333",
                 "Markowskiego", "Piaseczno", "05-500", "Poland",
                 "michal@gmail.com", LocalDate.now(), Contract.B2B,
-                8, "Head Chef", "French");
+                8, "Head Chef", "French", null);
     }
     @Test
     void testSetYearsOfExperienceValid() {
@@ -123,7 +123,7 @@ class CookTest {
                         "Michal", "Kowal", "111222333",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
                         "michal@gmail.com", LocalDate.now(), Contract.B2B,
-                        8, "Head Chef", "French"
+                        8, "Head Chef", "French", null
                 )
         );
 
@@ -142,7 +142,7 @@ class CookTest {
             Cook duplicate = new Cook("Michal", "Kowal", "111222333",
                     "Markowskiego", "Piaseczno", "05-500", "Poland",
                     "michal@gmail.com", LocalDate.now(), Contract.B2B,
-                    8, "Head Chef", "French");
+                    8, "Head Chef", "French", null);
         } catch (IllegalArgumentException ignored) {}
 
         var extent = (java.util.List<Cook>) getExtentMethod.invoke(null);
@@ -156,7 +156,7 @@ class CookTest {
                 "Adam", "Nowak", "999888777",
                 "Koszykowa", "Warszawa", "00-000", "Poland",
                 "s31431@pjwstk.edu.pl", LocalDate.now(), Contract.B2B,
-                4, "Sous Chef", "Italian"
+                4, "Sous Chef", "Italian", null
         );
 
         Method getExtent = Cook.class.getDeclaredMethod("getExtent");
@@ -180,14 +180,14 @@ class CookTest {
                 "Eva", "Nowak", "555444333",
                 "Koszykowa", "Warszawa", "00-001", "Poland",
                 "s31431@pjwstk.edu.pl", LocalDate.now(), Contract.B2B,
-                6, "Pastry Chef", "Desserts"
+                6, "Pastry Chef", "Desserts", null
         );
 
         Cook c3 = new Cook(
                 "Adam", "Kowalski", "111555999",
                 "Nowogrodzka", "Warszawa", "00-002", "Poland",
                 "decemilka@gmail.com", LocalDate.now(), Contract.B2B,
-                3, "Junior Chef", "Breakfast"
+                3, "Junior Chef", "Breakfast", null
         );
 
         Method getExtent = Cook.class.getDeclaredMethod("getExtent");

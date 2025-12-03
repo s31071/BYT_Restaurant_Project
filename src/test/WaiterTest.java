@@ -19,7 +19,7 @@ class WaiterTest {
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
         waiter = new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "tomasz@example.com",
-                LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10);
+                LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10, null);
     }
 
     @Test
@@ -50,7 +50,7 @@ class WaiterTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
                         "Poland", "tomaszlis@gmail.com", LocalDate.now(),
-                        Contract.EMPLOYMENT_CONTRACT, null, 10));
+                        Contract.EMPLOYMENT_CONTRACT, null, 10, null));
     }
 
     @Test
@@ -58,7 +58,7 @@ class WaiterTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
                         "Poland", "tomaszlis@gmail.com", LocalDate.now(),
-                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 0));
+                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 0, null));
     }
 
     @Test
@@ -66,7 +66,7 @@ class WaiterTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
                         "Poland", "tomaszlis@egmail.com", LocalDate.now(),
-                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, -5));
+                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, -5, null));
     }
 
     @Test
@@ -74,7 +74,7 @@ class WaiterTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno", "05-500",
                         "Poland", "tomaszlis@gmail.com", LocalDate.now(),
-                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 30));
+                        Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 30, null));
     }
 
     @Test
@@ -107,7 +107,7 @@ class WaiterTest {
     void testCalculateSalaryIncreasesWithYearsWorked() {
         Waiter w = new Waiter("Anna", "Kowal", "987654321", "Dluga", "Warszawa", "00-001",
                 "Poland", "annakowal@gmail.com", LocalDate.now().minusYears(5),
-                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 10);
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 10, null);
 
         double salary = w.calculateSalary();
         assertTrue(salary > waiter.calculateSalary());
@@ -122,7 +122,7 @@ class WaiterTest {
                 IllegalArgumentException.class,
                 () -> new Waiter(
                         "Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "tomasz@example.com",
-                        LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10
+                        LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10, null
                 )
         );
 
@@ -139,7 +139,7 @@ class WaiterTest {
 
         try {
             Waiter duplicate = new Waiter("Tomasz", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "tomasz@example.com",
-                    LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10);
+                    LocalDate.now(), Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 10, null);
         } catch (IllegalArgumentException ignored) {}
 
         var extent = (java.util.List<Waiter>) getExtentMethod.invoke(null);
@@ -153,7 +153,7 @@ class WaiterTest {
                 "Anna", "Szyr", "987654321",
                 "Lechicka", "Warszawa", "00-001", "Poland",
                 "annaszyr@gmail.com", LocalDate.now(),
-                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 8
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 8, null
         );
 
         Method getExtent = Waiter.class.getDeclaredMethod("getExtent");
@@ -177,14 +177,14 @@ class WaiterTest {
                 "Eva", "Nowak", "555444333",
                 "Koszykowa", "Warszawa", "00-001", "Poland",
                 "s31431@gmail.com", LocalDate.now(),
-                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.L, 12
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.L, 12, null
         );
 
         Waiter w3 = new Waiter(
                 "Adam", "Nowak", "222333444",
                 "Nowogrodzka", "Warszawa", "00-002", "Poland",
                 "adamnowak@gmail.com", LocalDate.now(),
-                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 14
+                Contract.EMPLOYMENT_CONTRACT, WorkwearSize.M, 14, null
         );
 
         Method getExtent = Waiter.class.getDeclaredMethod("getExtent");

@@ -4,14 +4,15 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
 
 public class Customer extends Person implements Serializable {
     private static List<Customer> extent = new ArrayList<>();
-
     private double loyaltyPoints;
+    public HashSet<Table> tablesTaken;
 
     public Customer(){}
 

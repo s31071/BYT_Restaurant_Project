@@ -13,6 +13,7 @@ public class ProductOrder implements Serializable {
     private List<Product> products = new ArrayList<>();
     private double totalWeight;
     private double totalSum;
+    private Supplier supplier;
 
     public ProductOrder(){}
     public ProductOrder(List<Product> products) {
@@ -20,6 +21,10 @@ public class ProductOrder implements Serializable {
         setTotalWeight();
         setTotalSum();
         addExtent(this);
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
     private void setTotalSum() {

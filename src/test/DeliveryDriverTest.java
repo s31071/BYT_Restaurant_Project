@@ -21,7 +21,7 @@ class DeliveryDriverTest {
         clearMethod.invoke(null);
 
         driver = new DeliveryDriver("Piotr", "Nowak", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "piotr@example.com",
-                LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true);
+                LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true, null);
     }
 
     @Test
@@ -162,7 +162,7 @@ class DeliveryDriverTest {
                 IllegalArgumentException.class,
                 () -> new DeliveryDriver(
                         "Piotr", "Nowak", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "piotr@example.com",
-                        LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true
+                        LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true, null
                 )
         );
 
@@ -179,7 +179,7 @@ class DeliveryDriverTest {
 
         try {
             DeliveryDriver duplicate = new DeliveryDriver("Piotr", "Nowak", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "piotr@example.com",
-                    LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true);
+                    LocalDate.now(), Contract.MANDATE_CONTRACT, "Fiat", "LU12345", true, null);
         } catch (IllegalArgumentException ignored) {}
 
         var extent = (java.util.List<DeliveryDriver>) getExtentMethod.invoke(null);
@@ -193,7 +193,7 @@ class DeliveryDriverTest {
                 "Eva", "Nowak", "555444333",
                 "Koszykowa", "Warszawa", "00-001", "Poland",
                 "eva@example.com", LocalDate.now(), Contract.B2B,
-                "Toyota", "WA12345", true
+                "Toyota", "WA12345", true, null
         );
 
         Method getExtent = DeliveryDriver.class.getDeclaredMethod("getExtent");
@@ -217,7 +217,7 @@ class DeliveryDriverTest {
                 "Eva", "Nowak", "555444333",
                 "Koszykowa", "Warszawa", "00-001", "Poland",
                 "s31431@pjwstk.pl", LocalDate.now(), Contract.B2B,
-                "Toyota", "WA12345", true
+                "Toyota", "WA12345", true, null
         );
 
         Method getExtent = DeliveryDriver.class.getDeclaredMethod("getExtent");

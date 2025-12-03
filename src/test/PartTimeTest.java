@@ -19,7 +19,7 @@ class PartTimeTest {
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
         partTime = new PartTime("Ewa", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com",
-                LocalDate.now(), Contract.B2B, Type.HALF_TIME);
+                LocalDate.now(), Contract.B2B, Type.HALF_TIME, null);
     }
 
     @Test
@@ -38,7 +38,7 @@ class PartTimeTest {
     void testInvalidPhone() {
         assertThrows(IllegalArgumentException.class, () ->
                 new PartTime("Ewa", "Lis", "1234", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com",
-                        LocalDate.now(), Contract.B2B, Type.ON_CALL));
+                        LocalDate.now(), Contract.B2B, Type.ON_CALL, null));
     }
 
     @Test
@@ -60,7 +60,7 @@ class PartTimeTest {
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
                 () -> new PartTime("Ewa", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com",
-                        LocalDate.now(), Contract.B2B, Type.HALF_TIME
+                        LocalDate.now(), Contract.B2B, Type.HALF_TIME, null
                 )
         );
 
@@ -77,7 +77,7 @@ class PartTimeTest {
 
         try {
             PartTime duplicate = new PartTime("Ewa", "Lis", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com",
-                    LocalDate.now(), Contract.B2B, Type.HALF_TIME);
+                    LocalDate.now(), Contract.B2B, Type.HALF_TIME, null);
         } catch (IllegalArgumentException ignored) {}
 
         var extent = (java.util.List<PartTime>) getExtentMethod.invoke(null);

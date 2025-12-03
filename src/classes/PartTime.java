@@ -16,8 +16,8 @@ public class PartTime extends Employee implements Serializable {
     public double salary;
 
     public PartTime(){}
-    public PartTime(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Type type) {
-        super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
+    public PartTime(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Type type, Employee manager) {
+        super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract, manager);
         setType(type);
         this.salary = calculateSalary();
         addExtent(this);
