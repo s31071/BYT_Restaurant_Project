@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,7 @@ public class OrderTest {
     private Dish pizza;
     private Dish pasta;
     private Dish salad;
+    private List<Integer> reviews = new ArrayList<>(List.of(4, 5, 4, 5, 5, 3));
 
     @BeforeEach
     void setUp() throws Exception {
@@ -41,9 +43,9 @@ public class OrderTest {
         testTimestamp = LocalDateTime.of(2025, 11, 12, 19, 30);
         testTable = new Table(1, 4, TableStatus.AVAILABLE, testTimestamp);
 
-        pizza = new Dish("Pizza", 12.99);
-        pasta = new Dish("Pasta", 10.50);
-        salad = new Dish("Salad", 7.99);
+        pizza = new Dish("Pizza", 12.99, reviews);
+        pasta = new Dish("Pasta", 10.50, reviews);
+        salad = new Dish("Salad", 7.99, reviews);
 
         dineInOrder = new Order(1, 4, OrderStatus.TAKEN, testTimestamp, testTable);
 

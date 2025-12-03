@@ -13,11 +13,13 @@ public class Dish implements Serializable {
 
     private String name;
     private double price;
+    private List<Integer> reviews = new ArrayList<>();
 
     public Dish(){}
-    public Dish(String name, double price) {
+    public Dish(String name, double price, List<Integer> reviews) {
         setName(name);
         setPrice(price);
+        setReviews(reviews);
         addExtent(this);
     }
 
@@ -33,6 +35,13 @@ public class Dish implements Serializable {
             throw new IllegalArgumentException("Price cannot be negative or empty");
         }
         this.price = price;
+    }
+
+    public void setReviews(List<Integer> reviews) {
+        if (reviews.isEmpty()) {
+            throw new IllegalArgumentException("Reviews cannot be empty");
+        }
+        this.reviews = reviews;
     }
 
     public static boolean checkAvailability(Dish dish) {
@@ -59,6 +68,10 @@ public class Dish implements Serializable {
 
     public double getPrice() {
         return price;
+    }
+
+    public List<Integer> getReviews() {
+        return reviews;
     }
 
     public static void addExtent(Dish dish) {

@@ -7,10 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DishOrderTest {
+    private List<Integer> reviews = new ArrayList<>(List.of(4, 5, 4, 5, 5, 3));
 
     @BeforeEach
     void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -21,7 +24,7 @@ class DishOrderTest {
 
     @Test
     void testConstructorAndGetters() {
-        Dish dish = new Dish("Pizza", 15.99);
+        Dish dish = new Dish("Pizza", 15.99, reviews);
         DishOrder order = new DishOrder(dish, 2);
 
         assertEquals(dish, order.getDish());
@@ -30,7 +33,7 @@ class DishOrderTest {
 
     @Test
     void testSetQuantity() {
-        Dish dish = new Dish("Burger", 10.50);
+        Dish dish = new Dish("Burger", 10.50, reviews);
         DishOrder order = new DishOrder(dish, 1);
 
         order.setQuantity(5);
@@ -39,7 +42,7 @@ class DishOrderTest {
 
     @Test
     void testAddExtent() {
-        Dish dish = new Dish("Pasta", 12.00);
+        Dish dish = new Dish("Pasta", 12.00, reviews);
         DishOrder order = new DishOrder(dish, 3);
 
         DishOrder.addExtent(order);
@@ -57,7 +60,7 @@ class DishOrderTest {
 
     @Test
     void testAddExtentDuplicate() {
-        Dish dish = new Dish("Salad", 8.50);
+        Dish dish = new Dish("Salad", 8.50, reviews);
         DishOrder order = new DishOrder(dish, 1);
 
         DishOrder.addExtent(order);
@@ -70,7 +73,7 @@ class DishOrderTest {
 
     @Test
     void testRemoveFromExtent() {
-        Dish dish = new Dish("Soup", 6.00);
+        Dish dish = new Dish("Soup", 6.00, reviews);
         DishOrder order = new DishOrder(dish, 2);
 
         DishOrder.addExtent(order);
@@ -82,7 +85,7 @@ class DishOrderTest {
 
     @Test
     void testGetExtentUnmodifiable() {
-        Dish dish = new Dish("Steak", 25.00);
+        Dish dish = new Dish("Steak", 25.00, reviews);
         DishOrder order = new DishOrder(dish, 1);
         DishOrder.addExtent(order);
 
@@ -93,8 +96,8 @@ class DishOrderTest {
 
     @Test
     void testClearExtent() {
-        DishOrder.addExtent(new DishOrder(new Dish("Dish1", 10.0), 1));
-        DishOrder.addExtent(new DishOrder(new Dish("Dish2", 15.0), 2));
+        DishOrder.addExtent(new DishOrder(new Dish("Dish1", 10.0, reviews), 1));
+        DishOrder.addExtent(new DishOrder(new Dish("Dish2", 15.0, reviews), 2));
 
         assertEquals(2, DishOrder.getExtent().size());
 
@@ -104,8 +107,8 @@ class DishOrderTest {
 
     @Test
     void testMultipleOrders() {
-        Dish pizza = new Dish("Pizza", 15.99);
-        Dish burger = new Dish("Burger", 10.50);
+        Dish pizza = new Dish("Pizza", 15.99, reviews);
+        Dish burger = new Dish("Burger", 10.50, reviews);
 
         DishOrder order1 = new DishOrder(pizza, 2);
         DishOrder order2 = new DishOrder(burger, 3);

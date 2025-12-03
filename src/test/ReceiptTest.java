@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +18,7 @@ public class ReceiptTest {
     private Order order50;
     private Receipt receiptNoTip;
     private Receipt receiptWithTip;
+    private List<Integer> reviews = new ArrayList<>(List.of(4, 5, 4, 5, 5, 3));
 
     @BeforeEach
     void setup() throws Exception {
@@ -38,21 +41,21 @@ public class ReceiptTest {
 
         Table table = new Table(1, 2, TableStatus.TAKEN, LocalDateTime.now());
 
-        Dish dishA = new Dish("DishA", 40.0);
-        Dish dishB = new Dish("DishB", 60.0);
+        Dish dishA = new Dish("DishA", 40.0, reviews);
+        Dish dishB = new Dish("DishB", 60.0, reviews);
         order100 = new Order(1, 2, OrderStatus.TAKEN, LocalDateTime.now(), table);
         order100.addDish(dishA, 1);
         order100.addDish(dishB, 1);
 
         order101 = new Order(1, 2, OrderStatus.TAKEN, LocalDateTime.now(), table);
-        Dish dishC = new Dish("DishC", 30.0);
-        Dish dishD = new Dish("DishD", 80.0);
+        Dish dishC = new Dish("DishC", 30.0, reviews);
+        Dish dishD = new Dish("DishD", 80.0, reviews);
         order101.addDish(dishC, 1);
         order101.addDish(dishD, 1);
 
         order50 = new Order(2, 2, OrderStatus.TAKEN, LocalDateTime.now(), table);
-        Dish dishX = new Dish("DishX", 20.0);
-        Dish dishY = new Dish("DishY", 30.0);
+        Dish dishX = new Dish("DishX", 20.0, reviews);
+        Dish dishY = new Dish("DishY", 30.0, reviews);
         order50.addDish(dishX, 1);
         order50.addDish(dishY, 1);
 
@@ -185,7 +188,7 @@ public class ReceiptTest {
         Receipt r = new Receipt(PaymentMethod.CASH, order50, Double.valueOf(5.0));
         double initial = r.getSum();
 
-        order50.addDish(new Dish("Extra", 20.0), 1);
+        order50.addDish(new Dish("Extra", 20.0, reviews), 1);
         r.setSum();
 
         assertNotEquals(initial, r.getSum());

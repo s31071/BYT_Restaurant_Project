@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,6 +15,7 @@ public class DishTest {
     private Dish dish1;
     private Dish dish2;
     private Dish dish3;
+    private List<Integer> reviews = new ArrayList<>(List.of(4, 5, 4, 5, 5, 3));
 
     @BeforeEach
     void setUp() throws Exception {
@@ -21,9 +23,9 @@ public class DishTest {
         clearDish.setAccessible(true);
         clearDish.invoke(null);
 
-        dish1 = new Dish("Dish1", 15.50);
-        dish2 = new Dish("Dish2", 10.50);
-        dish3 = new Dish("Dish3", 5.50);
+        dish1 = new Dish("Dish1", 15.50, reviews);
+        dish2 = new Dish("Dish2", 10.50, reviews);
+        dish3 = new Dish("Dish3", 5.50, reviews);
     }
 
     @Test
@@ -34,7 +36,7 @@ public class DishTest {
 
     @Test
     void testAddNewDish() {
-        Dish newDish = new Dish("Dish4", 12.00);
+        Dish newDish = new Dish("Dish4", 12.00, reviews);
         int initialSize = Dish.getDishList().size();
 
         Dish.addNewDish(newDish);
@@ -46,8 +48,8 @@ public class DishTest {
 
     @Test
     void testAddMultipleDishes() {
-        Dish dish4 = new Dish("Dish5", 8.00);
-        Dish dish5 = new Dish("Dish6", 12.00);
+        Dish dish4 = new Dish("Dish5", 8.00, reviews);
+        Dish dish5 = new Dish("Dish6", 12.00, reviews);
 
         Dish.addNewDish(dish4);
         Dish.addNewDish(dish5);
@@ -68,7 +70,7 @@ public class DishTest {
 
     @Test
     void testCheckAvailabilityNonExistingDish() {
-        Dish newDish = new Dish("Temp Dish", 5.00);
+        Dish newDish = new Dish("Temp Dish", 5.00, reviews);
         Dish.deleteDish(newDish);
         assertFalse(Dish.checkAvailability(newDish));
     }
@@ -83,7 +85,7 @@ public class DishTest {
 
     @Test
     void testDeleteNonExistingDish() {
-        Dish newDish = new Dish("Temp Dish", 7.00);
+        Dish newDish = new Dish("Temp Dish", 7.00, reviews);
         Dish.deleteDish(newDish);
 
         IllegalArgumentException exception = assertThrows(
@@ -115,7 +117,7 @@ public class DishTest {
 
     @Test
     void testAddExtent() {
-        Dish newDish = new Dish("Extent Test", 15.00);
+        Dish newDish = new Dish("Extent Test", 15.00, reviews);
         assertTrue(Dish.getExtent().contains(newDish));
     }
 
@@ -129,13 +131,13 @@ public class DishTest {
     @Test
     void testGetExtentIsUnmodifiable() {
         assertThrows(UnsupportedOperationException.class, () -> {
-            Dish.getExtent().add(new Dish("Test", 10.00));
+            Dish.getExtent().add(new Dish("Test", 10.00, reviews));
         });
     }
 
     @Test
     void testRemoveFromExtent() {
-        Dish dishToRemove = new Dish("Temporary Dish", 8.00);
+        Dish dishToRemove = new Dish("Temporary Dish", 8.00, reviews);
         assertTrue(Dish.getExtent().contains(dishToRemove));
 
         Dish.removeFromExtent(dishToRemove);

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +19,7 @@ class MenuTest {
     private Menu seasonalMenu;
     private Dish dish1;
     private Dish dish2;
+    private List<Integer> reviews = new ArrayList<>(List.of(4, 5, 4, 5, 5, 3));
 
     @BeforeEach
     void setUp() throws Exception {
@@ -34,8 +36,8 @@ class MenuTest {
         beverageMenu = new Menu("Drink Menu", MenuType.BEVERAGE);
         seasonalMenu = new Menu("Seasonal Menu", MenuType.SEASONAL);
 
-        dish1 = new Dish("Dish1", 12.00);
-        dish2 = new Dish("Dish2", 2.00);
+        dish1 = new Dish("Dish1", 12.00, reviews);
+        dish2 = new Dish("Dish2", 2.00, reviews);
     }
 
     @Test
