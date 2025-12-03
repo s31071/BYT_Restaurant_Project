@@ -2,6 +2,8 @@ package test;
 
 import classes.Reservation;
 import classes.ReservationStatus;
+import classes.Table;
+import classes.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +19,7 @@ public class ReservationTest {
     private LocalDateTime testTimestamp;
 
     @BeforeEach
-    void setUp() throws NoSuchFieldException, IllegalAccessException {
+    void setUp() throws Exception {
         Field reservationExtent = Reservation.class.getDeclaredField("extent");
         reservationExtent.setAccessible(true);
         ((List<?>) reservationExtent.get(null)).clear();
@@ -106,5 +108,54 @@ public class ReservationTest {
         reservationExtent.invoke(null);
 
         assertEquals(0, Reservation.getExtent().size());
+    }
+
+    @Test
+    public void testReservationTableConnection_AddTable() throws Exception {
+        Reservation reservation = new Reservation(1, "Steve Wozniak", LocalDateTime.now(), ReservationStatus.AVAILABLE);
+        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+
+        reservation.addTableAssigned(table);
+
+        assertEquals(table, reservation.getTable());
+        assertTrue(table.reservations.contains(reservation));
+    }
+
+    @Test
+    public void testReservationTableConnection_RemoveTable() throws Exception {
+        Reservation reservation = new Reservation(1, "Steve Jobs", LocalDateTime.now(), ReservationStatus.AVAILABLE);
+        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+
+        reservation.addTableAssigned(table);
+        reservation.removeTableAssigned();
+
+        assertNull(reservation.getTable());
+        assertFalse(table.reservations.contains(reservation));
+    }
+
+    @Test
+    public void testReservationTableConnection_CannotAddTableTwice() throws Exception {
+        Reservation reservation = new Reservation(1, "Ania Szyr", LocalDateTime.now(), ReservationStatus.AVAILABLE);
+        Table table1 = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+        Table table2 = new Table(2, 2, TableStatus.AVAILABLE, LocalDateTime.now());
+
+        reservation.addTableAssigned(table1);
+
+        assertThrows(Exception.class, () -> reservation.addTableAssigned(table2));
+    }
+
+    @Test
+    public void testReservationTableConnection_TableMultipleReservations() throws Exception {
+        Reservation reservation1 = new Reservation(1, "Ania Szyr", LocalDateTime.now(), ReservationStatus.AVAILABLE);
+        Reservation reservation2 = new Reservation(2, "Ania Szyr", LocalDateTime.now().plusDays(1), ReservationStatus.AVAILABLE);
+        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+
+        table.addManagedTableReservation(reservation1);
+        table.addManagedTableReservation(reservation2);
+
+        assertTrue(table.reservations.contains(reservation1));
+        assertTrue(table.reservations.contains(reservation2));
+        assertEquals(table, reservation1.getTable());
+        assertEquals(table, reservation2.getTable());
     }
 }

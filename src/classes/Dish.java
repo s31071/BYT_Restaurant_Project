@@ -2,9 +2,7 @@ package classes;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.io.Serializable;
 import java.io.IOException;
 
@@ -14,12 +12,15 @@ public class Dish implements Serializable {
     private String name;
     private double price;
     private List<Integer> reviews = new ArrayList<>();
+    private Menu menu; //composition with Menu
+    private Set<DishOrder> dishOrders = new HashSet<>(); //aggregation with Order
 
     public Dish(){}
     public Dish(String name, double price, List<Integer> reviews) {
         setName(name);
         setPrice(price);
         setReviews(reviews);
+        this.menu = null;
         addExtent(this);
     }
 
@@ -42,6 +43,14 @@ public class Dish implements Serializable {
             throw new IllegalArgumentException("Reviews cannot be empty");
         }
         this.reviews = reviews;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public void setDishOrders(Set<DishOrder> dishOrders) {
+        this.dishOrders = dishOrders;
     }
 
     public static boolean checkAvailability(Dish dish) {
@@ -72,6 +81,13 @@ public class Dish implements Serializable {
 
     public List<Integer> getReviews() {
         return reviews;
+    }
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Set<DishOrder> getDishOrders() {
+        return Collections.unmodifiableSet(new HashSet<>(dishOrders));
     }
 
     public static void addExtent(Dish dish) {

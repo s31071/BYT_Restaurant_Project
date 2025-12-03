@@ -18,6 +18,7 @@ public class Reservation implements Serializable {
     private LocalDateTime timestamp;
     private ReservationStatus status;
     private Waiter waiterAssigned;
+    private Table table;
 
     public Waiter getWaiterAssigned() {
         return waiterAssigned;
@@ -51,6 +52,28 @@ public class Reservation implements Serializable {
         }
         this.waiterAssigned.getReservations().remove(this);
         this.waiterAssigned = null;
+    }
+
+    public void setTableAssigned(Table table){
+        this.table = table;
+    }
+
+    public void addTableAssigned(Table table) throws Exception {
+        if(this.table == null) {
+           setTableAssigned(table);
+           table.reservations.add(this);
+        } else {
+            throw new Exception("This reservation already has a table assigned");
+        }
+
+    }
+
+    public void removeTableAssigned() throws Exception {
+        if(this.table == null) {
+            throw new Exception("There is no table assigned to this reservation");
+        }
+        this.table.reservations.remove(this);
+        this.table = null;
     }
 
     public void setId(int id) {
@@ -135,6 +158,10 @@ public class Reservation implements Serializable {
 
     public ReservationStatus getStatus() {
         return status;
+    }
+
+    public Table getTable() {
+        return table;
     }
 
     public static void addExtent(Reservation reservation) {

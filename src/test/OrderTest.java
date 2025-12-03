@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -377,5 +378,67 @@ public class OrderTest {
             }
         }
         return false;
+    }
+
+    @Test
+    public void testOrderDishConnection_AddDish() {
+        Order order = new Order(1, 2, OrderStatus.IN_PREPARATION, LocalDateTime.now());
+        Dish dish = new Dish("Risotto", 15.99, Arrays.asList(4, 5));
+
+        order.addDish(dish, 2);
+
+        assertTrue(order.containsDish(dish));
+        assertEquals(1, order.getDishCount());
+        assertEquals(2, order.getDishes().get(0).getQuantity());
+    }
+
+    @Test
+    public void testOrderDishConnection_AddDishIncrementsQuantity() {
+        Order order = new Order(1, 2, OrderStatus.READY, LocalDateTime.now());
+        Dish dish = new Dish("Farfalle", 15.99, Arrays.asList(4, 5));
+
+        order.addDish(dish, 2);
+        order.addDish(dish, 3);
+
+        assertEquals(1, order.getDishCount());
+        assertEquals(5, order.getDishes().get(0).getQuantity());
+    }
+
+    @Test
+    public void testOrderDishConnection_RemoveDish() {
+        Order order = new Order(1, 2, OrderStatus.DELIVERED, LocalDateTime.now());
+        Dish dish = new Dish("Spaghetti", 15.99, Arrays.asList(4, 5));
+
+        order.addDish(dish, 2);
+        order.removeDish(dish);
+
+        assertFalse(order.containsDish(dish));
+        assertEquals(0, order.getDishCount());
+    }
+
+    @Test
+    public void testOrderDishConnection_MultipleDishes() {
+        Order order = new Order(1, 2, OrderStatus.IN_PREPARATION, LocalDateTime.now());
+        Dish dish1 = new Dish("Carbonara", 15.99, Arrays.asList(4, 5));
+        Dish dish2 = new Dish("Bolognese", 12.99, Arrays.asList(5, 4));
+
+        order.addDish(dish1, 2);
+        order.addDish(dish2, 1);
+
+        assertEquals(2, order.getDishCount());
+        assertTrue(order.containsDish(dish1));
+        assertTrue(order.containsDish(dish2));
+    }
+
+    @Test
+    public void testOrderDishConnection_TotalPrice() {
+        Order order = new Order(1, 2, OrderStatus.TAKEN, LocalDateTime.now());
+        Dish dish1 = new Dish("Kolanka", 10.0, Arrays.asList(4, 5));
+        Dish dish2 = new Dish("Penne", 15.0, Arrays.asList(5, 4));
+
+        order.addDish(dish1, 2);
+        order.addDish(dish2, 1);
+
+        assertEquals(35.0, order.getTotalPrice(), 0.01);
     }
 }
