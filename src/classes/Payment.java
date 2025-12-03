@@ -1,11 +1,12 @@
 package classes;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public abstract class Payment implements Serializable {
 
-    public abstract void setSum();   // derived attribute setter
-    public abstract double getSum(); // derived attribute getter
+    public abstract void setSum();
+    public abstract double getSum();
 
     private PaymentMethod method;
 
@@ -26,5 +27,17 @@ public abstract class Payment implements Serializable {
             throw new IllegalArgumentException("Payment method cannot be null");
         }
         this.method = method;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return getMethod() == payment.getMethod();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getMethod());
     }
 }
