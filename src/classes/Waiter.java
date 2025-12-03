@@ -16,7 +16,7 @@ public class Waiter extends Employee implements Serializable {
     public WorkwearSize workwearSize;
     public double maximumTables;
 
-    public HashSet<Reservation> reservations;
+    private HashSet<Reservation> reservations;
 
     public Waiter(){}
 
@@ -59,6 +59,9 @@ public class Waiter extends Employee implements Serializable {
         return (base + yearsBonus + tableBonus) * contractFactor;
     }
 
+    public HashSet<Reservation> getReservations() {
+        return reservations;
+    }
 
     public WorkwearSize getWorkwearSize() {
         return workwearSize;

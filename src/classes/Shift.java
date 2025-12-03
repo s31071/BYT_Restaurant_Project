@@ -18,7 +18,7 @@ public class Shift implements Serializable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int numberOfPeopleNeeded;
-    public HashSet<Employee> employees;
+    private HashSet<Employee> employees;
 
     public Shift(){}
     public Shift(String title, LocalDateTime date, LocalDateTime startTime, LocalDateTime endTime, int numberOfPeopleNeeded) {
@@ -67,6 +67,14 @@ public class Shift implements Serializable {
             throw new IllegalArgumentException("Title cannot be empty");
         }
         this.title = title;
+    }
+
+    public HashSet<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(HashSet<Employee> employees) {
+        this.employees = employees;
     }
 
     public LocalDateTime getDate() {
@@ -128,12 +136,12 @@ public class Shift implements Serializable {
         extent.clear();
     }
 
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<Shift>) objectInputStream.readObject();
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Shift>) in.readObject();
     }
 
     @Override

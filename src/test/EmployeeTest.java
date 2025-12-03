@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,8 +16,8 @@ class EmployeeTest {
 
         public TestEmployee(String name, String surname, String phoneNumber,
                             String street, String city, String postalCode, String country,
-                            String email, LocalDate employmentDate, Contract contract) {
-            super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract);
+                            String email, LocalDate employmentDate, Contract contract, Employee manager) {
+            super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract, manager);
         }
 
         @Override
@@ -34,7 +35,7 @@ class EmployeeTest {
         hireDate = LocalDate.now().minusYears(5);
         employee = new TestEmployee("Jan", "Kowalski", "123456789",
                 "Markowskiego", "Piaseczno", "05-500", "Poland",
-                "jankowalski@gmail.com", hireDate, Contract.EMPLOYMENT_CONTRACT);
+                "jankowalski@gmail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null);
 
         address = new Address("Markowskiego", "Piaseczno", "05-500", "Poland");
     }
@@ -55,7 +56,7 @@ class EmployeeTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new TestEmployee("Jan", "Kowalski", "123456789",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "jankowalski@gmail.com", null, Contract.EMPLOYMENT_CONTRACT));
+                        "jankowalski@gmail.com", null, Contract.EMPLOYMENT_CONTRACT, null));
     }
 
     @Test
@@ -65,7 +66,7 @@ class EmployeeTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new TestEmployee("Jan", "Kowalski", "123456789",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "jankowalski@gmail.com", future, Contract.EMPLOYMENT_CONTRACT));
+                        "jankowalski@gmail.com", future, Contract.EMPLOYMENT_CONTRACT, null));
     }
 
     @Test
@@ -73,7 +74,7 @@ class EmployeeTest {
         assertThrows(IllegalArgumentException.class, () ->
                 new TestEmployee("Jan", "Kowalski", "123456789",
                         "Markowskiego", "Piaseczno", "05-500", "Poland",
-                        "jankowalski@gmail.com", hireDate, null));
+                        "jankowalski@gmail.com", hireDate, null, null));
     }
 
     @Test
@@ -126,4 +127,111 @@ class EmployeeTest {
         assertEquals(newDate, employee.getEmploymentDate());
         assertEquals(Contract.B2B, employee.getContract());
     }
+
+    @Test
+    void testAddWorkedInShift() throws Exception {
+        Shift shift = new Shift(
+                "Morning Shift",
+                java.time.LocalDateTime.now(),
+                java.time.LocalDateTime.now(),
+                java.time.LocalDateTime.now().plusHours(8),
+                4
+        );
+        shift.setEmployees(new HashSet<>());
+
+        employee.addWorkedInShift(shift);
+
+        assertTrue(shift.getEmployees().contains(employee));
+        var field = Employee.class.getDeclaredField("shiftsAssigned");
+        field.setAccessible(true);
+        HashSet<Shift> shifts = (HashSet<Shift>) field.get(employee);
+
+        assertTrue(shifts.contains(shift));
+    }
+
+    @Test
+    void testAddWorkedInShiftShouldThrowExceptionForNull() {
+        assertThrows(Exception.class, () -> employee.addWorkedInShift(null));
+    }
+
+    @Test
+    void testRemoveWorkedInShift() throws Exception {
+        Shift shift = new Shift(
+                "Evening Shift",
+                java.time.LocalDateTime.now(),
+                java.time.LocalDateTime.now(),
+                java.time.LocalDateTime.now().plusHours(6),
+                4
+        );
+        shift.setEmployees(new HashSet<>());
+        employee.addWorkedInShift(shift);
+
+        employee.removeWorkedInShift(shift);
+
+        assertFalse(shift.getEmployees().contains(employee));
+
+        var field = Employee.class.getDeclaredField("shiftsAssigned");
+        field.setAccessible(true);
+        HashSet<Shift> shifts = (HashSet<Shift>) field.get(employee);
+
+        assertFalse(shifts.contains(shift));
+    }
+
+    @Test
+    void testRemoveWorkedInShiftShouldThrowExceptionForNull() {
+        assertThrows(Exception.class, () -> employee.removeWorkedInShift(null));
+    }
+
+    @Test
+    void testAddManagedEmployee() throws Exception {
+        TestEmployee manager = new TestEmployee(
+                "Manager", "Boss", "111222333",
+                "Street", "City", "00-000", "Poland",
+                "manager@gmail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null
+        );
+
+        TestEmployee subordinate = new TestEmployee(
+                "Worker", "Helper", "444555666",
+                "Street", "City", "00-000", "Poland",
+                "worker@gmail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null
+        );
+
+        manager.addManagedEmployee(subordinate);
+
+        var managerField = Employee.class.getDeclaredField("manager");
+        managerField.setAccessible(true);
+        Employee assignedManager = (Employee) managerField.get(subordinate);
+
+        assertEquals(manager, assignedManager);
+
+        var managedField = Employee.class.getDeclaredField("managedEmployees");
+        managedField.setAccessible(true);
+        HashSet<Employee> managedSet = (HashSet<Employee>) managedField.get(manager);
+
+        assertTrue(managedSet.contains(subordinate));
+    }
+
+    @Test
+    void shouldThrowWhenManagerHasOwnManager() {
+        TestEmployee boss = new TestEmployee(
+                "Boss", "Top", "111222333",
+                "S", "C", "00", "P",
+                "boss@mail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null
+        );
+
+        TestEmployee midManager = new TestEmployee(
+                "Mid", "Manager", "222333444",
+                "S", "C", "00", "P",
+                "mid@mail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, boss
+        );
+
+        TestEmployee worker = new TestEmployee(
+                "Worker", "Guy", "333444555",
+                "S", "C", "00", "P",
+                "worker@mail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null
+        );
+
+        assertThrows(Exception.class, () -> midManager.addManagedEmployee(worker));
+    }
+
 }

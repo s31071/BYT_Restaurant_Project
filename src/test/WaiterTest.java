@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class WaiterTest {
@@ -203,5 +205,80 @@ class WaiterTest {
         extent = (java.util.List<Waiter>) getExtent.invoke(null);
         assertEquals(0, extent.size());
     }
+
+    @Test
+    void testAddManagedReservation() throws Exception {
+        Reservation reservation = new Reservation(
+                1,
+                "John Doe",
+                LocalDateTime.now(),
+                ReservationStatus.AVAILABLE
+        );
+
+        waiter.addManagedReservation(reservation);
+
+        assertTrue(waiter.getReservations().contains(reservation));
+
+        assertEquals(waiter, reservation.getWaiterAssigned());
+    }
+
+    @Test
+    void testAddManagedReservationNullThrowsException() {
+        Exception ex = assertThrows(Exception.class, () ->
+                waiter.addManagedReservation(null)
+        );
+
+        assertEquals("Reservation cannot be null", ex.getMessage());
+    }
+
+    @Test
+    void testRemoveManagedReservation() throws Exception {
+        Reservation reservation = new Reservation(
+                2,
+                "Anna",
+                LocalDateTime.now(),
+                ReservationStatus.AVAILABLE
+        );
+
+        waiter.addManagedReservation(reservation);
+
+        waiter.removeManagedReservation(reservation);
+
+        assertFalse(waiter.getReservations().contains(reservation));
+        assertNull(reservation.getWaiterAssigned());
+    }
+
+    @Test
+    void testRemoveManagedReservationNotAssignedThrowsException() {
+        Reservation reservation = new Reservation(
+                3,
+                "Mike",
+                LocalDateTime.now(),
+                ReservationStatus.AVAILABLE
+        );
+
+        Exception ex = assertThrows(Exception.class, () ->
+                waiter.removeManagedReservation(reservation)
+        );
+
+        assertEquals("This reservation is not managed by this waiter", ex.getMessage());
+    }
+
+    @Test
+    void testBidirectionalRelationAfterAdd() throws Exception {
+        Reservation reservation = new Reservation(
+                4,
+                "Client",
+                LocalDateTime.now(),
+                ReservationStatus.AVAILABLE
+        );
+
+        waiter.addManagedReservation(reservation);
+
+        assertTrue(waiter.getReservations().contains(reservation));
+        assertEquals(waiter, reservation.getWaiterAssigned());
+    }
+
+
 }
 

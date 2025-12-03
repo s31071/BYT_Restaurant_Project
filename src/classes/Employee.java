@@ -36,7 +36,7 @@ public abstract class Employee extends Person implements Serializable {
             throw new Exception("Shift cannot be null");
         }
         shiftsAssigned.add(shift);
-        shift.employees.add(this);
+        shift.getEmployees().add(this);
     }
 
     public void removeWorkedInShift(Shift shift) throws Exception {
@@ -44,7 +44,7 @@ public abstract class Employee extends Person implements Serializable {
             throw new Exception("Shift cannot be null");
         }
         shiftsAssigned.remove(shift);
-        shift.employees.remove(this);
+        shift.getEmployees().remove(this);
     }
     public void setManager(Employee manager){
         this.manager = manager;

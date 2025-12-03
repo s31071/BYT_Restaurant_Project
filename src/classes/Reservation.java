@@ -19,6 +19,10 @@ public class Reservation implements Serializable {
     private ReservationStatus status;
     private Waiter waiterAssigned;
 
+    public Waiter getWaiterAssigned() {
+        return waiterAssigned;
+    }
+
     public Reservation(){}
     public Reservation(int id, String nameOfThePerson, LocalDateTime timestamp, ReservationStatus status) {
         setId(id);
@@ -35,7 +39,7 @@ public class Reservation implements Serializable {
     public void addWaiterManaging(Waiter waiter) throws Exception {
         if(this.waiterAssigned == null) {
             setWaiterAssigned(waiter);
-            waiter.reservations.add(this);
+            waiter.getReservations().add(this);
         }else{
             throw new Exception("This reservation has already a waiter assigned");
         }
@@ -45,7 +49,7 @@ public class Reservation implements Serializable {
         if(this.waiterAssigned == null){
             throw new Exception("There is no waiter assigned for this reservation yet");
         }
-        this.waiterAssigned.reservations.remove(this);
+        this.waiterAssigned.getReservations().remove(this);
         this.waiterAssigned = null;
     }
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -169,5 +170,44 @@ class SupplierTest {
         extent = (java.util.List<Supplier>) getExtent.invoke(null);
         assertEquals(0, extent.size());
     }
+
+    @Test
+    void testAddOrderedProduct() throws Exception {
+        Product p1 = new Product(1, "Beef", 2.0, Category.MEAT, LocalDate.now().plusDays(10), 50.0);
+        ProductOrder productOrder = new ProductOrder(List.of(p1));
+
+        assertNull(productOrder.getSupplier());
+
+        s.addOrderedProduct(productOrder);
+
+        assertEquals(s, productOrder.getSupplier());
+    }
+
+    @Test
+    void testAddOrderedProductNullThrows() {
+        assertThrows(Exception.class, () -> s.addOrderedProduct(null));
+    }
+
+    @Test
+    void testRemoveOrderedProduct() throws Exception {
+        Product p1 = new Product(2, "Chicken", 1.5, Category.MEAT, LocalDate.now().plusDays(5), 30.0);
+        ProductOrder productOrder = new ProductOrder(List.of(p1));
+
+        s.addOrderedProduct(productOrder);
+
+        s.removeOrderedProduct(productOrder);
+
+        assertNull(productOrder.getSupplier());
+    }
+
+    @Test
+    void testRemoveOrderedProductNotAssignedThrows() throws Exception {
+        Product p1 = new Product(3, "Turkey", 3.0, Category.MEAT, LocalDate.now().plusDays(7), 70.0);
+        ProductOrder productOrder = new ProductOrder(List.of(p1));
+
+        assertThrows(Exception.class, () -> s.removeOrderedProduct(productOrder));
+    }
+
+
 
 }

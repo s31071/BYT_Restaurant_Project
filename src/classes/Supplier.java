@@ -14,7 +14,7 @@ public class Supplier extends Person implements Serializable {
     private String companyName;
     private Category category;
     private double deliveryCost;
-    public HashSet<ProductOrder> productOrders;
+    private HashSet<ProductOrder> productOrders;
 
     public Supplier(){}
     public Supplier(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, String companyName, Category category, double deliveryCost) {

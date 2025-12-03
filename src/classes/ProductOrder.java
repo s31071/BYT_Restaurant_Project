@@ -23,6 +23,10 @@ public class ProductOrder implements Serializable {
         addExtent(this);
     }
 
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
     }
