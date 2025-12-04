@@ -18,7 +18,7 @@ public class DeliveryDriver extends Employee implements Serializable {
     private boolean bonusApply;
     private double kmsInDay;
     private double kmsInMonth;
-    private List<Order> orders;
+    public List<Order> orders;
 
     public DeliveryDriver(){}
     public DeliveryDriver(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, String carModel, String registrationNumber, boolean bonusApply, Employee manager) {
@@ -120,6 +120,22 @@ public class DeliveryDriver extends Employee implements Serializable {
             throw new IllegalArgumentException("Such delivery driver is already in data base");
         }
         extent.add(deliveryDriver);
+    }
+
+    public void addOrder(Order order) throws Exception {
+        if(order == null) {
+            throw new Exception("Order cannot be empty");
+        }
+        orders.add(order);
+        order.setDeliveryDriver(this);
+    }
+
+    public void removeOrder(Order order) throws Exception {
+        if(order == null) {
+            throw new Exception("Order cannot be empty");
+        }
+        orders.remove(order);
+        order.setDeliveryDriver(null); //reverse connection
     }
 
     public static List<DeliveryDriver> getExtent() {

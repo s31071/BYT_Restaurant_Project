@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -176,10 +177,11 @@ public class OrderTest {
     void testAddDuplicateDish() {
         dineInOrder.addDish(pizza, 1);
         dineInOrder.addDish(pizza, 2);
-
         assertEquals(1, dineInOrder.getDishCount());
-        List<DishOrder> dishOrders = dineInOrder.getDishes();
-        assertEquals(3, dishOrders.get(0).getQuantity());
+        Set<DishOrder> dishOrders = dineInOrder.getDishOrders();
+        DishOrder dishOrder = dishOrders.stream().findFirst().orElse(null);
+        assertNotNull(dishOrder, "DishOrder should exist");
+        assertEquals(3, dishOrder.getQuantity());
     }
 
     @Test
@@ -215,7 +217,7 @@ public class OrderTest {
         dineInOrder.addDish(pizza, 3);
         dineInOrder.addDish(pasta, 4);
 
-        List<DishOrder> dishes = dineInOrder.getDishes();
+        Set<DishOrder> dishes = dineInOrder.getDishOrders();
 
         assertEquals(2, dishes.size());
         boolean hasPizza = false;
@@ -237,7 +239,7 @@ public class OrderTest {
         dineInOrder.addDish(pizza, 1);
 
         assertThrows(UnsupportedOperationException.class, () -> {
-            dineInOrder.getDishes().add(new DishOrder(pasta, 1));
+            dineInOrder.getDishOrders().add(new DishOrder(pasta, dineInOrder, 1));
         });
     }
 
@@ -386,10 +388,11 @@ public class OrderTest {
         Dish dish = new Dish("Risotto", 15.99, Arrays.asList(4, 5));
 
         order.addDish(dish, 2);
-
         assertTrue(order.containsDish(dish));
         assertEquals(1, order.getDishCount());
-        assertEquals(2, order.getDishes().get(0).getQuantity());
+        DishOrder dishOrder = order.getDishOrders().stream().findFirst().orElse(null);
+        assertNotNull(dishOrder, "DishOrder should exist");
+        assertEquals(2, dishOrder.getQuantity());
     }
 
     @Test
@@ -401,7 +404,10 @@ public class OrderTest {
         order.addDish(dish, 3);
 
         assertEquals(1, order.getDishCount());
-        assertEquals(5, order.getDishes().get(0).getQuantity());
+
+        DishOrder dishOrder = order.getDishOrders().stream().findFirst().orElse(null);
+        assertNotNull(dishOrder, "DishOrder should exist");
+        assertEquals(5, dishOrder.getQuantity(), "Quantity should be 5");
     }
 
     @Test

@@ -201,21 +201,6 @@ class TableTest {
         assertEquals(table, order.getTable());
     }
 
-//    @Test
-//    public void testTableOrderConnection_RemoveOrder() {
-//        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
-//        LocalDateTime timestamp = LocalDateTime.now();
-//        Order order = new Order(1, 2, OrderStatus.READY, timestamp, table);
-//
-//        table.addOrder(order);
-//        table.removeOrder(timestamp);
-//
-//        // Verify forward connection removed
-//        assertNull(table.getOrderByTimestamp(timestamp));
-//        // Verify reverse connection removed
-//        assertNull(order.getTable());
-//    }
-
     @Test
     public void testTableOrderConnection_CannotAddOrderWithSameTimestamp() {
         Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
