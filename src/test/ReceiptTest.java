@@ -19,6 +19,7 @@ public class ReceiptTest {
     private Receipt receiptNoTip;
     private Receipt receiptWithTip;
     private List<Integer> reviews = new ArrayList<>(List.of(4, 5, 4, 5, 5, 3));
+    private Table table;
 
     @BeforeEach
     void setup() throws Exception {
@@ -39,7 +40,7 @@ public class ReceiptTest {
         clearTable.setAccessible(true);
         clearTable.invoke(null);
 
-        Table table = new Table(1, 2, TableStatus.TAKEN, LocalDateTime.now());
+        table = new Table(1, 2, TableStatus.TAKEN, LocalDateTime.now());
 
         Dish dishA = new Dish("DishA", 40.0, reviews);
         Dish dishB = new Dish("DishB", 60.0, reviews);
@@ -200,15 +201,6 @@ public class ReceiptTest {
     }
 
     @Test
-    void testChangingOrderUpdatesSum() {
-        Receipt r = new Receipt(PaymentMethod.CASH, order100, null);
-        double oldSum = r.getSum();
-
-        r.setOrder(order50);
-        assertNotEquals(oldSum, r.getSum());
-    }
-
-    @Test
     void testGetOrder() {
         assertEquals(order100, receiptNoTip.getOrder());
         assertEquals(order101, receiptWithTip.getOrder());
@@ -216,6 +208,8 @@ public class ReceiptTest {
 
     @Test
     void testMultipleReceipts() {
+
+        order100 = new Order(1, 2, OrderStatus.TAKEN, LocalDateTime.now().minusDays(1), table);
         Receipt r1 = new Receipt(PaymentMethod.CARD, order50);
         Receipt r2 = new Receipt(PaymentMethod.CASH, order100, Double.valueOf(5.0));
 

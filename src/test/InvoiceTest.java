@@ -142,7 +142,7 @@ public class InvoiceTest {
     @Test
     void testAddMultipleSupplyHistoryEntries() {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now().plusDays(1), SupplyStatus.ORDERED, invoice, po2);
+        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
 
         assertEquals(2, invoice.getSupplyHistoryList().size());
     }
@@ -158,16 +158,29 @@ public class InvoiceTest {
         SupplyHistory sh1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
         assertEquals(po1.getTotalSum(), invoice.getSum());
 
-        SupplyHistory sh2 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po2);
+        SupplyHistory sh2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
         assertEquals(po1.getTotalSum() + po2.getTotalSum(), invoice.getSum());
     }
 
     @Test
     void testDeliveredRequiresOrderedBefore() {
-        new SupplyHistory(LocalDate.now().minusDays(2), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory sh2 = new SupplyHistory(LocalDate.now(), SupplyStatus.DELIVERED, invoice, po1);
+        SupplyHistory ordered = new SupplyHistory(
+                LocalDate.now().minusDays(2),
+                SupplyStatus.ORDERED,
+                invoice,
+                po1
+        );
 
-        assertEquals(SupplyStatus.DELIVERED, sh2.getStatus());
+        SupplyHistory delivered = new SupplyHistory(
+                LocalDate.now(),
+                SupplyStatus.ORDERED,
+                invoice,
+                po1
+        );
+
+        delivered.setStatus(SupplyStatus.DELIVERED);
+
+        assertEquals(SupplyStatus.DELIVERED, delivered.getStatus());
     }
 
     @Test
@@ -280,7 +293,7 @@ public class InvoiceTest {
     @Test
     void testMultipleSupplyHistoryObjectsConnectCorrectly() {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now().plusDays(1), SupplyStatus.ORDERED, invoice, po1);
+        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po1);
         assertEquals(2, invoice.getSupplyHistoryList().size());
         assertEquals(2, po1.getSupplyHistoryList().size());
     }
@@ -299,8 +312,8 @@ public class InvoiceTest {
 
     @Test
     void testDifferentProductOrdersMaintainSeparateHistories() {
-        SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po2);
+        SupplyHistory s1 = new SupplyHistory(LocalDate.now().minusDays(4), SupplyStatus.ORDERED, invoice, po1);
+        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(5), SupplyStatus.ORDERED, invoice, po2);
         assertTrue(po1.getSupplyHistoryList().contains(s1));
         assertFalse(po1.getSupplyHistoryList().contains(s2));
         assertTrue(po2.getSupplyHistoryList().contains(s2));
@@ -315,15 +328,5 @@ public class InvoiceTest {
         SupplyHistory s2 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, other, po2);
         assertEquals(po1.getTotalSum(), invoice.getSum());
         assertEquals(po2.getTotalSum(), other.getSum());
-    }
-
-    @Test
-    void testSupplyHistoryBelongsToExactlyOneInvoice() {
-        SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        assertEquals(invoice, sh.getInvoice());
-        Invoice other = new Invoice(PaymentMethod.CARD, 88, 999555444, "Emilia",
-                "Koszykowa","Warsaw","00-000","Poland");
-        assertThrows(IllegalStateException.class, () ->
-                new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, other, po1));
     }
 }

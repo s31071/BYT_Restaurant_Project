@@ -216,7 +216,7 @@ public class ProductOrderTest {
         Invoice inv = new Invoice(PaymentMethod.CASH, 3, 333, "Emilia",
                 "Koszykowa","Warsaw","00-000","Poland");
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, inv, productOrder);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, inv, productOrder);
+        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, inv, productOrder);
 
         assertEquals(2, productOrder.getSupplyHistoryList().size());
     }
