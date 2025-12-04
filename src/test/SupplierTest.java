@@ -173,8 +173,12 @@ class SupplierTest {
 
     @Test
     void testAddOrderedProduct() throws Exception {
+        Supplier s2 = new Supplier(
+                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
+                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
+        );
         Product p1 = new Product(1, "Beef", 2.0, Category.MEAT, LocalDate.now().plusDays(10), 50.0);
-        ProductOrder productOrder = new ProductOrder(List.of(p1));
+        ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
 
         assertNull(productOrder.getSupplier());
 
@@ -190,8 +194,12 @@ class SupplierTest {
 
     @Test
     void testRemoveOrderedProduct() throws Exception {
+        Supplier s2 = new Supplier(
+                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
+                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
+        );
         Product p1 = new Product(2, "Chicken", 1.5, Category.MEAT, LocalDate.now().plusDays(5), 30.0);
-        ProductOrder productOrder = new ProductOrder(List.of(p1));
+        ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
 
         s.addOrderedProduct(productOrder);
 
@@ -202,8 +210,12 @@ class SupplierTest {
 
     @Test
     void testRemoveOrderedProductNotAssignedThrows() throws Exception {
+        Supplier s2 = new Supplier(
+                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
+                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
+        );
         Product p1 = new Product(3, "Turkey", 3.0, Category.MEAT, LocalDate.now().plusDays(7), 70.0);
-        ProductOrder productOrder = new ProductOrder(List.of(p1));
+        ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
 
         assertThrows(Exception.class, () -> s.removeOrderedProduct(productOrder));
     }

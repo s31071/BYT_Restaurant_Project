@@ -45,6 +45,14 @@ public class Supplier extends Person implements Serializable {
         productOrder.setSupplier(null);
     }
 
+    public HashSet<ProductOrder> getProductOrders() {
+        return productOrders;
+    }
+
+    public void setProductOrders(HashSet<ProductOrder> productOrders) {
+        this.productOrders = productOrders;
+    }
+
     public String getCompanyName() {
         return companyName;
     }

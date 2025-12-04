@@ -103,7 +103,7 @@ public class SupplyHistoryTest {
     }
 
     @Test
-    void testDeliveredWithoutPreviousOrderedThrowsException() {
+    void testDeliveredWithoutPreviousOrderedThrowsException() throws Exception {
         Supplier sup = new Supplier(
                 "Anna","Szyr","222333444",
                 "Nowogrodzka","Warsaw","00-000","Poland",
@@ -209,7 +209,7 @@ public class SupplyHistoryTest {
     }
 
     @Test
-    void testSupplyHistoryProductOrderCannotChange() {
+    void testSupplyHistoryProductOrderCannotChange() throws Exception {
         SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
 
         Supplier sup = new Supplier(
@@ -238,7 +238,7 @@ public class SupplyHistoryTest {
     }
 
     @Test
-    void testTwoProductOrdersCannotShareSameSupplyHistory() {
+    void testTwoProductOrdersCannotShareSameSupplyHistory() throws Exception {
         new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
 
         Supplier sup = new Supplier(
