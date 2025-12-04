@@ -164,7 +164,7 @@ public class ProductTest {
     @Test
     void testRemoveMethodRemovesFromExtent() {
         assertTrue(Product.getExtent().contains(product));
-        product.remove();
+        product.removeFromExtent(product);
         assertFalse(Product.getExtent().contains(product));
     }
 
