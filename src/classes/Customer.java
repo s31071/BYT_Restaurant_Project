@@ -44,12 +44,12 @@ public class Customer extends Person implements Serializable {
         extent.remove(customer);
     }
 
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<Customer>) objectInputStream.readObject();
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Customer>) in.readObject();
     }
 
     public double getLoyaltyPoints() {

@@ -84,10 +84,10 @@ public class Cook extends Employee implements Serializable {
     public static void clearExtent() {
         extent.clear();
     }
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<Cook>) objectInputStream.readObject();
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Cook>) in.readObject();
     }
 }

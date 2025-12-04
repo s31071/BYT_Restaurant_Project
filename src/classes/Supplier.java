@@ -96,12 +96,12 @@ public class Supplier extends Person implements Serializable {
         extent.remove(supplier);
     }
 
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<Supplier>) objectInputStream.readObject();
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Supplier>) in.readObject();
     }
 
     public static void clearExtent(){

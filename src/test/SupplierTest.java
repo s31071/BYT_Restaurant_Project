@@ -208,6 +208,4 @@ class SupplierTest {
         assertThrows(Exception.class, () -> s.removeOrderedProduct(productOrder));
     }
 
-
-
 }

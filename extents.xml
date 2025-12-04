@@ -86,8 +86,8 @@
       <object idref="Product0"/>
       <object class="java.time.LocalDate" method="of">
        <int>2025</int>
-       <int>11</int>
-       <int>23</int>
+       <int>12</int>
+       <int>6</int>
       </object>
      </void>
     </void>

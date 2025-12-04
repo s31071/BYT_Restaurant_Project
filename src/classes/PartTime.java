@@ -66,12 +66,12 @@ public class PartTime extends Employee implements Serializable {
         extent.remove(partTime);
     }
 
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<PartTime>) objectInputStream.readObject();
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<PartTime>) in.readObject();
     }
 
     public static void clearExtent(){
