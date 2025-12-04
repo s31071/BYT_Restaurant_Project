@@ -172,11 +172,11 @@ public class Shift implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Shift shift = (Shift) o;
-        return getNumberOfPeopleNeeded() == shift.getNumberOfPeopleNeeded() && Objects.equals(getTitle(), shift.getTitle()) && Objects.equals(getDate(), shift.getDate()) && Objects.equals(getStartTime(), shift.getStartTime()) && Objects.equals(getEndTime(), shift.getEndTime()) && Objects.equals(getEmployees(), shift.getEmployees());
+        return numberOfPeopleNeeded == shift.numberOfPeopleNeeded && Objects.equals(title, shift.title) && Objects.equals(date, shift.date) && Objects.equals(startTime, shift.startTime) && Objects.equals(endTime, shift.endTime) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTitle(), getDate(), getStartTime(), getEndTime(), getNumberOfPeopleNeeded(), getEmployees());
+        return Objects.hash(title, date, startTime, endTime, numberOfPeopleNeeded);
     }
 }

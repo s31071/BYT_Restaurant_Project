@@ -84,8 +84,9 @@ public class Product implements Serializable {
     }
 
     public void setPrice(double price) {
-        if (price < 0)
-            throw new IllegalArgumentException("Price cannot be negative");
+        if (price <= 0) {
+            throw new IllegalArgumentException("Price must be positive");
+        }
         this.price = price;
     }
 
@@ -167,11 +168,11 @@ public class Product implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return getID() == product.getID() && Double.compare(getWeight(), product.getWeight()) == 0 && Double.compare(getPrice(), product.getPrice()) == 0 && Objects.equals(getName(), product.getName()) && Objects.equals(getExpiryDate(), product.getExpiryDate()) && getCategory() == product.getCategory() && Objects.equals(getProductOrders(), product.getProductOrders());
+        return ID == product.ID && Double.compare(weight, product.weight) == 0 && Double.compare(price, product.price) == 0 && Objects.equals(name, product.name) && Objects.equals(expiryDate, product.expiryDate) && category == product.category;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getID(), getName(), getExpiryDate(), getWeight(), getCategory(), getPrice(), getProductOrders());
+        return Objects.hash(ID, name, expiryDate, weight, category, price);
     }
 }

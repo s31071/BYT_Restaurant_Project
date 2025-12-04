@@ -111,11 +111,11 @@ public class DishOrder implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         DishOrder dishOrder = (DishOrder) o;
-        return getQuantity() == dishOrder.getQuantity() && Objects.equals(getDish(), dishOrder.getDish());
+        return quantity == dishOrder.quantity && Objects.equals(dish, dishOrder.dish) && Objects.equals(order, dishOrder.order);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDish(), getQuantity());
+        return Objects.hash(dish, order, quantity);
     }
 }

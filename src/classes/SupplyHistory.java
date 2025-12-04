@@ -28,8 +28,8 @@ public class SupplyHistory implements Serializable {
                          ProductOrder productOrder) {
         setDate(date);
         setStatus(status);
-        setInvoice(invoice);
         setProductOrder(productOrder);
+        setInvoice(invoice);
         addExtent(this);
     }
 
@@ -152,11 +152,11 @@ public class SupplyHistory implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         SupplyHistory that = (SupplyHistory) o;
-        return Objects.equals(getDate(), that.getDate()) && getStatus() == that.getStatus() && Objects.equals(getInvoice(), that.getInvoice()) && Objects.equals(getProductOrder(), that.getProductOrder());
+        return Objects.equals(date, that.date) && Objects.equals(invoice, that.invoice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDate(), getStatus(), getInvoice(), getProductOrder());
+        return Objects.hash(date, invoice);
     }
 }

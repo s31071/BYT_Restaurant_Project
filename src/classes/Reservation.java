@@ -200,11 +200,11 @@ public class Reservation implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
-        return getId() == that.getId() && Objects.equals(getNameOfThePerson(), that.getNameOfThePerson()) && Objects.equals(getTimestamp(), that.getTimestamp()) && getStatus() == that.getStatus() && Objects.equals(getWaiterAssigned(), that.getWaiterAssigned()) && Objects.equals(getTable(), that.getTable());
+        return id == that.id && Objects.equals(nameOfThePerson, that.nameOfThePerson) && Objects.equals(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getNameOfThePerson(), getTimestamp(), getStatus(), getWaiterAssigned(), getTable());
+        return Objects.hash(id, nameOfThePerson, timestamp);
     }
 }

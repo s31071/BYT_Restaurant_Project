@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Invoice extends Payment implements Serializable {
 
@@ -92,14 +93,13 @@ public class Invoice extends Payment implements Serializable {
         if (sh == null) {
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
+        if (supplyHistoryList.contains(sh)) {
+            throw new IllegalArgumentException("SupplyHistory already added");
+        }
 
         supplyHistoryList.add(sh);
 
-        if (sh.getInvoice() != this) {
-            sh.setInvoice(this);
-        }
-
-        setSum();
+        this.sum += sh.getProductOrder().getTotalSum();
     }
 
     public void removeSupplyHistory(SupplyHistory sh) {
@@ -154,5 +154,18 @@ public class Invoice extends Payment implements Serializable {
 
     public static void clearExtent() {
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Invoice invoice = (Invoice) o;
+        return ID == invoice.ID && taxIdentificationNumber == invoice.taxIdentificationNumber && Double.compare(sum, invoice.sum) == 0 && Objects.equals(name, invoice.name) && Objects.equals(address, invoice.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), ID, taxIdentificationNumber, name, address, sum);
     }
 }

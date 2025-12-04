@@ -210,11 +210,11 @@ public class ProductOrder implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ProductOrder that = (ProductOrder) o;
-        return Double.compare(getTotalWeight(), that.getTotalWeight()) == 0 && Double.compare(getTotalSum(), that.getTotalSum()) == 0 && Objects.equals(getSupplier(), that.getSupplier()) && Objects.equals(getProducts(), that.getProducts()) && Objects.equals(getSupplyHistoryList(), that.getSupplyHistoryList());
+        return Double.compare(totalWeight, that.totalWeight) == 0 && Double.compare(totalSum, that.totalSum) == 0 && Objects.equals(supplier, that.supplier) && Objects.equals(products, that.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSupplier(), getProducts(), getSupplyHistoryList(), getTotalWeight(), getTotalSum());
+        return Objects.hash(supplier, totalWeight, totalSum);
     }
 }

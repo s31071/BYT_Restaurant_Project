@@ -73,13 +73,21 @@ class MenuTest {
     }
 
     @Test
-    void testMenuInstanceSeparation() {
-        Menu menu1 = new Menu("Test Menu", MenuType.FOOD);
-        Menu menu2 = new Menu("Test Menu", MenuType.FOOD);
+    void testCannotCreateDuplicateMenu() {
+        new Menu("Test Menu", MenuType.FOOD); // OK
 
-        assertNotSame(menu1, menu2);
-        assertEquals(menu1.getName(), menu2.getName());
-        assertEquals(menu1.getType(), menu2.getType());
+        assertThrows(IllegalArgumentException.class, () ->
+                new Menu("Test Menu", MenuType.FOOD)
+        );
+    }
+
+    @Test
+    void testTwoDifferentMenusAreIndependent() {
+        Menu m1 = new Menu("Menu A", MenuType.FOOD);
+        Menu m2 = new Menu("Menu B", MenuType.FOOD);
+
+        assertNotSame(m1, m2);
+        assertNotEquals(m1.getName(), m2.getName());
     }
 
     @Test

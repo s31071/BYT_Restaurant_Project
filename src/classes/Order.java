@@ -157,18 +157,6 @@ public class Order implements Serializable {
         extent.add(order);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return getId() == order.getId() && getNumberOfPeople() == order.getNumberOfPeople() && Objects.equals(getDishOrders(), order.getDishOrders()) && getStatus() == order.getStatus() && Objects.equals(getTimestamp(), order.getTimestamp()) && Objects.equals(getTable(), order.getTable()) && Objects.equals(receipt, order.receipt) && Objects.equals(dishOrders, order.dishOrders) && Objects.equals(deliveryDriver, order.deliveryDriver);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getDishOrders(), getId(), getNumberOfPeople(), getStatus(), getTimestamp(), getTable(), receipt, dishOrders, deliveryDriver);
-    }
-
     public static List<Order> getOrders() {
         return Collections.unmodifiableList(extent);
     }
@@ -267,5 +255,17 @@ public class Order implements Serializable {
         if(oldReceipt.getOrder() == this) {
             oldReceipt.removeOrder();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return id == order.id && numberOfPeople == order.numberOfPeople && Objects.equals(timestamp, order.timestamp) && Objects.equals(table, order.table) && Objects.equals(receipt, order.receipt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, numberOfPeople, timestamp, table, receipt);
     }
 }

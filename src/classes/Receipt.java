@@ -157,11 +157,11 @@ public class Receipt extends Payment implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Receipt receipt = (Receipt) o;
-        return Double.compare(getSum(), receipt.getSum()) == 0 && Objects.equals(getTip(), receipt.getTip()) && Objects.equals(getOrder(), receipt.getOrder());
+        return Double.compare(sum, receipt.sum) == 0 && Objects.equals(tip, receipt.tip) && Objects.equals(order, receipt.order);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getTip(), getOrder(), getSum());
+        return Objects.hash(super.hashCode(), tip, order, sum);
     }
 }

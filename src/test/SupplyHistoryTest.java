@@ -25,6 +25,10 @@ public class SupplyHistoryTest {
         clearProduct.setAccessible(true);
         clearProduct.invoke(null);
 
+        Method clearSupplier = Supplier.class.getDeclaredMethod("clearExtent");
+        clearSupplier.setAccessible(true);
+        clearSupplier.invoke(null);
+
         Method clearProductOrder = ProductOrder.class.getDeclaredMethod("clearExtent");
         clearProductOrder.setAccessible(true);
         clearProductOrder.invoke(null);
@@ -52,12 +56,14 @@ public class SupplyHistoryTest {
 
         today = LocalDate.now().minusDays(2);
 
-        supplyHistory = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
+        supplyHistory = new SupplyHistory(today.plusDays(2), SupplyStatus.ORDERED, invoice, productOrder);
+
+
     }
 
     @Test
     void testConstructorValid() {
-        assertEquals(today, supplyHistory.getDate());
+        assertEquals(today.plusDays(2), supplyHistory.getDate());
         assertEquals(SupplyStatus.ORDERED, supplyHistory.getStatus());
         assertEquals(invoice, supplyHistory.getInvoice());
         assertEquals(productOrder, supplyHistory.getProductOrder());
@@ -114,8 +120,8 @@ public class SupplyHistoryTest {
         Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
         ProductOrder otherOrder = new ProductOrder(List.of(p3, p4), sup);
 
-        Invoice otherInvoice = new Invoice(PaymentMethod.CARD, 2, 987654321,
-                "Anna", "Nowogrodzka", "Warsaw", "00-000", "Poland");
+        Invoice otherInvoice = new Invoice(PaymentMethod.CARD, 2000, 98765422,
+                "AnnaX", "NowogrodzkaX", "Warsaw", "00-00", "Poland");
 
         assertThrows(IllegalArgumentException.class,
                 () -> new SupplyHistory(today, SupplyStatus.DELIVERED, otherInvoice, otherOrder));
@@ -234,7 +240,7 @@ public class SupplyHistoryTest {
                 "Anna", "Nowogrodzka", "Warsaw", "00-000", "Poland");
 
         assertThrows(IllegalStateException.class,
-                () -> new SupplyHistory(today.plusDays(1), SupplyStatus.ORDERED, other, productOrder));
+                () -> new SupplyHistory(today, SupplyStatus.ORDERED, other, productOrder));
     }
 
     @Test

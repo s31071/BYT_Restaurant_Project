@@ -42,6 +42,10 @@ public class InvoiceTest {
         clearSupplyHistory.setAccessible(true);
         clearSupplyHistory.invoke(null);
 
+        Method clearSupplier = Supplier.class.getDeclaredMethod("clearExtent");
+        clearSupplier.setAccessible(true);
+        clearSupplier.invoke(null);
+
         supplier1 = new Supplier(
                 "Anna","Szyr","111222333",
                 "Koszykowa","Warsaw","00-000","Poland",

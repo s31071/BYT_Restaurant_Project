@@ -222,11 +222,11 @@ public class Table implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Table table = (Table) o;
-        return getNumber() == table.getNumber() && getNumberOfSeats() == table.getNumberOfSeats() && getStatus() == table.getStatus() && Objects.equals(getDate(), table.getDate()) && Objects.equals(getOrders(), table.getOrders()) && Objects.equals(getWaiter(), table.getWaiter()) && Objects.equals(getCustomer(), table.getCustomer()) && Objects.equals(reservations, table.reservations);
+        return number == table.number && numberOfSeats == table.numberOfSeats && Objects.equals(date, table.date) && Objects.equals(orders, table.orders) && Objects.equals(waiter, table.waiter) && Objects.equals(customer, table.customer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNumber(), getNumberOfSeats(), getStatus(), getDate(), getOrders(), getWaiter(), getCustomer(), reservations);
+        return Objects.hash(number, numberOfSeats, date, orders, waiter, customer);
     }
 }

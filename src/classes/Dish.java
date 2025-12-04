@@ -120,18 +120,6 @@ public class Dish implements Serializable {
         extent.add(dish);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Dish dish = (Dish) o;
-        return Double.compare(getPrice(), dish.getPrice()) == 0 && Objects.equals(getName(), dish.getName()) && Objects.equals(getReviews(), dish.getReviews()) && Objects.equals(getMenu(), dish.getMenu()) && Objects.equals(getDishOrders(), dish.getDishOrders());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getPrice(), getReviews(), getMenu(), getDishOrders());
-    }
-
     public static List<Dish> getExtent() {
         return Collections.unmodifiableList(extent);
     }
@@ -150,5 +138,17 @@ public class Dish implements Serializable {
 
     public static void clearExtent() {
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Dish dish = (Dish) o;
+        return Double.compare(price, dish.price) == 0 && Objects.equals(name, dish.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, price);
     }
 }

@@ -33,11 +33,11 @@ public abstract class Payment implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return getMethod() == payment.getMethod();
+        return method == payment.method;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getMethod());
+        return Objects.hashCode(method);
     }
 }

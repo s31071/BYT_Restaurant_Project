@@ -67,18 +67,6 @@ public class Menu implements Serializable {
         extent.add(menu);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Menu menu = (Menu) o;
-        return Objects.equals(getName(), menu.getName()) && getType() == menu.getType();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getType());
-    }
-
     public static List<Menu> getExtent() {
         return Collections.unmodifiableList(extent);
     }
@@ -98,5 +86,17 @@ public class Menu implements Serializable {
 
     public static void clearExtent() {
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(name, menu.name) && type == menu.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
     }
 }

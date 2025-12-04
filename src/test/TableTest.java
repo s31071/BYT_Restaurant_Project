@@ -124,11 +124,11 @@ class TableTest {
 
     @Test
     void testTableInstanceSeparation() {
-        Table table1 = new Table(1, 4, TableStatus.AVAILABLE, testDate);
-        Table table2 = new Table(1, 4, TableStatus.AVAILABLE, testDate);
+        Table table1 = new Table(10, 4, TableStatus.AVAILABLE, testDate);
+        Table table2 = new Table(11, 4, TableStatus.AVAILABLE, testDate);
 
         assertNotSame(table1, table2);
-        assertEquals(table1.getNumber(), table2.getNumber());
+        assertNotEquals(table1.getNumber(), table2.getNumber());
     }
 
     @Test
