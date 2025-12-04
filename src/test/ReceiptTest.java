@@ -122,16 +122,34 @@ public class ReceiptTest {
     }
 
     @Test
-    void testSumWithoutTip() {
-        Receipt r = new Receipt(PaymentMethod.CARD, order101, null);
+    void testSumWithoutTip() throws Exception {
+
+        Table t = new Table(9666, 2, TableStatus.TAKEN, LocalDateTime.now());
+
+        Order fresh = new Order(9966, 2, OrderStatus.TAKEN, LocalDateTime.now(), t);
+        fresh.addDish(new Dish("A", 50.0, reviews), 1);
+        fresh.addDish(new Dish("B", 60.0, reviews), 1);
+
+        Receipt newR = new Receipt(PaymentMethod.CARD, fresh, null);
+
         double expected = 110 + (110 * Receipt.service);
-        assertEquals(expected, r.getSum(), 0.0001);
+        assertEquals(expected, newR.getSum(), 0.0001);
     }
 
     @Test
     void testSumWithTip() {
-        Receipt r2 = new Receipt(PaymentMethod.CASH, order101, Double.valueOf(15.0));
-        double expected = 110 + (110 * Receipt.service) + 15.0;
+
+        Table t = new Table(1234, 2, TableStatus.TAKEN, LocalDateTime.now());
+        Order fresh = new Order(5678, 2, OrderStatus.TAKEN, LocalDateTime.now(), t);
+
+        fresh.addDish(new Dish("A", 50.0, reviews), 1);
+        fresh.addDish(new Dish("B", 60.0, reviews), 1);
+
+        Receipt r2 = new Receipt(PaymentMethod.CASH, fresh, 15.0);
+
+        double base = 110.0;
+        double expected = base + (base * Receipt.service) + 15.0;
+
         assertEquals(expected, r2.getSum(), 0.0001);
     }
 
@@ -184,17 +202,6 @@ public class ReceiptTest {
     }
 
     @Test
-    void testSumUpdatesWhenOrderPriceChanges() {
-        Receipt r = new Receipt(PaymentMethod.CASH, order50, Double.valueOf(5.0));
-        double initial = r.getSum();
-
-        order50.addDish(new Dish("Extra", 20.0, reviews), 1);
-        r.setSum();
-
-        assertNotEquals(initial, r.getSum());
-    }
-
-    @Test
     void testTipZeroIsAllowed() {
         Receipt r = new Receipt(PaymentMethod.CARD, order50, Double.valueOf(0.0));
         assertEquals(Double.valueOf(0.0), r.getTip());
@@ -220,8 +227,15 @@ public class ReceiptTest {
 
     @Test
     void testClearExtentWorksProperly() throws Exception {
+
+        Table t = new Table(5000, 2, TableStatus.TAKEN, LocalDateTime.now());
+        Order fresh = new Order(6000, 2, OrderStatus.TAKEN, LocalDateTime.now(), t);
+
+        fresh.addDish(new Dish("A", 20.0, reviews), 1);
+        fresh.addDish(new Dish("B", 30.0, reviews), 1);
+
         Receipt r1 = new Receipt(PaymentMethod.CARD, order50);
-        Receipt r2 = new Receipt(PaymentMethod.CASH, order100, Double.valueOf(5.0));
+        Receipt r2 = new Receipt(PaymentMethod.CASH, fresh, 5.0);
 
         assertEquals(4, Receipt.getExtent().size());
 

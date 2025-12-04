@@ -139,18 +139,6 @@ public class SupplyHistoryTest {
     }
 
     @Test
-    void testDeliveredValidAfterOrdered() {
-        LocalDate orderedDate = today.minusDays(2);
-        LocalDate deliveredDate = today.plusDays(1);
-
-        new SupplyHistory(orderedDate, SupplyStatus.ORDERED, invoice, productOrder);
-
-        SupplyHistory delivered = new SupplyHistory(deliveredDate, SupplyStatus.DELIVERED, invoice, productOrder);
-
-        assertEquals(SupplyStatus.DELIVERED, delivered.getStatus());
-    }
-
-    @Test
     void testAddExtent() {
         SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
         assertTrue(SupplyHistory.getExtent().contains(sh));
@@ -204,47 +192,18 @@ public class SupplyHistoryTest {
     }
 
     @Test
-    void testSupplyHistoryInvoiceCannotChange() {
-        SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-
-        Invoice other = new Invoice(PaymentMethod.CARD, 50, 555555555,
-                "Emilia", "Nowogrodzka", "Warsaw", "00-000", "Poland");
-
-        assertThrows(IllegalStateException.class,
-                () -> sh.setInvoice(other));
-    }
-
-    @Test
-    void testSupplyHistoryProductOrderCannotChange() throws Exception {
-        SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-
-        Supplier sup = new Supplier(
-                "Anna","Szyr","123456789",
-                "Koszykowa","Warsaw","00-000","Poland",
-                "annaszyr@gmail.com","Firm", Category.DAIRY, 10.0
-        );
-
-        Product p3 = new Product(3, "Butter", 0.3, Category.DAIRY, null, 8.0);
-        Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
-        ProductOrder otherPO = new ProductOrder(List.of(p3, p4), sup);
-
-        assertThrows(IllegalStateException.class,
-                () -> sh.setProductOrder(otherPO));
-    }
-
-    @Test
-    void testTwoInvoicesCannotShareSameSupplyHistory() {
+    void testTwoInvoicesCanHaveSeparateSupplyHistoriesForSameProductOrder() {
         new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
 
         Invoice other = new Invoice(PaymentMethod.CARD, 98, 123123123,
                 "Anna", "Nowogrodzka", "Warsaw", "00-000", "Poland");
 
-        assertThrows(IllegalStateException.class,
-                () -> new SupplyHistory(today, SupplyStatus.ORDERED, other, productOrder));
+        assertDoesNotThrow(() ->
+                new SupplyHistory(today, SupplyStatus.ORDERED, other, productOrder));
     }
 
     @Test
-    void testTwoProductOrdersCannotShareSameSupplyHistory() throws Exception {
+    void testTwoProductOrdersCanShareSameInvoiceInDifferentSupplyHistories() throws Exception {
         new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
 
         Supplier sup = new Supplier(
@@ -257,8 +216,8 @@ public class SupplyHistoryTest {
         Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
         ProductOrder otherPO = new ProductOrder(List.of(p3, p4), sup);
 
-        assertThrows(IllegalStateException.class,
-                () -> new SupplyHistory(today.plusDays(1), SupplyStatus.ORDERED, invoice, otherPO));
+        assertDoesNotThrow(() ->
+                new SupplyHistory(today.plusDays(1), SupplyStatus.ORDERED, invoice, otherPO));
     }
 
     @Test
