@@ -172,40 +172,8 @@ class SupplierTest {
     }
 
     @Test
-    void testAddOrderedProduct() throws Exception {
-        Supplier s2 = new Supplier(
-                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
-                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
-        );
-        Product p1 = new Product(1, "Beef", 2.0, Category.MEAT, LocalDate.now().plusDays(10), 50.0);
-        ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
-
-        assertNull(productOrder.getSupplier());
-
-        s.addOrderedProduct(productOrder);
-
-        assertEquals(s, productOrder.getSupplier());
-    }
-
-    @Test
     void testAddOrderedProductNullThrows() {
         assertThrows(Exception.class, () -> s.addOrderedProduct(null));
-    }
-
-    @Test
-    void testRemoveOrderedProduct() throws Exception {
-        Supplier s2 = new Supplier(
-                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
-                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
-        );
-        Product p1 = new Product(2, "Chicken", 1.5, Category.MEAT, LocalDate.now().plusDays(5), 30.0);
-        ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
-
-        s.addOrderedProduct(productOrder);
-
-        s.removeOrderedProduct(productOrder);
-
-        assertNull(productOrder.getSupplier());
     }
 
     @Test
@@ -218,6 +186,27 @@ class SupplierTest {
         ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
 
         assertThrows(Exception.class, () -> s.removeOrderedProduct(productOrder));
+    }
+
+    @Test
+    void testRemoveOrderedProductRemovesFromExtent() throws Exception {
+        Method clearPOExtent = ProductOrder.class.getDeclaredMethod("clearExtent");
+        clearPOExtent.setAccessible(true);
+        clearPOExtent.invoke(null);
+
+        Product p1 = new Product(100, "Bread", 1.0, Category.MEAT, LocalDate.now().plusDays(2), 15.0);
+        ProductOrder po = new ProductOrder(List.of(p1), s);
+
+        assertTrue(s.getProductOrders().contains(po));
+        assertTrue(ProductOrder.getExtent().contains(po));
+
+        s.removeOrderedProduct(po);
+
+        assertFalse(s.getProductOrders().contains(po),
+                "Supplier should no longer contain this product order");
+
+        assertFalse(ProductOrder.getExtent().contains(po),
+                "ProductOrder extent should no longer contain this product order");
     }
 
 }

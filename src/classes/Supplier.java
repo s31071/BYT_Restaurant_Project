@@ -42,7 +42,7 @@ public class Supplier extends Person implements Serializable {
             throw new Exception("Given product order is not assigned to this supplier");
         }
         productOrders.remove(productOrder);
-        productOrder.setSupplier(null);
+        ProductOrder.removeFromExtent(productOrder);
     }
 
     public HashSet<ProductOrder> getProductOrders() {
