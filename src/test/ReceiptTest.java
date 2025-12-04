@@ -97,8 +97,8 @@ public class ReceiptTest {
 
     @Test
     void testConstructorNegativeTipThrowsException() {
-        assertThrows(IllegalArgumentException.class, () ->
-                new Receipt(PaymentMethod.CARD, order50, -5.0)
+        assertThrows(IllegalArgumentException.class,
+                () -> new Receipt(PaymentMethod.CARD, order50, -5.0)
         );
     }
 
@@ -113,7 +113,6 @@ public class ReceiptTest {
         Receipt r = new Receipt(PaymentMethod.CARD, order50, 0.0);
         assertEquals(Double.valueOf(0.0), r.getTip());
     }
-
 
     @Test
     void testSetOrderNullThrowsException() {
@@ -237,5 +236,23 @@ public class ReceiptTest {
         clear.invoke(null);
 
         assertEquals(0, Receipt.getExtent().size());
+    }
+
+    @Test
+    void testOrderGetsReceiptReverse() {
+        Receipt r = new Receipt(PaymentMethod.CARD, order50);
+        assertEquals(r, order50.getReceipt());
+    }
+
+    @Test
+    void testOrderCannotHaveTwoReceipts() {
+        assertThrows(IllegalStateException.class,
+                () -> new Receipt(PaymentMethod.CASH, order100));
+    }
+
+    @Test
+    void testReceiptSetOrderMultiplicity() {
+        Receipt r = new Receipt(PaymentMethod.CASH, order50);
+        assertThrows(IllegalStateException.class, () -> r.setOrder(order100));
     }
 }

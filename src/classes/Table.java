@@ -14,16 +14,19 @@ public class Table implements Serializable {
     private int numberOfSeats;
     private TableStatus status;
     private LocalDateTime date;
-    //tą hash mape tzreba wywalić i użyć extent, ale to już usisz sama sobie dostosować, bo ja nie chce nic zepsuć
-    private HashMap<LocalDateTime,Order> orders;
-
+    private HashMap<LocalDateTime,Order> orders = new HashMap<>();
+    private Waiter waiter; //many to one with Waiter
+    private Customer customer; //many to one with Customer
+    public HashSet<Reservation> reservations = new HashSet<>();
     public Table(){}
     public Table(int number, int numberOfSeats, TableStatus status, LocalDateTime date) {
         setNumber(number);
         setNumberOfSeats(numberOfSeats);
         setStatus(status);
         setDate(date);
-        this.orders = new HashMap<>(); // iffy podejscie ale bedzie mozna poprawic
+        this.waiter = null;
+        this.customer = null;
+//        this.orders = new HashMap<>(); // iffy podejscie ale bedzie mozna poprawic
         addExtent(this);
     }
 
@@ -45,6 +48,14 @@ public class Table implements Serializable {
 
     public void setOrders(HashMap<LocalDateTime, Order> orders) {
         this.orders = orders;
+    }
+
+    public void setWaiter(Waiter waiter) {
+        this.waiter = waiter;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     private void changeTableStatus(TableStatus status){
@@ -93,6 +104,14 @@ public class Table implements Serializable {
         return orders;
     }
 
+    public Waiter getWaiter() {
+        return waiter;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
     public static void addExtent(Table table) {
         if(table == null){
             throw new IllegalArgumentException("Table cannot be null");
@@ -131,5 +150,81 @@ public class Table implements Serializable {
 
     public static void clearExtent() {
         extent.clear();
+    }
+
+    public void addManagedTableReservation(Reservation reservation) throws Exception {
+        if(reservation == null){
+            throw new Exception("Reservation cannot be null");
+        }
+        reservations.add(reservation);
+        reservation.setTableAssigned(this);
+    }
+
+    public void removeManagedTableReservation(Reservation reservation) throws Exception {
+        if(reservation == null){
+            throw new Exception("Reservation cannot be null");
+        }
+        if(!reservations.contains(reservation)){
+            throw new Exception("This reservation is not managed by this waiter");
+        }
+        reservations.remove(reservation);
+        reservation.setTableAssigned(null);
+    }
+
+    public void assignCustomer(Customer customer) {
+        if (customer == null) {
+            throw new IllegalArgumentException("Customer cannot be null");
+        }
+
+        if (this.customer != null) {
+            this.customer.removeTable(this);
+        }
+
+        this.customer = customer;
+        customer.addTable(this); //reverse connection
+    }
+
+    public void removeCustomer() {
+        if (this.customer != null) {
+            Customer temp = this.customer;
+            this.customer = null;
+            temp.removeTable(this); //reverse connection
+        }
+    }
+
+    public void addOrder(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException("Order cannot be null");
+        }
+
+        LocalDateTime timestamp = order.getTimestamp();
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Order timestamp cannot be null");
+        }
+
+        if (orders.containsKey(timestamp)) {
+            throw new IllegalArgumentException("An order already exists for this timestamp at this table");
+        }
+
+        orders.put(timestamp, order);
+        order.setTable(this); //reverse connection
+    }
+
+    public void removeOrder(LocalDateTime timestamp) {
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Timestamp cannot be null");
+        }
+
+        Order order = orders.remove(timestamp);
+        if (order != null) {
+            order.setTable(null); //reverse connection
+        }
+    }
+
+    public Order getOrderByTimestamp(LocalDateTime timestamp) {
+        if (timestamp == null) {
+            throw new IllegalArgumentException("Timestamp cannot be null");
+        }
+        return orders.get(timestamp);
     }
 }

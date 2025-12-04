@@ -1,6 +1,5 @@
 package classes;
 
-//association class with bag between invoice and productOrder
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.Serializable;
@@ -9,23 +8,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
+import java.util.Objects;
 
 public class SupplyHistory implements Serializable {
+
     private static List<SupplyHistory> extent = new ArrayList<>();
 
-    public LocalDate date;
-
+    private LocalDate date;
+    private SupplyStatus status;
     private Invoice invoice;
     private ProductOrder productOrder;
-    private SupplyStatus status;
+    // association SupplyHistory - Invoice (1 , *)
+    // association SupplyHistory - ProductOrder (1 , *)
+    public SupplyHistory() {}
 
-    public SupplyHistory(){}
-    public SupplyHistory(LocalDate date, SupplyStatus status, Invoice invoice, ProductOrder productOrder) {
+    public SupplyHistory(LocalDate date,
+                         SupplyStatus status,
+                         Invoice invoice,
+                         ProductOrder productOrder) {
         setDate(date);
+        setStatus(status);
         setInvoice(invoice);
         setProductOrder(productOrder);
         addExtent(this);
-        setStatus(status);
     }
 
     public LocalDate getDate() {
@@ -33,12 +38,10 @@ public class SupplyHistory implements Serializable {
     }
 
     public void setDate(LocalDate date) {
-        if (date == null) {
-            throw new IllegalArgumentException("Date cannot be empty");
-        }
-        if (date.isAfter(LocalDate.now())) {
+        if (date == null)
+            throw new IllegalArgumentException("Date cannot be null");
+        if (date.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Date cannot be in the future");
-        }
         this.date = date;
     }
 
@@ -47,10 +50,13 @@ public class SupplyHistory implements Serializable {
     }
 
     public void setStatus(SupplyStatus newStatus) {
-        if (newStatus == null) {
-            throw new IllegalArgumentException("Status cannot be empty");
+        if (newStatus == null)
+            throw new IllegalArgumentException("Status cannot be null");
+
+        if (newStatus == SupplyStatus.DELIVERED) {
+            validateDeliveredState();
         }
-        checkStatuses(newStatus);
+
         this.status = newStatus;
     }
 
@@ -58,87 +64,99 @@ public class SupplyHistory implements Serializable {
         return invoice;
     }
 
-    private void setInvoice(Invoice invoice) {
-        if (invoice == null) {
-            throw new IllegalArgumentException("Invoice cannot be empty");
+    public void setInvoice(Invoice newInvoice) {
+        if (newInvoice == null)
+            throw new IllegalArgumentException("Invoice cannot be null");
+
+        if (this.invoice == newInvoice)
+            return;
+
+        this.invoice = newInvoice;
+
+        if (!newInvoice.getSupplyHistoryList().contains(this)) {
+            newInvoice.addSupplyHistory(this);
         }
-        this.invoice = invoice;
+    }
+
+    public void removeInvoice() {
+        throw new IllegalStateException("SupplyHistory must always have an Invoice. Removal is not allowed.");
     }
 
     public ProductOrder getProductOrder() {
         return productOrder;
     }
 
-    private void setProductOrder(ProductOrder productOrder) {
-        if (productOrder == null) {
-            throw new IllegalArgumentException("Product order cannot be empty");
-        }
-        this.productOrder = productOrder;
-    }
+    public void setProductOrder(ProductOrder newPO) {
+        if (newPO == null)
+            throw new IllegalArgumentException("ProductOrder cannot be null");
 
-    private void checkStatuses(SupplyStatus newStatus) {
-        if (newStatus == SupplyStatus.DELIVERED) {
+        if (this.productOrder == newPO)
+            return;
 
-            List<SupplyHistory> orderedEntries = extent.stream()
-                    .filter(sh -> sh != this)
-                    .filter(sh ->
-                            sh.getInvoice().equals(this.invoice)
-                                    && sh.getProductOrder().equals(this.productOrder)
-                                    && sh.getStatus() == SupplyStatus.ORDERED)
-                    .toList();
+        this.productOrder = newPO;
 
-            if (orderedEntries.isEmpty()) {
-                throw new IllegalArgumentException("Cannot mark DELIVERED: no prior ORDERED entry exists.");
-            }
-
-            LocalDate latestOrderedDate = orderedEntries.stream()
-                    .map(SupplyHistory::getDate)
-                    .max(LocalDate::compareTo)
-                    .get();
-
-            if (!latestOrderedDate.isBefore(this.date)) {
-                throw new IllegalArgumentException("DELIVERED date must be after the ORDERED date.");
-            }
+        if (!newPO.getSupplyHistoryList().contains(this)) {
+            newPO.addSupplyHistory(this);
         }
     }
 
-    public static void addExtent(SupplyHistory supplyHistory) {
-        if(supplyHistory == null){
+    public void removeProductOrder() {
+        throw new IllegalStateException("SupplyHistory must always have a ProductOrder. Removal is not allowed.");
+    }
+
+    private void validateDeliveredState() {
+
+        List<SupplyHistory> earlierOrdered = extent.stream()
+                .filter(sh -> sh != this)
+                .filter(sh -> sh.getInvoice().equals(this.invoice))
+                .filter(sh -> sh.getProductOrder().equals(this.productOrder))
+                .filter(sh -> sh.getStatus() == SupplyStatus.ORDERED)
+                .filter(sh -> sh.getDate().isBefore(this.date))
+                .toList();
+
+        if (earlierOrdered.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Cannot set DELIVERED: No earlier ORDERED exists for same invoice & product order.");
+        }
+    }
+
+    public static void addExtent(SupplyHistory sh) {
+        if (sh == null)
             throw new IllegalArgumentException("SupplyHistory cannot be null");
-        }
-        if(extent.contains(supplyHistory)){
-            throw new IllegalArgumentException("Such supplyHistory is already in data base");
-        }
-        extent.add(supplyHistory);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
+        if (extent.contains(sh))
+            throw new IllegalArgumentException("This SupplyHistory already exists");
+        extent.add(sh);
     }
 
     public static List<SupplyHistory> getExtent() {
         return Collections.unmodifiableList(extent);
     }
 
-    public static void removeFromExtent(SupplyHistory supplyHistory) {
-        extent.remove(supplyHistory);
+    public static void removeFromExtent(SupplyHistory sh) {
+        extent.remove(sh);
     }
 
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<SupplyHistory>) objectInputStream.readObject();
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<SupplyHistory>) in.readObject();
     }
 
-    public static void clearExtent(){
+    public static void clearExtent() {
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SupplyHistory that = (SupplyHistory) o;
+        return Objects.equals(getDate(), that.getDate()) && getStatus() == that.getStatus() && Objects.equals(getInvoice(), that.getInvoice()) && Objects.equals(getProductOrder(), that.getProductOrder());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDate(), getStatus(), getInvoice(), getProductOrder());
     }
 }

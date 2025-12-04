@@ -3,9 +3,7 @@ package classes;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.io.Serializable;
 import java.io.IOException;
 
@@ -17,7 +15,9 @@ public class Order implements Serializable {
     private int numberOfPeople;
     private OrderStatus status;
     private LocalDateTime timestamp;
-    private Table table;
+    private Table table; //many to one with Table
+    private Receipt receipt; //one to one with Receipt
+    private Set<DishOrder> dishOrders = new HashSet<>();
     private DeliveryDriver deliveryDriver;
 
     public Order(){}

@@ -1,5 +1,7 @@
 package test;
 
+import classes.Order;
+import classes.OrderStatus;
 import classes.Table;
 import classes.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -185,5 +187,62 @@ class TableTest {
             }
         }
         return false;
+    }
+
+    @Test
+    public void testTableOrderConnection_AddOrder() {
+        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+        LocalDateTime timestamp = LocalDateTime.now();
+        Order order = new Order(1, 2, OrderStatus.TAKEN, timestamp, table);
+
+        table.addOrder(order);
+
+        assertEquals(order, table.getOrderByTimestamp(timestamp));
+        assertEquals(table, order.getTable());
+    }
+
+//    @Test
+//    public void testTableOrderConnection_RemoveOrder() {
+//        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+//        LocalDateTime timestamp = LocalDateTime.now();
+//        Order order = new Order(1, 2, OrderStatus.READY, timestamp, table);
+//
+//        table.addOrder(order);
+//        table.removeOrder(timestamp);
+//
+//        // Verify forward connection removed
+//        assertNull(table.getOrderByTimestamp(timestamp));
+//        // Verify reverse connection removed
+//        assertNull(order.getTable());
+//    }
+
+    @Test
+    public void testTableOrderConnection_CannotAddOrderWithSameTimestamp() {
+        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+        LocalDateTime timestamp = LocalDateTime.now();
+        Order order1 = new Order(1, 2, OrderStatus.IN_PREPARATION, timestamp);
+        Order order2 = new Order(2, 3, OrderStatus.READY, timestamp);
+
+        table.addOrder(order1);
+
+        assertThrows(IllegalArgumentException.class, () -> table.addOrder(order2));
+    }
+
+    @Test
+    public void testTableOrderConnection_MultipleOrders() {
+        Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
+        LocalDateTime timestamp1 = LocalDateTime.now();
+        LocalDateTime timestamp2 = LocalDateTime.now().plusMinutes(30);
+        Order order1 = new Order(1, 2, OrderStatus.IN_PREPARATION, timestamp1);
+        Order order2 = new Order(2, 3, OrderStatus.IN_PREPARATION, timestamp2);
+
+        table.addOrder(order1);
+        table.addOrder(order2);
+
+        assertEquals(2, table.getOrders().size());
+        assertEquals(order1, table.getOrderByTimestamp(timestamp1));
+        assertEquals(order2, table.getOrderByTimestamp(timestamp2));
+        assertEquals(table, order1.getTable());
+        assertEquals(table, order2.getTable());
     }
 }

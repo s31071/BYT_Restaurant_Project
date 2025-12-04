@@ -7,39 +7,38 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Invoice extends Payment implements Serializable {
+
     private static List<Invoice> extent = new ArrayList<>();
 
-    public long ID;
-    public long taxIdentificationNumber;
-    public String name;
+    private long ID;
+    private long taxIdentificationNumber;
+    private String name;
     private Address address;
-    private ProductOrder productOrder;
+    // association Invoice - SupplyHistory (1 , *)
+    private List<SupplyHistory> supplyHistoryList = new ArrayList<>();
+
     private double sum;
 
-    public Invoice(){}
+    public Invoice() {}
 
-    public Invoice(PaymentMethod method, long ID, long taxIdentificationNumber, String name,
-                   String street, String city, String postalCode, String country, ProductOrder productOrder) {
+    public Invoice(PaymentMethod method, long ID, long taxId, String name,
+                   String street, String city, String postalCode, String country) {
+
         super(method);
-        setID(ID);
-        setTaxIdentificationNumber(taxIdentificationNumber);
-        setName(name);
-        Address address = new Address(street, city, postalCode, country);
-        setAddress(address);
-        setProductOrder(productOrder);
-        setSum();
-        addExtent(this);
-    }
 
-    @Override
-    public void setSum() {
-        double value = 0.0;
-        if (productOrder != null) {
-            value = productOrder.getTotalSum();
-        }
-        this.sum = value;
+        setID(ID);
+        setTaxIdentificationNumber(taxId);
+        setName(name);
+
+        Address addr = new Address(street, city, postalCode, country);
+        setAddress(addr);
+
+        setSum();
+
+        addExtent(this);
     }
 
     public long getID() {
@@ -86,16 +85,41 @@ public class Invoice extends Payment implements Serializable {
         this.address = address;
     }
 
-    public ProductOrder getProductOrder() {
-        return productOrder;
+    public List<SupplyHistory> getSupplyHistoryList() {
+        return Collections.unmodifiableList(supplyHistoryList);
     }
 
-    public void setProductOrder(ProductOrder productOrder) {
-        if (productOrder == null) {
-            throw new IllegalArgumentException("ProductOrder cannot be empty");
+    public void addSupplyHistory(SupplyHistory sh) {
+        if (sh == null) {
+            throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
-        this.productOrder = productOrder;
+
+        supplyHistoryList.add(sh);
+
+        if (sh.getInvoice() != this) {
+            sh.setInvoice(this);
+        }
+
         setSum();
+    }
+
+    public void removeSupplyHistory(SupplyHistory sh) {
+        throw new IllegalStateException("SupplyHistory cannot be removed from Invoice. Delete the SupplyHistory instance instead.");
+    }
+
+    @Override
+    public void setSum() {
+        double total = 0;
+
+        for (SupplyHistory sh : supplyHistoryList) {
+            if (sh.getProductOrder() != null) {
+                double v = sh.getProductOrder().getTotalSum();
+                if (v < 0) throw new IllegalStateException("ProductOrder total cannot be negative");
+                total += v;
+            }
+        }
+
+        this.sum = total;
     }
 
     @Override
@@ -104,42 +128,45 @@ public class Invoice extends Payment implements Serializable {
     }
 
     public static void addExtent(Invoice invoice) {
-        if(invoice == null){
+        if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null");
         }
-        if(extent.contains(invoice)){
-            throw new IllegalArgumentException("Such invoice is already in data base");
+        if (extent.contains(invoice)) {
+            throw new IllegalArgumentException("Invoice already exists in system");
         }
         extent.add(invoice);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    public static List<Invoice> getExtent() {
-        return Collections.unmodifiableList(extent);
     }
 
     public static void removeFromExtent(Invoice invoice) {
         extent.remove(invoice);
     }
 
-    public static void writeExtent(XMLEncoder objectOutputStream) throws IOException {
-        objectOutputStream.writeObject(extent);
+    public static List<Invoice> getExtent() {
+        return Collections.unmodifiableList(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
-        extent = (List<Invoice>) objectInputStream.readObject();
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
     }
 
-    public static void clearExtent(){
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Invoice>) in.readObject();
+    }
+
+    public static void clearExtent() {
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Invoice invoice = (Invoice) o;
+        return getID() == invoice.getID() && getTaxIdentificationNumber() == invoice.getTaxIdentificationNumber() && Double.compare(getSum(), invoice.getSum()) == 0 && Objects.equals(getName(), invoice.getName()) && Objects.equals(getAddress(), invoice.getAddress()) && Objects.equals(getSupplyHistoryList(), invoice.getSupplyHistoryList());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getID(), getTaxIdentificationNumber(), getName(), getAddress(), getSupplyHistoryList(), getSum());
     }
 }

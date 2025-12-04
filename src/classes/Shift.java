@@ -51,6 +51,33 @@ public class Shift implements Serializable {
         }
     }
 
+    public void assignEmployee(Employee employee) throws Exception {
+        if (employee == null) {
+            throw new IllegalArgumentException("Employee cannot be null");
+        }
+
+        if (employees.contains(employee)) {
+            throw new IllegalArgumentException("This employee is already assigned to this shift");
+        }
+
+        if (employees.size() >= numberOfPeopleNeeded) {
+            throw new IllegalStateException("This shift has reached the maximum number of employees needed");
+        }
+
+        employees.add(employee);
+        employee.addWorkedInShift(this); //reverse connection
+    }
+
+    public void removeEmployee(Employee employee) throws Exception {
+        if (employee == null) {
+            throw new IllegalArgumentException("Employee cannot be null");
+        }
+
+        if (employees.remove(employee)) {
+            employee.removeWorkedInShift(this); //reverse connection
+        }
+    }
+
     public void setNumberOfPeopleNeeded(int numberOfPeopleNeeded) {
         if(numberOfPeopleNeeded < 4) {
             throw new IllegalArgumentException("Number of people needed must be greater than 3");
