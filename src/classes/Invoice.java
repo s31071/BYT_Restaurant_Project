@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
-import java.util.Objects;
 
 public class Invoice extends Payment implements Serializable {
 
@@ -17,7 +16,7 @@ public class Invoice extends Payment implements Serializable {
     private long taxIdentificationNumber;
     private String name;
     private Address address;
-    // association Invoice - SupplyHistory (1 , *)
+
     private List<SupplyHistory> supplyHistoryList = new ArrayList<>();
 
     private double sum;
@@ -155,18 +154,5 @@ public class Invoice extends Payment implements Serializable {
 
     public static void clearExtent() {
         extent.clear();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Invoice invoice = (Invoice) o;
-        return getID() == invoice.getID() && getTaxIdentificationNumber() == invoice.getTaxIdentificationNumber() && Double.compare(getSum(), invoice.getSum()) == 0 && Objects.equals(getName(), invoice.getName()) && Objects.equals(getAddress(), invoice.getAddress()) && Objects.equals(getSupplyHistoryList(), invoice.getSupplyHistoryList());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getID(), getTaxIdentificationNumber(), getName(), getAddress(), getSupplyHistoryList(), getSum());
     }
 }
