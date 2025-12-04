@@ -102,12 +102,14 @@ public class Dish implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (o == null || getClass() != o.getClass()) return false;
+        Dish dish = (Dish) o;
+        return Double.compare(getPrice(), dish.getPrice()) == 0 && Objects.equals(getName(), dish.getName()) && Objects.equals(getReviews(), dish.getReviews()) && Objects.equals(getMenu(), dish.getMenu()) && Objects.equals(getDishOrders(), dish.getDishOrders());
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(getName(), getPrice(), getReviews(), getMenu(), getDishOrders());
     }
 
     public static List<Dish> getExtent() {

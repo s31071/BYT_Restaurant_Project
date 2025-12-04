@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class DishOrder implements Serializable {
     private Dish dish;
@@ -35,16 +36,6 @@ public class DishOrder implements Serializable {
         extent.add(DishOrder);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
     public static List<DishOrder> getExtent() {
         return Collections.unmodifiableList(extent);
     }
@@ -63,5 +54,17 @@ public class DishOrder implements Serializable {
 
     public static void clearExtent(){
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DishOrder dishOrder = (DishOrder) o;
+        return getQuantity() == dishOrder.getQuantity() && Objects.equals(getDish(), dishOrder.getDish());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDish(), getQuantity());
     }
 }

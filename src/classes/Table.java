@@ -122,16 +122,6 @@ public class Table implements Serializable {
         extent.add(table);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
     public static List<Table> getExtent() {
         return Collections.unmodifiableList(extent);
     }
@@ -226,5 +216,17 @@ public class Table implements Serializable {
             throw new IllegalArgumentException("Timestamp cannot be null");
         }
         return orders.get(timestamp);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Table table = (Table) o;
+        return getNumber() == table.getNumber() && getNumberOfSeats() == table.getNumberOfSeats() && getStatus() == table.getStatus() && Objects.equals(getDate(), table.getDate()) && Objects.equals(getOrders(), table.getOrders()) && Objects.equals(getWaiter(), table.getWaiter()) && Objects.equals(getCustomer(), table.getCustomer()) && Objects.equals(reservations, table.reservations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNumber(), getNumberOfSeats(), getStatus(), getDate(), getOrders(), getWaiter(), getCustomer(), reservations);
     }
 }

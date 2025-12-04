@@ -3,10 +3,7 @@ package classes;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.io.Serializable;
 import java.io.IOException;
 
@@ -173,11 +170,13 @@ public class Shift implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (o == null || getClass() != o.getClass()) return false;
+        Shift shift = (Shift) o;
+        return getNumberOfPeopleNeeded() == shift.getNumberOfPeopleNeeded() && Objects.equals(getTitle(), shift.getTitle()) && Objects.equals(getDate(), shift.getDate()) && Objects.equals(getStartTime(), shift.getStartTime()) && Objects.equals(getEndTime(), shift.getEndTime()) && Objects.equals(getEmployees(), shift.getEmployees());
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(getTitle(), getDate(), getStartTime(), getEndTime(), getNumberOfPeopleNeeded(), getEmployees());
     }
 }

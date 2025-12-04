@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Reservation implements Serializable {
     private static List<Reservation> extent = new ArrayList<>();
@@ -174,16 +175,6 @@ public class Reservation implements Serializable {
         extent.add(reservation);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 
     public static List<Reservation> getExtent() {
         return Collections.unmodifiableList(extent);
@@ -203,5 +194,17 @@ public class Reservation implements Serializable {
 
     public static void clearExtent(){
         extent.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Reservation that = (Reservation) o;
+        return getId() == that.getId() && Objects.equals(getNameOfThePerson(), that.getNameOfThePerson()) && Objects.equals(getTimestamp(), that.getTimestamp()) && getStatus() == that.getStatus() && Objects.equals(getWaiterAssigned(), that.getWaiterAssigned()) && Objects.equals(getTable(), that.getTable());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNameOfThePerson(), getTimestamp(), getStatus(), getWaiterAssigned(), getTable());
     }
 }

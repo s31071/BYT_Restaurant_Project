@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Menu implements Serializable {
     private static List<Menu> extent = new ArrayList<>();
@@ -68,12 +69,14 @@ public class Menu implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(getName(), menu.getName()) && getType() == menu.getType();
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(getName(), getType());
     }
 
     public static List<Menu> getExtent() {

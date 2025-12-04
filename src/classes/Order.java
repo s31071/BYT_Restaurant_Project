@@ -128,12 +128,14 @@ public class Order implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return getId() == order.getId() && getNumberOfPeople() == order.getNumberOfPeople() && Objects.equals(getDishes(), order.getDishes()) && getStatus() == order.getStatus() && Objects.equals(getTimestamp(), order.getTimestamp()) && Objects.equals(getTable(), order.getTable()) && Objects.equals(receipt, order.receipt) && Objects.equals(dishOrders, order.dishOrders) && Objects.equals(deliveryDriver, order.deliveryDriver);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(getDishes(), getId(), getNumberOfPeople(), getStatus(), getTimestamp(), getTable(), receipt, dishOrders, deliveryDriver);
     }
 
     public static List<Order> getOrders() {
