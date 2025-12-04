@@ -24,7 +24,7 @@ public class ProductOrder implements Serializable {
 
     public ProductOrder() {}
 
-    public ProductOrder(List<Product> products, Supplier supplier) {
+    public ProductOrder(List<Product> products, Supplier supplier) throws Exception {
         setProducts(products);
         setSupplier(supplier);
         setTotalWeight();
@@ -42,7 +42,7 @@ public class ProductOrder implements Serializable {
         return supplier;
     }
 
-    public void setSupplier(Supplier newSupplier) {
+    public void setSupplier(Supplier newSupplier) throws Exception {
 
         if (newSupplier == null) {
             throw new IllegalArgumentException("Supplier cannot be null for ProductOrder (multiplicity 1)");
@@ -56,13 +56,13 @@ public class ProductOrder implements Serializable {
             Supplier old = this.supplier;
             this.supplier = null;
 
-            old.removeProductOrder(this);
+            old.getProductOrders().remove(this);
         }
 
         this.supplier = newSupplier;
 
         if (!newSupplier.getProductOrders().contains(this)) {
-            newSupplier.addProductOrder(this);
+            newSupplier.addOrderedProduct(this);
         }
     }
 

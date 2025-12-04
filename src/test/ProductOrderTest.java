@@ -98,7 +98,7 @@ public class ProductOrderTest {
     }
 
     @Test
-    void testAddExtent() {
+    void testAddExtent() throws Exception {
         ProductOrder order2 = new ProductOrder(List.of(p1), supplier1);
         assertEquals(2, ProductOrder.getExtent().size());
         assertTrue(ProductOrder.getExtent().contains(order2));
@@ -128,7 +128,7 @@ public class ProductOrderTest {
     }
 
     @Test
-    void testMultipleOrdersInExtent() {
+    void testMultipleOrdersInExtent() throws Exception {
         ProductOrder o1 = new ProductOrder(List.of(p1), supplier1);
         ProductOrder o2 = new ProductOrder(List.of(p2), supplier1);
         assertEquals(3, ProductOrder.getExtent().size());
@@ -165,7 +165,7 @@ public class ProductOrderTest {
     }
 
     @Test
-    void testSupplierSetValid() {
+    void testSupplierSetValid() throws Exception {
         order.setSupplier(supplier2);
         assertEquals(supplier2, order.getSupplier());
         assertTrue(supplier2.getProductOrders().contains(order));
@@ -182,7 +182,7 @@ public class ProductOrderTest {
     }
 
     @Test
-    void testSupplierUpdatesReverse() {
+    void testSupplierUpdatesReverse() throws Exception {
         order.setSupplier(supplier2);
         assertFalse(supplier1.getProductOrders().contains(order));
         assertTrue(supplier2.getProductOrders().contains(order));
