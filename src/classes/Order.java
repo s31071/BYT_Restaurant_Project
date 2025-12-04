@@ -246,7 +246,7 @@ public class Order implements Serializable {
         extent.clear();
     }
     public void removeReceipt() {
-        if(this.receipt != null) {
+        if(this.receipt == null) {
             throw new IllegalArgumentException("Cannot remove this receipt");
         }
         Receipt oldReceipt = this.receipt;

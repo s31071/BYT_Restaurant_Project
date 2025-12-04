@@ -50,9 +50,9 @@ public class DishOrder implements Serializable {
             throw new IllegalStateException("Cannot change order after DishOrder is created");
         }
         this.order = order;
-        if(!order.getDishOrders().contains(this)) {
-            order.addDishOrderOrder(this);
-        }
+//        if(!order.getDishOrders().contains(this)) {
+//            order.addDishOrderOrder(this);
+//        }
     }
 
     public void setQuantity(int quantity) {
