@@ -205,7 +205,7 @@ public class Order implements Serializable {
             }
         }
 
-        dishOrders.add(new DishOrder(dish, this, quantity));
+        new DishOrder(dish, this, quantity);
     }
 
     public void removeDish(Dish dish) {

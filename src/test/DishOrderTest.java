@@ -129,12 +129,14 @@ class DishOrderTest {
     @Test
     void testGetExtentUnmodifiable() {
         Dish dish = new Dish("Steak", 25.00, reviews);
+        Dish dish2 = new Dish("Chicken", 20.00, reviews);
         DishOrder dishOrder = new DishOrder(dish, testOrder, 1);
 
         assertThrows(UnsupportedOperationException.class, () -> {
-            DishOrder.getExtent().add(new DishOrder(dish, testOrder, 2));
+            DishOrder.getExtent().add(new DishOrder(dish2, testOrder, 2));
         });
     }
+
 
     @Test
     void testClearExtent() {
