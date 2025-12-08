@@ -34,25 +34,39 @@ public class Reservation implements Serializable {
         addExtent(this);
     }
 
-    public void setWaiterAssigned(Waiter waiterAssigned){
+    public void setWaiterAssigned(Waiter waiterAssigned) throws Exception {
+        if(waiterAssigned == null){
+            throw new Exception("Waiter cannot be null");
+        }
         this.waiterAssigned = waiterAssigned;
     }
 
     public void addWaiterManaging(Waiter waiter) throws Exception {
         if(this.waiterAssigned == null) {
             setWaiterAssigned(waiter);
-            waiter.getReservations().add(this);
-        }else{
-            throw new Exception("This reservation has already a waiter assigned");
+
+            if(!waiter.getReservations().contains(this)){
+                waiter.addManagedReservation(this);
+            }
+        }else if (this.waiterAssigned != waiter) {
+            throw new Exception("This reservation already has a waiter assigned");
         }
     }
 
-    public void removeWaiterManaging() throws Exception {
-        if(this.waiterAssigned == null){
-            throw new Exception("There is no waiter assigned for this reservation yet");
+    public void removeWaiterManaging(Waiter waiter) throws Exception {
+        if (waiter == null) {
+            throw new Exception("Waiter cannot be null");
         }
-        this.waiterAssigned.getReservations().remove(this);
+
+        if (this.waiterAssigned != waiter) {
+            return;
+        }
+
         this.waiterAssigned = null;
+
+        if (waiter.getReservations().contains(this)) {
+            waiter.removeManagedReservation(this);
+        }
     }
 
     public void setTableAssigned(Table table){

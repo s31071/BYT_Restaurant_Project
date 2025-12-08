@@ -14,7 +14,7 @@ class PartTimeTest {
     private PartTime partTime;
 
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void setUp() throws Exception {
         Method clearMethod = PartTime.class.getDeclaredMethod("clearExtent");
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);

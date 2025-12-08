@@ -170,24 +170,24 @@ public class ProductOrderTest {
 
     @Test
     void testSupplierSetValid() throws Exception {
-        productOrder.setSupplier(supplier2);
+        productOrder.addSupplier(supplier2);
         assertEquals(supplier2, productOrder.getSupplier());
         assertTrue(supplier2.getProductOrders().contains(productOrder));
     }
 
     @Test
     void testSupplierNullThrows() {
-        assertThrows(IllegalArgumentException.class, () -> productOrder.setSupplier(null));
+        assertThrows(IllegalArgumentException.class, () -> productOrder.addSupplier(null));
     }
 
     @Test
     void testSupplierCannotBeRemoved() {
-        assertThrows(IllegalStateException.class, () -> productOrder.removeSupplier());
+        assertThrows(IllegalStateException.class, () -> productOrder.removeSupplier(supplier1));
     }
 
     @Test
     void testSupplierUpdatesReverse() throws Exception {
-        productOrder.setSupplier(supplier2);
+        productOrder.addSupplier(supplier2);
         assertFalse(supplier1.getProductOrders().contains(productOrder));
         assertTrue(supplier2.getProductOrders().contains(productOrder));
     }

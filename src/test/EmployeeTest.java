@@ -16,7 +16,7 @@ class EmployeeTest {
 
         public TestEmployee(String name, String surname, String phoneNumber,
                             String street, String city, String postalCode, String country,
-                            String email, LocalDate employmentDate, Contract contract, Employee manager) {
+                            String email, LocalDate employmentDate, Contract contract, Employee manager) throws Exception {
             super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract, manager);
         }
 
@@ -31,7 +31,7 @@ class EmployeeTest {
     private LocalDate hireDate;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         hireDate = LocalDate.now().minusYears(5);
         employee = new TestEmployee("Jan", "Kowalski", "123456789",
                 "Markowskiego", "Piaseczno", "05-500", "Poland",
@@ -212,7 +212,7 @@ class EmployeeTest {
     }
 
     @Test
-    void shouldThrowWhenManagerHasOwnManager() {
+    void shouldThrowWhenManagerHasOwnManager() throws Exception {
         TestEmployee boss = new TestEmployee(
                 "Boss", "Top", "111222333",
                 "S", "C", "00", "P",

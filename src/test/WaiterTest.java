@@ -16,7 +16,7 @@ class WaiterTest {
     private Waiter waiter;
 
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void setUp() throws Exception {
         Method clearMethod = Waiter.class.getDeclaredMethod("clearExtent");
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
@@ -106,7 +106,7 @@ class WaiterTest {
     }
 
     @Test
-    void testCalculateSalaryIncreasesWithYearsWorked() {
+    void testCalculateSalaryIncreasesWithYearsWorked() throws Exception {
         Waiter w = new Waiter("Anna", "Kowal", "987654321", "Dluga", "Warszawa", "00-001",
                 "Poland", "annakowal@gmail.com", LocalDate.now().minusYears(5),
                 Contract.EMPLOYMENT_CONTRACT, WorkwearSize.S, 10, null);

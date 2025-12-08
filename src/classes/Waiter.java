@@ -20,7 +20,7 @@ public class Waiter extends Employee implements Serializable {
 
     public Waiter(){}
 
-    public Waiter(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, WorkwearSize workwearSize, double maximumTables, Employee manager) {
+    public Waiter(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, WorkwearSize workwearSize, double maximumTables, Employee manager) throws Exception {
         super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract, manager);
         setWorkwearSize(workwearSize);
         setMaximumTables(maximumTables);
@@ -33,19 +33,24 @@ public class Waiter extends Employee implements Serializable {
         if(reservation == null){
             throw new Exception("Reservation cannot be null");
         }
-        reservations.add(reservation);
-        reservation.setWaiterAssigned(this);
+        if(!reservations.contains(reservation)){
+            reservations.add(reservation);
+            if(reservation.getWaiterAssigned() != this) {
+                reservation.addWaiterManaging(this);
+            }
+        }
     }
 
     public void removeManagedReservation(Reservation reservation) throws Exception {
-        if(reservation == null){
+        if (reservation == null) {
             throw new Exception("Reservation cannot be null");
         }
-        if(!reservations.contains(reservation)){
-            throw new Exception("This reservation is not managed by this waiter");
+
+        if (reservations.remove(reservation)) {
+            if (reservation.getWaiterAssigned() == this) {
+                reservation.removeWaiterManaging(this);
+            }
         }
-        reservations.remove(reservation);
-        reservation.setWaiterAssigned(null);
     }
 
     @Override

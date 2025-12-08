@@ -26,7 +26,7 @@ public class ProductOrder implements Serializable {
 
     public ProductOrder(List<Product> products, Supplier supplier) throws Exception {
         setProducts(products);
-        setSupplier(supplier);
+        addSupplier(supplier);
         setTotalWeight();
         setTotalSum();
         addExtent(this);
@@ -42,32 +42,33 @@ public class ProductOrder implements Serializable {
         return supplier;
     }
 
-    public void setSupplier(Supplier newSupplier) throws Exception {
+    public void addSupplier(Supplier supplier) throws Exception {
 
-        if (newSupplier == null) {
-            throw new IllegalArgumentException("Supplier cannot be null for ProductOrder (multiplicity 1)");
-        }
+        if(this.supplier == null) {
+            setSupplier(supplier);
 
-        if (this.supplier == newSupplier) {
-            return;
-        }
-
-        if (this.supplier != null) {
-            Supplier old = this.supplier;
-            this.supplier = null;
-
-            old.getProductOrders().remove(this);
-        }
-
-        this.supplier = newSupplier;
-
-        if (!newSupplier.getProductOrders().contains(this)) {
-            newSupplier.addOrderedProduct(this);
+            if(!supplier.getProductOrders().contains(this)){
+                supplier.addOrderedProduct(this);
+            }
+        }else if (this.supplier != supplier) {
+            throw new Exception("This product order already has a supplier assigned");
         }
     }
 
-    public void removeSupplier() {
-        throw new IllegalStateException("ProductOrder must always have exactly 1 Supplier. Removing Supplier is not allowed.");
+    public void removeSupplier(Supplier supplier) throws Exception {
+        if (supplier == null) {
+            throw new Exception("Supplier cannot be null");
+        }
+
+        if (this.supplier != supplier) {
+            return;
+        }
+
+        this.supplier = null;
+
+        if (supplier.getProductOrders().contains(this)) {
+            supplier.removeOrderedProduct(this);
+        }
     }
 
     public List<Product> getProducts() {
@@ -150,6 +151,13 @@ public class ProductOrder implements Serializable {
 
     public void removeSupplyHistory(SupplyHistory sh) {
         throw new IllegalStateException("SupplyHistory cannot be detached from ProductOrder. Delete the SupplyHistory instance instead.");
+    }
+
+    public void setSupplier(Supplier supplier) throws Exception {
+        if(supplier == null){
+            throw new Exception("Supplier cannot be null");
+        }
+        this.supplier = supplier;
     }
 
     private void setTotalSum() {

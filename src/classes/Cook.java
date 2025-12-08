@@ -15,7 +15,7 @@ public class Cook extends Employee implements Serializable {
     private String specialization;
 
     public Cook(){}
-    public Cook(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, double yearsOfExperience, String title, String specialization, Employee manager) {
+    public Cook(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, double yearsOfExperience, String title, String specialization, Employee manager) throws Exception {
         super(name, surname, phoneNumber, street, city, postalCode, country, email, employmentDate, contract, manager);
         setYearsOfExperience(yearsOfExperience);
         setTitle(title);

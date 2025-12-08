@@ -54,7 +54,10 @@ public class Table implements Serializable {
         this.waiter = waiter;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(Customer customer) throws Exception {
+        if(customer == null){
+            throw new Exception("Customer cannot be null");
+        }
         this.customer = customer;
     }
 
@@ -161,24 +164,30 @@ public class Table implements Serializable {
         reservation.setTableAssigned(null);
     }
 
-    public void assignCustomer(Customer customer) {
-        if (customer == null) {
-            throw new IllegalArgumentException("Customer cannot be null");
+    public void addCustomer(Customer customer) throws Exception {
+        if (this.customer == null) {
+            setCustomer(customer);
+            if(!customer.getTablesTaken().contains(this)){
+                customer.addTable(this);
+            }
+        }else if(this.customer != customer){
+            throw new Exception("This table already has a customer assigned");
         }
-
-        if (this.customer != null) {
-            this.customer.removeTable(this);
-        }
-
-        this.customer = customer;
-        customer.addTable(this); //reverse connection
     }
 
-    public void removeCustomer() {
-        if (this.customer != null) {
-            Customer temp = this.customer;
-            this.customer = null;
-            temp.removeTable(this); //reverse connection
+    public void removeCustomer(Customer customer) throws Exception {
+        if (customer == null) {
+            throw new Exception(" cannot be null");
+        }
+
+        if (this.customer != customer) {
+            return;
+        }
+
+        this.customer = null;
+
+        if (customer.getTablesTaken().contains(this)) {
+            customer.removeTable(this);
         }
     }
 

@@ -20,49 +20,88 @@ public abstract class Employee extends Person implements Serializable {
 
     public Employee(){}
 
-    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager){
+    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager) throws Exception {
         super(name, surname, phoneNumber, street, city, postalCode, country, email);
         setEmploymentDate(employmentDate);
         setContract(contract);
 
-        if(manager == null){
-            managedEmployees = new HashSet<>();
-        }
+        managedEmployees = new HashSet<>();
         shiftsAssigned = new HashSet<>();
+
+        if (manager != null) {
+            manager.addManagedEmployee(this);
+        }
     }
 
     public void addWorkedInShift(Shift shift) throws Exception {
-        if(shift == null){
+        if (shift == null) {
             throw new Exception("Shift cannot be null");
         }
-        shiftsAssigned.add(shift);
-        shift.getEmployees().add(this);
+
+        if (!shiftsAssigned.contains(shift)) {
+            shiftsAssigned.add(shift);
+
+            if (!shift.getEmployees().contains(this)) {
+                shift.addEmployee(this);
+            }
+        }
     }
 
     public void removeWorkedInShift(Shift shift) throws Exception {
-        if(shift == null){
+        if (shift == null) {
             throw new Exception("Shift cannot be null");
         }
-        shiftsAssigned.remove(shift);
-        shift.getEmployees().remove(this);
+
+        if (shiftsAssigned.remove(shift)) {
+            if (shift.getEmployees().contains(this)) {
+                shift.removeEmployee(this);
+            }
+        }
     }
     public void setManager(Employee manager){
+        if (this.manager == manager) return;
+
+        if (this.manager != null) {
+            this.manager.managedEmployees.remove(this);
+        }
+
         this.manager = manager;
+
+        if (manager != null && !manager.managedEmployees.contains(this)) {
+            manager.managedEmployees.add(this);
+        }
     }
 
     public void addManagedEmployee(Employee managed) throws Exception {
-        if(manager == null){
-            managedEmployees.add(managed);
-            managed.setManager(this);
-        }else{
-            throw new Exception("An employee who already has manager cannot be a manager of any other employees");
+        if (managed == null) {
+            throw new Exception("Managed employee cannot be null");
         }
+
+        if (managed == this) {
+            throw new Exception("An employee cannot manage themselves");
+        }
+
+        if (!managedEmployees.contains(managed)) {
+            managedEmployees.add(managed);
+
+            if (managed.manager != this) {
+                managed.setManager(this);
+            }
+        }
+    }
+
+    public void removeManagedEmployee(Employee managed){
+
     }
 
     protected abstract double calculateSalary();
 
     public double getBaseSalary() {
         return baseSalary;
+    }
+
+    public HashSet<Shift> getShiftsAssigned() {
+        return shiftsAssigned;
     }
 
     private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){

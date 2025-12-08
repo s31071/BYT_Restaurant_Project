@@ -36,24 +36,34 @@ public class Customer extends Person implements Serializable {
         extent.add(customer);
     }
 
-    public void addTable(Table table) {
+    public void addTable(Table table) throws Exception {
         if (table == null) {
             throw new IllegalArgumentException("Table cannot be null");
         }
-
-        if(tablesTaken.contains(table)) {
-            throw new IllegalArgumentException("This customer is already assigned to this table");
+        if(!tablesTaken.contains(table)) {
+            tablesTaken.add(table);
+            if(table.getCustomer() != this){
+                table.addCustomer(this);
+            }
         }
-
-        tablesTaken.add(table);
     }
 
-    public void removeTable(Table table) {
+    public void removeTable(Table table) throws Exception {
         if (table == null) {
-            throw new IllegalArgumentException("Table cannot be null");
+            throw new Exception("Table cannot be null");
         }
-        tablesTaken.remove(table);
+
+        if (tablesTaken.remove(table)) {
+            if (table.getCustomer() == this) {
+                table.removeCustomer(this);
+            }
+        }
     }
+
+    public HashSet<Table> getTablesTaken() {
+        return tablesTaken;
+    }
+
     public static List<Customer> getExtent() {
         return Collections.unmodifiableList(extent);
     }

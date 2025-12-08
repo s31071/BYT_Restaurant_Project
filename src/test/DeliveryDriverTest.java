@@ -15,7 +15,7 @@ class DeliveryDriverTest {
 
     private DeliveryDriver driver;
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void setUp() throws Exception {
         Method clearMethod = DeliveryDriver.class.getDeclaredMethod("clearExtent");
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);

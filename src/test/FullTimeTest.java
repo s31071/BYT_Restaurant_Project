@@ -14,7 +14,7 @@ class FullTimeTest {
     private FullTime emp;
 
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void setUp() throws Exception {
         Method clearMethod = FullTime.class.getDeclaredMethod("clearExtent");
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
@@ -55,14 +55,14 @@ class FullTimeTest {
     }
 
     @Test
-    void testCalculateSalaryB2BContract() {
+    void testCalculateSalaryB2BContract() throws Exception {
         FullTime ft = new FullTime("Adam", "Nowak", "987654321", "Kwiatowa", "Warszawa", "00-001",
                 "Poland", "adam@example.com", LocalDate.of(2018, 1, 1), Contract.B2B, null);
         assertTrue(ft.calculateSalary() > 0);
     }
 
     @Test
-    void testCalculateSalaryIncreasesWithYearsWorked() {
+    void testCalculateSalaryIncreasesWithYearsWorked() throws Exception {
         FullTime older = new FullTime("Anna", "Zielinska", "555666777", "Lesna", "Krakow", "30-001",
                 "Poland", "anna@example.com", LocalDate.of(2010, 1, 1), Contract.EMPLOYMENT_CONTRACT, null);
         double s1 = older.calculateSalary();
@@ -73,7 +73,7 @@ class FullTimeTest {
     }
 
     @Test
-    void testConstructorAllFieldsSetCorrectly() {
+    void testConstructorAllFieldsSetCorrectly() throws Exception {
         FullTime f = new FullTime("Kamil", "Kowalski", "111222333", "Dluga", "Lublin",
                 "20-001", "Poland", "kamil@example.com", LocalDate.of(2019, 5, 10), Contract.MANDATE_CONTRACT, null);
         assertEquals("Kamil", f.getName());
@@ -82,7 +82,7 @@ class FullTimeTest {
     }
 
     @Test
-    void testCalculateSalaryZeroIfJustEmployed() {
+    void testCalculateSalaryZeroIfJustEmployed() throws Exception {
         FullTime f = new FullTime("Marek", "Nowak", "777888999", "Krotka", "Poznan",
                 "60-001", "Poland", "marek@example.com", LocalDate.now(), Contract.B2B, null);
         assertEquals(0, f.calculateSalary());

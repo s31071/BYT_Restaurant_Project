@@ -30,19 +30,24 @@ public class Supplier extends Person implements Serializable {
         if(productOrder == null){
             throw new Exception("Product order cannot be null");
         }
-        productOrders.add(productOrder);
-        productOrder.setSupplier(this);
+        if(!productOrders.contains(productOrder)){
+            productOrders.add(productOrder);
+            if(productOrder.getSupplier() != this) {
+                productOrder.addSupplier(this);
+            }
+        }
     }
 
     public void removeOrderedProduct(ProductOrder productOrder) throws Exception {
-        if(productOrder == null){
+        if (productOrder == null) {
             throw new Exception("Product order cannot be null");
         }
-        if(!productOrders.contains(productOrder)){
-            throw new Exception("Given product order is not assigned to this supplier");
+
+        if (productOrders.remove(productOrder)) {
+            if (productOrder.getSupplier() == this) {
+                productOrder.removeSupplier(this);
+            }
         }
-        productOrders.remove(productOrder);
-        ProductOrder.removeFromExtent(productOrder);
     }
 
     public HashSet<ProductOrder> getProductOrders() {

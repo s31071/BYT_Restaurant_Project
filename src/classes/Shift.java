@@ -24,6 +24,7 @@ public class Shift implements Serializable {
         setStartTime(startTime);
         setEndTime(endTime);
         setNumberOfPeopleNeeded(numberOfPeopleNeeded);
+        employees = new HashSet<>();
         addExtent(this);
     }
 
@@ -48,21 +49,23 @@ public class Shift implements Serializable {
         }
     }
 
-    public void assignEmployee(Employee employee) throws Exception {
+    public void addEmployee(Employee employee) throws Exception {
         if (employee == null) {
             throw new IllegalArgumentException("Employee cannot be null");
         }
 
-        if (employees.contains(employee)) {
-            throw new IllegalArgumentException("This employee is already assigned to this shift");
-        }
+        if (!employees.contains(employee)) {
 
-        if (employees.size() >= numberOfPeopleNeeded) {
-            throw new IllegalStateException("This shift has reached the maximum number of employees needed");
-        }
+            if (employees.size() >= numberOfPeopleNeeded) {
+                throw new IllegalStateException("This shift has reached the maximum number of employees needed");
+            }
 
-        employees.add(employee);
-        employee.addWorkedInShift(this); //reverse connection
+            employees.add(employee);
+
+            if (!employee.getShiftsAssigned().contains(this)) {
+                employee.addWorkedInShift(this);
+            }
+        }
     }
 
     public void removeEmployee(Employee employee) throws Exception {
@@ -71,7 +74,9 @@ public class Shift implements Serializable {
         }
 
         if (employees.remove(employee)) {
-            employee.removeWorkedInShift(this); //reverse connection
+            if (employee.getShiftsAssigned().contains(this)) {
+                employee.removeWorkedInShift(this);
+            }
         }
     }
 
