@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,7 +50,8 @@ public class SupplyHistoryTest {
 
         Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
         Product p2 = new Product(2, "Bread", 0.5, Category.BREAD, null, 5.0);
-        productOrder = new ProductOrder(List.of(p1, p2), supplier);
+
+        productOrder = new ProductOrder(new HashSet<>(Set.of(p1, p2)), supplier);
 
         invoice = new Invoice(PaymentMethod.CARD, 1, 123456789, "Emilia",
                 "Koszykowa", "Warsaw", "00-000", "Poland");
@@ -57,8 +59,6 @@ public class SupplyHistoryTest {
         today = LocalDate.now().minusDays(2);
 
         supplyHistory = new SupplyHistory(today.plusDays(2), SupplyStatus.ORDERED, invoice, productOrder);
-
-
     }
 
     @Test
@@ -110,6 +110,7 @@ public class SupplyHistoryTest {
 
     @Test
     void testDeliveredWithoutPreviousOrderedThrowsException() throws Exception {
+
         Supplier sup = new Supplier(
                 "Anna","Szyr","222333444",
                 "Nowogrodzka","Warsaw","00-000","Poland",
@@ -118,7 +119,7 @@ public class SupplyHistoryTest {
 
         Product p3 = new Product(3, "Butter", 0.3, Category.DAIRY, null, 8.0);
         Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
-        ProductOrder otherOrder = new ProductOrder(List.of(p3, p4), sup);
+        ProductOrder otherOrder = new ProductOrder(new HashSet<>(Set.of(p3, p4)), sup);
 
         Invoice otherInvoice = new Invoice(PaymentMethod.CARD, 2000, 98765422,
                 "AnnaX", "NowogrodzkaX", "Warsaw", "00-00", "Poland");
@@ -188,7 +189,7 @@ public class SupplyHistoryTest {
     @Test
     void testSupplyHistoryAutomaticallyAddedToProductOrder() {
         SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-        assertTrue(productOrder.getSupplyHistoryList().contains(sh));
+        assertTrue(productOrder.getSupplyHistories().contains(sh));
     }
 
     @Test
@@ -214,7 +215,7 @@ public class SupplyHistoryTest {
 
         Product p3 = new Product(3, "Butter", 0.3, Category.DAIRY, null, 8.0);
         Product p4 = new Product(4, "Cheese", 0.4, Category.DAIRY, null, 12.0);
-        ProductOrder otherPO = new ProductOrder(List.of(p3, p4), sup);
+        ProductOrder otherPO = new ProductOrder(new HashSet<>(Set.of(p3, p4)), sup);
 
         assertDoesNotThrow(() ->
                 new SupplyHistory(today.plusDays(1), SupplyStatus.ORDERED, invoice, otherPO));

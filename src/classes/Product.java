@@ -4,11 +4,8 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.io.IOException;
-import java.util.Objects;
 
 public class Product implements Serializable {
 
@@ -22,7 +19,7 @@ public class Product implements Serializable {
     private double price;
 
     // many-to-many association Product - ProductOrder (1..* , 1..*)
-    private List<ProductOrder> productOrders = new ArrayList<>();
+    private HashSet<ProductOrder> productOrders = new HashSet<>();
 
     public Product() {}
 
@@ -100,8 +97,8 @@ public class Product implements Serializable {
         this.category = category;
     }
 
-    public List<ProductOrder> getProductOrders() {
-        return Collections.unmodifiableList(productOrders);
+    public HashSet<ProductOrder> getProductOrders() {
+        return productOrders;
     }
 
     public void addProductOrder(ProductOrder po) {

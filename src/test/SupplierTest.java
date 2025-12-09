@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SupplierTest {
     Supplier s;
+
     @BeforeEach
     void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method clearMethod = Supplier.class.getDeclaredMethod("clearExtent");
@@ -21,9 +23,9 @@ class SupplierTest {
         s = new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
                 "BestMeat", Category.MEAT, 120.0);
     }
+
     @Test
     void testConstructor() {
-
         assertEquals("Adam", s.getName());
         assertEquals("BestMeat", s.getCompanyName());
         assertEquals(Category.MEAT, s.getCategory());
@@ -148,6 +150,7 @@ class SupplierTest {
         assertFalse(extent.contains(s2));
         assertTrue(extent.contains(s));
     }
+
     @Test
     void testClearExtent() throws Exception {
         Supplier s2 = new Supplier(
@@ -183,7 +186,8 @@ class SupplierTest {
                 "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
         );
         Product p1 = new Product(3, "Turkey", 3.0, Category.MEAT, LocalDate.now().plusDays(7), 70.0);
-        ProductOrder productOrder = new ProductOrder(List.of(p1), s2);
+
+        ProductOrder productOrder = new ProductOrder(new HashSet<>(Set.of(p1)), s2);
 
         assertThrows(Exception.class, () -> s.removeOrderedProduct(productOrder));
     }
@@ -195,18 +199,15 @@ class SupplierTest {
         clearPOExtent.invoke(null);
 
         Product p1 = new Product(100, "Bread", 1.0, Category.MEAT, LocalDate.now().plusDays(2), 15.0);
-        ProductOrder po = new ProductOrder(List.of(p1), s);
+
+        ProductOrder po = new ProductOrder(new HashSet<>(Set.of(p1)), s);
 
         assertTrue(s.getProductOrders().contains(po));
         assertTrue(ProductOrder.getExtent().contains(po));
 
         s.removeOrderedProduct(po);
 
-        assertFalse(s.getProductOrders().contains(po),
-                "Supplier should no longer contain this product order");
-
-        assertFalse(ProductOrder.getExtent().contains(po),
-                "ProductOrder extent should no longer contain this product order");
+        assertFalse(s.getProductOrders().contains(po));
+        assertFalse(ProductOrder.getExtent().contains(po));
     }
-
 }

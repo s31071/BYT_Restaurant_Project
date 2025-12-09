@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,11 +62,13 @@ public class InvoiceTest {
 
         Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
         Product p2 = new Product(2, "Bread", 0.5, Category.DAIRY, null, 5.0);
-        po1 = new ProductOrder(List.of(p1, p2), supplier1);
+
+        po1 = new ProductOrder(new HashSet<>(Set.of(p1, p2)), supplier1);
 
         Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY, null, 12.0);
         Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY, null, 7.0);
-        po2 = new ProductOrder(List.of(p3, p4), supplier2);
+
+        po2 = new ProductOrder(new HashSet<>(Set.of(p3, p4)), supplier2);
 
         address = new Address("Koszykowa", "Warsaw", "00-000", "Poland");
         newAddress = new Address("Nowogrodzka", "Warsaw", "00-000", "Poland");
@@ -280,8 +284,8 @@ public class InvoiceTest {
     @Test
     void testSupplyHistoryAddedToProductOrderAutomatically() {
         SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        assertEquals(1, po1.getSupplyHistoryList().size());
-        assertTrue(po1.getSupplyHistoryList().contains(sh));
+        assertEquals(1, po1.getSupplyHistories().size());
+        assertTrue(po1.getSupplyHistories().contains(sh));
     }
 
     @Test
@@ -295,7 +299,7 @@ public class InvoiceTest {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
         SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po1);
         assertEquals(2, invoice.getSupplyHistoryList().size());
-        assertEquals(2, po1.getSupplyHistoryList().size());
+        assertEquals(2, po1.getSupplyHistories().size());
     }
 
     @Test
@@ -314,10 +318,10 @@ public class InvoiceTest {
     void testDifferentProductOrdersMaintainSeparateHistories() {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now().minusDays(4), SupplyStatus.ORDERED, invoice, po1);
         SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(5), SupplyStatus.ORDERED, invoice, po2);
-        assertTrue(po1.getSupplyHistoryList().contains(s1));
-        assertFalse(po1.getSupplyHistoryList().contains(s2));
-        assertTrue(po2.getSupplyHistoryList().contains(s2));
-        assertFalse(po2.getSupplyHistoryList().contains(s1));
+        assertTrue(po1.getSupplyHistories().contains(s1));
+        assertFalse(po1.getSupplyHistories().contains(s2));
+        assertTrue(po2.getSupplyHistories().contains(s2));
+        assertFalse(po2.getSupplyHistories().contains(s1));
     }
 
     @Test

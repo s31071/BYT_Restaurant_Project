@@ -93,13 +93,15 @@ public class Invoice extends Payment implements Serializable {
         if (sh == null) {
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
-        if (supplyHistoryList.contains(sh)) {
-            throw new IllegalArgumentException("SupplyHistory already added");
+
+        if (!supplyHistoryList.contains(sh)) {
+            supplyHistoryList.add(sh);
+
+            if (sh.getInvoice() != this) {
+                sh.setInvoice(this);
+            }
+            setSum();
         }
-
-        supplyHistoryList.add(sh);
-
-        this.sum += sh.getProductOrder().getTotalSum();
     }
 
     public void removeSupplyHistory(SupplyHistory sh) {

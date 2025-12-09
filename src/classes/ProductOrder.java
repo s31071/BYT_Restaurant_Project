@@ -3,10 +3,7 @@ package classes;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ProductOrder implements Serializable {
 
@@ -16,15 +13,15 @@ public class ProductOrder implements Serializable {
     // many-to-many association ProductOrder - Product (* , *)
     // association ProductOrder - SupplyHistory (1 , *)
     private Supplier supplier;
-    private List<Product> products = new ArrayList<>();
-    private List<SupplyHistory> supplyHistoryList = new ArrayList<>();
+    private HashSet<Product> products = new HashSet<>();
+    private HashSet<SupplyHistory> supplyHistories = new HashSet<>();
 
     private double totalWeight;
     private double totalSum;
 
     public ProductOrder() {}
 
-    public ProductOrder(List<Product> products, Supplier supplier) throws Exception {
+    public ProductOrder(HashSet<Product> products, Supplier supplier) throws Exception {
         setProducts(products);
         addSupplier(supplier);
         setTotalWeight();
@@ -71,11 +68,11 @@ public class ProductOrder implements Serializable {
         }
     }
 
-    public List<Product> getProducts() {
-        return Collections.unmodifiableList(products);
+    public HashSet<Product> getProducts() {
+        return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(HashSet<Product> products) {
         if (products == null || products.isEmpty()) {
             throw new IllegalArgumentException("Product list cannot be empty");
         }
@@ -85,8 +82,7 @@ public class ProductOrder implements Serializable {
                 throw new IllegalArgumentException("Product cannot be null");
             }
         }
-
-        this.products = new ArrayList<>(products);
+        this.products = new HashSet<>(products);
         setTotalWeight();
         setTotalSum();
     }
@@ -95,17 +91,12 @@ public class ProductOrder implements Serializable {
         if (p == null) {
             throw new IllegalArgumentException("Product cannot be null");
         }
-
-        if (products.contains(p)) {
-            return;
+        if (!products.contains(p)) {
+            products.add(p);
+            if (!p.getProductOrders().contains(this)) {
+                p.addProductOrder(this);
+            }
         }
-
-        products.add(p);
-
-        if (!p.getProductOrders().contains(this)) {
-            p.addProductOrder(this);
-        }
-
         setTotalWeight();
         setTotalSum();
     }
@@ -133,8 +124,8 @@ public class ProductOrder implements Serializable {
         setTotalSum();
     }
 
-    public List<SupplyHistory> getSupplyHistoryList() {
-        return Collections.unmodifiableList(supplyHistoryList);
+    public HashSet<SupplyHistory> getSupplyHistories() {
+        return supplyHistories;
     }
 
     public void addSupplyHistory(SupplyHistory sh) {
@@ -142,10 +133,12 @@ public class ProductOrder implements Serializable {
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
 
-        supplyHistoryList.add(sh);
+        if (!supplyHistories.contains(sh)) {
+            supplyHistories.add(sh);
 
-        if (sh.getProductOrder() != this) {
-            sh.setProductOrder(this);
+            if (sh.getProductOrder() != this) {
+                sh.setProductOrder(this);
+            }
         }
     }
 

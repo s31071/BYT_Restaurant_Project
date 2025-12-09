@@ -61,34 +61,20 @@ public class Receipt extends Payment implements Serializable {
             throw new IllegalArgumentException("Order cannot be null");
         }
 
-        if (this.order == newOrder) {
-            return;
-        }
-
-        if (this.order != null) {
-            Order oldOrder = this.order;
-            this.order = null;
-
-            if (oldOrder.getReceipt() == this) {
-                oldOrder.removeReceipt();
+        if (this.order == null) {
+            this.order = newOrder;
+            if (newOrder.getReceipt() != this) {
+                newOrder.setReceipt(this);
             }
-        }
-
-        if (newOrder.getReceipt() != null && newOrder.getReceipt() != this) {
-            throw new IllegalStateException("Order already has a Receipt. Multiplicity 1 requires only one Receipt per Order.");
-        }
-
-        this.order = newOrder;
-
-        if (newOrder.getReceipt() != this) {
-            newOrder.setReceipt(this);
+        } else if (this.order != newOrder) {
+            throw new IllegalStateException("This receipt already has an assigned order");
         }
 
         setSum();
     }
 
     public void removeOrder() {
-        throw new IllegalStateException("Receipt must always have exactly 1 Order. Removal is not allowed.");
+        throw new IllegalStateException("Receipt must always have exactly 1 Order.");
     }
 
     @Override

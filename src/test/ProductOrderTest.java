@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,12 +52,12 @@ public class ProductOrderTest {
         p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 3.50);
         p2 = new Product(2, "Bread", 0.5, Category.BREAD, null, 2.00);
 
-        productOrder = new ProductOrder(List.of(p1, p2), supplier1);
+        productOrder = new ProductOrder(new HashSet<>(Set.of(p1, p2)), supplier1);
     }
 
     @Test
     void testConstructorInitialValues() {
-        assertEquals(List.of(p1, p2), productOrder.getProducts());
+        assertEquals(Set.of(p1, p2), productOrder.getProducts());
         assertEquals(supplier1, productOrder.getSupplier());
         assertEquals(1.5, productOrder.getTotalWeight());
         assertEquals(5.5, productOrder.getTotalSum());
@@ -69,7 +68,7 @@ public class ProductOrderTest {
         Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY, null, 5.00);
         Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY, null, 4.00);
 
-        productOrder.setProducts(List.of(p3, p4));
+        productOrder.setProducts(new HashSet<>(Set.of(p3, p4)));
 
         assertEquals(0.8, productOrder.getTotalWeight());
         assertEquals(9.0, productOrder.getTotalSum());
@@ -80,7 +79,7 @@ public class ProductOrderTest {
         Product p3 = new Product(3, "Rice", 0.33333, Category.DAIRY, null, 1.9999);
         Product p4 = new Product(4, "Beans", 0.66666, Category.DAIRY, null, 3.1111);
 
-        productOrder.setProducts(List.of(p3, p4));
+        productOrder.setProducts(new HashSet<>(Set.of(p3, p4)));
 
         assertEquals(1.0, productOrder.getTotalWeight());
         assertEquals(5.11, productOrder.getTotalSum());
@@ -93,17 +92,18 @@ public class ProductOrderTest {
 
     @Test
     void testSetProductsEmptyThrows() {
-        assertThrows(IllegalArgumentException.class, () -> productOrder.setProducts(List.of()));
+        assertThrows(IllegalArgumentException.class, () -> productOrder.setProducts(new HashSet<>()));
     }
 
     @Test
     void testSetProductsContainsNullThrows() {
-        assertThrows(IllegalArgumentException.class, () -> productOrder.setProducts(Arrays.asList(p1, null)));
+        assertThrows(IllegalArgumentException.class, () ->
+                productOrder.setProducts(new HashSet<>(Arrays.asList(p1, null))));
     }
 
     @Test
     void testAddExtent() throws Exception {
-        ProductOrder order2 = new ProductOrder(List.of(p1), supplier1);
+        ProductOrder order2 = new ProductOrder(new HashSet<>(Set.of(p1)), supplier1);
         assertEquals(2, ProductOrder.getExtent().size());
         assertTrue(ProductOrder.getExtent().contains(order2));
     }
@@ -133,8 +133,8 @@ public class ProductOrderTest {
 
     @Test
     void testMultipleOrdersInExtent() throws Exception {
-        ProductOrder o1 = new ProductOrder(List.of(p1), supplier1);
-        ProductOrder o2 = new ProductOrder(List.of(p2), supplier1);
+        ProductOrder o1 = new ProductOrder(new HashSet<>(Set.of(p1)), supplier1);
+        ProductOrder o2 = new ProductOrder(new HashSet<>(Set.of(p2)), supplier1);
         assertEquals(3, ProductOrder.getExtent().size());
         assertTrue(ProductOrder.getExtent().contains(productOrder));
         assertTrue(ProductOrder.getExtent().contains(o1));
@@ -145,19 +145,19 @@ public class ProductOrderTest {
     void testTotalsRecomputeAfterEachCall() {
         Product p3 = new Product(3, "Chocolate", 2.0, Category.DAIRY, null, 6.0);
 
-        productOrder.setProducts(List.of(p1));
+        productOrder.setProducts(new HashSet<>(Set.of(p1)));
         assertEquals(1.0, productOrder.getTotalWeight());
         assertEquals(3.50, productOrder.getTotalSum());
 
-        productOrder.setProducts(List.of(p1, p3));
+        productOrder.setProducts(new HashSet<>(Set.of(p1, p3)));
         assertEquals(3.0, productOrder.getTotalWeight());
         assertEquals(9.50, productOrder.getTotalSum());
     }
 
     @Test
     void testClearExtentWorksProperly() throws Exception {
-        ProductOrder o1 = new ProductOrder(List.of(p1), supplier1);
-        ProductOrder o2 = new ProductOrder(List.of(p2), supplier1);
+        ProductOrder o1 = new ProductOrder(new HashSet<>(Set.of(p1)), supplier1);
+        ProductOrder o2 = new ProductOrder(new HashSet<>(Set.of(p2)), supplier1);
 
         assertEquals(3, ProductOrder.getExtent().size());
 
@@ -203,7 +203,7 @@ public class ProductOrderTest {
                 new Invoice(PaymentMethod.CASH, 1, 111, "Emilia",
                         "Koszykowa", "Warsaw", "00-000", "Poland"),
                 productOrder);
-        assertTrue(productOrder.getSupplyHistoryList().contains(sh));
+        assertTrue(productOrder.getSupplyHistories().contains(sh));
         assertEquals(productOrder, sh.getProductOrder());
     }
 
@@ -223,7 +223,7 @@ public class ProductOrderTest {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, inv, productOrder);
         SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, inv, productOrder);
 
-        assertEquals(2, productOrder.getSupplyHistoryList().size());
+        assertEquals(2, productOrder.getSupplyHistories().size());
     }
 
     @Test
@@ -244,7 +244,7 @@ public class ProductOrderTest {
 
     @Test
     void testRemoveProductUpdatesReverse() throws Exception {
-        ProductOrder anotherOrder = new ProductOrder(List.of(p2), supplier1);
+        ProductOrder anotherOrder = new ProductOrder(new HashSet<>(Set.of(p2)), supplier1);
 
         productOrder.removeProduct(p2);
 

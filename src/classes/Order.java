@@ -87,24 +87,27 @@ public class Order implements Serializable {
         return receipt;
     }
 
-    public void setReceipt(Receipt receipt) {
-        if (receipt == null) {
+    public void setReceipt(Receipt newReceipt) {
+        if (newReceipt == null) {
             throw new IllegalArgumentException("Receipt cannot be null");
         }
 
-        if (this.receipt != null && this.receipt != receipt) {
-            throw new IllegalStateException("Order already has a Receipt. Multiplicity 1 requires only one Receipt per Order.");
-        }
-
-        this.receipt = receipt;
-
-        if (receipt.getOrder() != this) {
-            receipt.setOrder(this);
+        if (this.receipt == null) {
+            this.receipt = newReceipt;
+            if (newReceipt.getOrder() != this) {
+                newReceipt.setOrder(this);
+            }
+        } else if (this.receipt != newReceipt) {
+            throw new IllegalStateException("This order already has a receipt assigned");
         }
     }
 
     public void updateOrderStatus(OrderStatus status){
         this.status = status;
+    }
+
+    public void removeReceipt() {
+        throw new IllegalStateException("Order must always have a Receipt. Removal is not allowed.");
     }
 
     public void assignToDeliveryDriver(DeliveryDriver deliveryDriver){
@@ -244,17 +247,6 @@ public class Order implements Serializable {
 
     public static void clearExtent() {
         extent.clear();
-    }
-    public void removeReceipt() {
-        if(this.receipt == null) {
-            throw new IllegalArgumentException("Cannot remove this receipt");
-        }
-        Receipt oldReceipt = this.receipt;
-        this.receipt = null;
-
-        if(oldReceipt.getOrder() == this) {
-            oldReceipt.removeOrder();
-        }
     }
 
     @Override

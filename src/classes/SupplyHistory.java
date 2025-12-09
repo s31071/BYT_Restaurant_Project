@@ -95,7 +95,7 @@ public class SupplyHistory implements Serializable {
 
         this.productOrder = newPO;
 
-        if (!newPO.getSupplyHistoryList().contains(this)) {
+        if (!newPO.getSupplyHistories().contains(this)) {
             newPO.addSupplyHistory(this);
         }
     }
@@ -150,13 +150,16 @@ public class SupplyHistory implements Serializable {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SupplyHistory that = (SupplyHistory) o;
-        return Objects.equals(date, that.date) && Objects.equals(invoice, that.invoice);
+        return Objects.equals(date, that.date)
+                && Objects.equals(invoice, that.invoice)
+                && Objects.equals(productOrder, that.productOrder);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, invoice);
+        return Objects.hash(date, invoice, productOrder);
     }
 }
