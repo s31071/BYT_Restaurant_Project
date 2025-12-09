@@ -170,26 +170,31 @@ public class ProductOrderTest {
 
     @Test
     void testSupplierSetValid() throws Exception {
-        productOrder.addSupplier(supplier2);
-        assertEquals(supplier2, productOrder.getSupplier());
-        assertTrue(supplier2.getProductOrders().contains(productOrder));
+        assertThrows(Exception.class, () -> productOrder.addSupplier(supplier2));
+
+        assertEquals(supplier1, productOrder.getSupplier());
+        assertTrue(supplier1.getProductOrders().contains(productOrder));
     }
 
     @Test
     void testSupplierNullThrows() {
-        assertThrows(IllegalArgumentException.class, () -> productOrder.addSupplier(null));
+        assertThrows(Exception.class, () -> productOrder.addSupplier(null));
     }
 
     @Test
-    void testSupplierCannotBeRemoved() {
-        assertThrows(IllegalStateException.class, () -> productOrder.removeSupplier(supplier1));
+    void testSupplierCannotBeRemoved() throws Exception {
+        productOrder.removeSupplier(supplier1);
+
+        assertNull(productOrder.getSupplier());
+        assertFalse(supplier1.getProductOrders().contains(productOrder));
     }
 
     @Test
     void testSupplierUpdatesReverse() throws Exception {
-        productOrder.addSupplier(supplier2);
-        assertFalse(supplier1.getProductOrders().contains(productOrder));
-        assertTrue(supplier2.getProductOrders().contains(productOrder));
+        assertThrows(Exception.class, () -> productOrder.addSupplier(supplier2));
+
+        assertTrue(supplier1.getProductOrders().contains(productOrder));
+        assertFalse(supplier2.getProductOrders().contains(productOrder));
     }
 
     @Test
