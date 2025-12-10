@@ -17,7 +17,7 @@ public class Table implements Serializable {
     private HashMap<LocalDateTime,Order> orders = new HashMap<>();
     private Waiter waiter; //many to one with Waiter
     private Customer customer; //many to one with Customer
-    public HashSet<Reservation> reservations = new HashSet<>();
+    private HashSet<Reservation> reservations = new HashSet<>();
     public Table(){}
     public Table(int number, int numberOfSeats, TableStatus status, LocalDateTime date) {
         setNumber(number);
@@ -115,6 +115,10 @@ public class Table implements Serializable {
         return customer;
     }
 
+    public HashSet<Reservation> getReservations() {
+        return reservations;
+    }
+
     public static void addExtent(Table table) {
         if(table == null){
             throw new IllegalArgumentException("Table cannot be null");
@@ -149,19 +153,24 @@ public class Table implements Serializable {
         if(reservation == null){
             throw new Exception("Reservation cannot be null");
         }
-        reservations.add(reservation);
-        reservation.setTableAssigned(this);
+        if(!reservations.contains(reservation)){
+            reservations.add(reservation);
+            if(reservation.getTableAssigned() != this) {
+                reservation.addTableManaging(this);
+            }
+        }
     }
 
-    public void removeManagedTableReservation(Reservation reservation) throws Exception {
-        if(reservation == null){
+    public void removeManagedReservation(Reservation reservation) throws Exception {
+        if (reservation == null) {
             throw new Exception("Reservation cannot be null");
         }
-        if(!reservations.contains(reservation)){
-            throw new Exception("This reservation is not managed by this waiter");
+
+        if (reservations.remove(reservation)) {
+            if (reservation.getTableAssigned() == this) {
+                reservation.removeTableManaging(this);
+            }
         }
-        reservations.remove(reservation);
-        reservation.setTableAssigned(null);
     }
 
     public void addCustomer(Customer customer) throws Exception {

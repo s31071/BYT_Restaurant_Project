@@ -25,6 +25,10 @@ public class Reservation implements Serializable {
         return waiterAssigned;
     }
 
+    public Table getTableAssigned(){
+        return table;
+    }
+
     public Reservation(){}
     public Reservation(int id, String nameOfThePerson, LocalDateTime timestamp, ReservationStatus status) {
         setId(id);
@@ -69,26 +73,39 @@ public class Reservation implements Serializable {
         }
     }
 
-    public void setTableAssigned(Table table){
+    public void setTableAssigned(Table table) throws Exception {
+        if(table == null){
+            throw new Exception("Table cannot be null");
+        }
         this.table = table;
     }
 
-    public void addTableAssigned(Table table) throws Exception {
+    public void addTableManaging(Table table) throws Exception {
         if(this.table == null) {
-           setTableAssigned(table);
-           table.reservations.add(this);
-        } else {
+            setTableAssigned(table);
+
+            if(!table.getReservations().contains(this)){
+                table.addManagedTableReservation(this);
+            }
+        }else if (this.table != table) {
             throw new Exception("This reservation already has a table assigned");
         }
-
     }
 
-    public void removeTableAssigned() throws Exception {
-        if(this.table == null) {
-            throw new Exception("There is no table assigned to this reservation");
+    public void removeTableManaging(Table table) throws Exception {
+        if (table == null) {
+            throw new Exception("Table cannot be null");
         }
-        this.table.reservations.remove(this);
+
+        if (this.table != table) {
+            return;
+        }
+
         this.table = null;
+
+        if (table.getReservations().contains(this)) {
+            table.removeManagedReservation(this);
+        }
     }
 
     public void setId(int id) {

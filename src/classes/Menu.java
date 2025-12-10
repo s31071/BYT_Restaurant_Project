@@ -5,6 +5,7 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class Menu implements Serializable {
 
     private String name;
     private MenuType type;
+    private HashSet<Dish> dishes = new HashSet<>();
 
     public Menu(){}
     public Menu(String name, MenuType type) {
@@ -55,6 +57,34 @@ public class Menu implements Serializable {
 
     public MenuType getType() {
         return type;
+    }
+
+    public HashSet<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void addManagedDish(Dish dish) throws Exception {
+        if(dish == null){
+            throw new Exception("Dish cannot be null");
+        }
+        if(!dishes.contains(dish)){
+            dishes.add(dish);
+            if(dish.getMenu() != this) {
+                dish.addMenuManaging(this);
+            }
+        }
+    }
+
+    public void removeManagedDish(Dish dish) throws Exception {
+        if (dish == null) {
+            throw new Exception("Dish cannot be null");
+        }
+
+        if (dishes.remove(dish)) {
+            if (dish.getMenu() == this) {
+                dish.removeMenuManaging(this);
+            }
+        }
     }
 
     public static void addExtent(Menu menu) {

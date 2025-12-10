@@ -45,8 +45,39 @@ public class Dish implements Serializable {
         this.reviews = reviews;
     }
 
-    public void setMenu(Menu menu) {
+    public void setMenu(Menu menu) throws Exception {
+        if(menu == null){
+            throw new Exception("Menu cannot be null");
+        }
         this.menu = menu;
+    }
+
+    public void addMenuManaging(Menu menu) throws Exception {
+        if(this.menu == null) {
+            setMenu(menu);
+
+            if(!menu.getDishes().contains(this)){
+                menu.addManagedDish(this);
+            }
+        }else if (this.menu != menu) {
+            throw new Exception("This dish already has a menu assigned");
+        }
+    }
+
+    public void removeMenuManaging(Menu menu) throws Exception {
+        if (menu == null) {
+            throw new Exception("Menu cannot be null");
+        }
+
+        if (this.menu != menu) {
+            return;
+        }
+
+        this.menu = null;
+
+        if (menu.getDishes().contains(this)) {
+            menu.removeManagedDish(this);
+        }
     }
 
     public void setDishOrders(Set<DishOrder> dishOrders) {
@@ -62,9 +93,7 @@ public class Dish implements Serializable {
         if (dishOrder == null) {
             throw new IllegalArgumentException("DishOrder cannot be null");
         }
-        if (!dishOrders.contains(dishOrder)) {
-            dishOrders.add(dishOrder);
-        }
+        dishOrders.add(dishOrder);
     }
 
 
@@ -105,6 +134,7 @@ public class Dish implements Serializable {
     }
 
     public Set<DishOrder> getDishOrders() {
+        //return dishOrders;
         return Collections.unmodifiableSet(new HashSet<>(dishOrders));
     }
 

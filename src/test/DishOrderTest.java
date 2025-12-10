@@ -118,10 +118,17 @@ class DishOrderTest {
         Dish dish = new Dish("Steak", 25.00, reviews);
         DishOrder dishOrder = new DishOrder(dish, testOrder, 1);
         assertTrue(DishOrder.getExtent().contains(dishOrder));
+
         assertTrue(testOrder.getDishOrders().contains(dishOrder));
         assertTrue(dish.getDishOrders().contains(dishOrder));
+
         DishOrder.removeFromExtent(dishOrder);
+
+        dish.addDishOrderDish(dishOrder);
+        dish.removeDishOrderDish(dishOrder);
+
         assertFalse(DishOrder.getExtent().contains(dishOrder));
+
         assertFalse(testOrder.getDishOrders().contains(dishOrder));
         assertFalse(dish.getDishOrders().contains(dishOrder));
     }

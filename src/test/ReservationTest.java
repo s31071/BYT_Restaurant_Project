@@ -115,10 +115,10 @@ public class ReservationTest {
         Reservation reservation = new Reservation(1, "Steve Wozniak", LocalDateTime.now(), ReservationStatus.AVAILABLE);
         Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
 
-        reservation.addTableAssigned(table);
+        reservation.addTableManaging(table);
 
         assertEquals(table, reservation.getTable());
-        assertTrue(table.reservations.contains(reservation));
+        assertTrue(table.getReservations().contains(reservation));
     }
 
     @Test
@@ -126,11 +126,11 @@ public class ReservationTest {
         Reservation reservation = new Reservation(1, "Steve Jobs", LocalDateTime.now(), ReservationStatus.AVAILABLE);
         Table table = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
 
-        reservation.addTableAssigned(table);
-        reservation.removeTableAssigned();
+        reservation.addTableManaging(table);
+        reservation.removeTableManaging(table);
 
         assertNull(reservation.getTable());
-        assertFalse(table.reservations.contains(reservation));
+        assertFalse(table.getReservations().contains(reservation));
     }
 
     @Test
@@ -139,9 +139,9 @@ public class ReservationTest {
         Table table1 = new Table(1, 4, TableStatus.AVAILABLE, LocalDateTime.now());
         Table table2 = new Table(2, 2, TableStatus.AVAILABLE, LocalDateTime.now());
 
-        reservation.addTableAssigned(table1);
+        reservation.addTableManaging(table1);
 
-        assertThrows(Exception.class, () -> reservation.addTableAssigned(table2));
+        assertThrows(Exception.class, () -> reservation.addTableManaging(table2));
     }
 
     @Test
@@ -153,8 +153,8 @@ public class ReservationTest {
         table.addManagedTableReservation(reservation1);
         table.addManagedTableReservation(reservation2);
 
-        assertTrue(table.reservations.contains(reservation1));
-        assertTrue(table.reservations.contains(reservation2));
+        assertTrue(table.getReservations().contains(reservation1));
+        assertTrue(table.getReservations().contains(reservation2));
         assertEquals(table, reservation1.getTable());
         assertEquals(table, reservation2.getTable());
     }
