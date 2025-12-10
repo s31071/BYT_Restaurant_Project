@@ -176,6 +176,30 @@ public class Order implements Serializable {
         extent = (List<Order>) objectInputStream.readObject();
     }
 
+    public void addManagedDishOrder(DishOrder dishOrder) throws Exception {
+        if (dishOrder == null) {
+            throw new Exception("DishOrder cannot be null");
+        }
+        if(!dishOrders.contains(dishOrder)){
+            dishOrders.add(dishOrder);
+            if(dishOrder.getOrder() != this) {
+                dishOrder.addOrderManaging(this);
+            }
+        }
+    }
+
+    public void removeManagedDishOrder(DishOrder dishOrder) throws Exception {
+        if (dishOrder == null) {
+            throw new Exception("DishOrder cannot be null");
+        }
+
+        if (dishOrders.remove(dishOrder)) {
+            if (dishOrder.getOrder() == this) {
+                dishOrder.removeOrderManaging(this);
+            }
+        }
+    }
+
     public void addDishOrderOrder(DishOrder dishOrder) {
         if (dishOrder == null) {
             throw new IllegalArgumentException("DishOrder cannot be null");

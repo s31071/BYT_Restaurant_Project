@@ -16,8 +16,16 @@ public class DishOrder implements Serializable {
 
     public DishOrder(){}
     public DishOrder(Dish dish, Order order, int quantity) {
-        setDish(dish);
-        setOrder(order);
+        try {
+            setDish(dish);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            setOrder(order);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         setQuantity(quantity);
         addExtent(this);
     }
@@ -29,29 +37,75 @@ public class DishOrder implements Serializable {
     public int getQuantity() { return quantity; }
 
 
-    public void setDish(Dish dish) {
+    public void setDish(Dish dish) throws Exception {
         if(dish == null) {
             throw new IllegalArgumentException("Dish cannot be null");
         }
-        if(this.dish != null && this.dish != dish) {
-            throw new IllegalStateException("Cannot change dish after DishOrder is created");
-        }
         this.dish = dish;
-        dish.addDishOrderDish(this);
+    }
+
+    public void addDishManaging(Dish dish) throws Exception {
+        if(this.dish == null) {
+            setDish(dish);
+
+            if(!dish.getDishOrders().contains(this)){
+                dish.addManagedDishOrder(this);
+            }
+        } else if (this.dish != dish) {
+            throw new Exception("This DishOrder already has a dish assigned");
+        }
+    }
+
+    public void removeDishManaging(Dish dish) throws Exception {
+        if (dish == null) {
+            throw new Exception("Dish cannot be null");
+        }
+
+        if (this.dish != dish) {
+            return;
+        }
+
+        this.dish = null;
+
+        if (dish.getDishOrders().contains(this)) {
+            dish.removeManagedDishOrder(this);
+        }
     }
 
 
 
-    public void setOrder(Order order) {
+    public void setOrder(Order order) throws Exception {
         if(order == null) {
             throw new IllegalArgumentException("Order cannot be null");
         }
-        if(this.order != null && this.order != order) {
-            throw new IllegalStateException("Cannot change order after DishOrder is created");
-        }
         this.order = order;
-        if(!order.getDishOrders().contains(this)) {
-            order.addDishOrderOrder(this);
+    }
+
+    public void addOrderManaging(Order order) throws Exception {
+        if(this.order == null) {
+            setOrder(order);
+
+            if(!order.getDishOrders().contains(this)){
+                order.addManagedDishOrder(this);
+            }
+        }else if (this.order != order) {
+            throw new Exception("This DishOrder already has an order assigned");
+        }
+    }
+
+    public void removeOrderManaging(Order order) throws Exception {
+        if (order == null) {
+            throw new Exception("Order cannot be null");
+        }
+
+        if (this.order != order) {
+            return;
+        }
+
+        this.order = null;
+
+        if (order.getDishOrders().contains(this)) {
+            order.removeManagedDishOrder(this);
         }
     }
 

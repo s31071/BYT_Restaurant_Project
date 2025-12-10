@@ -89,6 +89,30 @@ public class Dish implements Serializable {
         return false;
     }
 
+    public void addManagedDishOrder(DishOrder dishOrder) throws Exception {
+        if (dishOrder == null) {
+            throw new Exception("DishOrder cannot be null");
+        }
+        if(!dishOrders.contains(dishOrder)){
+            dishOrders.add(dishOrder);
+            if(dishOrder.getDish() != this) {
+                dishOrder.addDishManaging(this);
+            }
+        }
+    }
+
+    public void removeManagedDishOrder(DishOrder dishOrder) throws Exception {
+        if (dishOrder == null) {
+            throw new Exception("DishOrder cannot be null");
+        }
+
+        if (dishOrders.remove(dishOrder)) {
+            if (dishOrder.getDish() == this) {
+                dishOrder.removeDishManaging(this);
+            }
+        }
+    }
+
     public void addDishOrderDish(DishOrder dishOrder) {
         if (dishOrder == null) {
             throw new IllegalArgumentException("DishOrder cannot be null");
