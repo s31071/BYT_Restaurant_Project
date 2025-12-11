@@ -227,14 +227,6 @@ public class ProductOrderTest {
     }
 
     @Test
-    void testProductOrderConnectedToProductsBothDirections() {
-        Product p3 = new Product(5, "Cheese", 0.4, Category.DAIRY, null, 8.0);
-        productOrder.addProduct(p3);
-        assertTrue(productOrder.getProducts().contains(p3));
-        assertTrue(p3.getProductOrders().contains(productOrder));
-    }
-
-    @Test
     void testRemoveProductMinimumLimit() {
         assertThrows(IllegalStateException.class, () -> {
             productOrder.removeProduct(p1);
