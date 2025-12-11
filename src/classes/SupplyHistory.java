@@ -22,14 +22,11 @@ public class SupplyHistory implements Serializable {
     // association SupplyHistory - ProductOrder (1 , *)
     public SupplyHistory() {}
 
-    public SupplyHistory(LocalDate date,
-                         SupplyStatus status,
-                         Invoice invoice,
-                         ProductOrder productOrder) {
+    public SupplyHistory(LocalDate date, SupplyStatus status, Invoice invoice, ProductOrder productOrder) {
         setDate(date);
         setStatus(status);
-        setProductOrder(productOrder);
         setInvoice(invoice);
+        setProductOrder(productOrder);
         addExtent(this);
     }
 
