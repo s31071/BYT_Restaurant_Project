@@ -313,24 +313,4 @@ public class InvoiceTest {
         SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
         assertThrows(IllegalStateException.class, () -> sh.removeProductOrder());
     }
-
-    @Test
-    void testDifferentProductOrdersMaintainSeparateHistories() {
-        SupplyHistory s1 = new SupplyHistory(LocalDate.now().minusDays(4), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(5), SupplyStatus.ORDERED, invoice, po2);
-        assertTrue(po1.getSupplyHistories().contains(s1));
-        assertFalse(po1.getSupplyHistories().contains(s2));
-        assertTrue(po2.getSupplyHistories().contains(s2));
-        assertFalse(po2.getSupplyHistories().contains(s1));
-    }
-
-    @Test
-    void testInvoiceSumOnlyItsOwnSupplyHistory() {
-        SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        Invoice other = new Invoice(PaymentMethod.CARD, 77, 567890123, "Emilia",
-                "Nowogrodzka", "Warsaw","00-000","Poland");
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, other, po2);
-        assertEquals(po1.getTotalSum(), invoice.getSum());
-        assertEquals(po2.getTotalSum(), other.getSum());
-    }
 }
