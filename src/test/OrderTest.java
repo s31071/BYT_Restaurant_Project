@@ -235,15 +235,6 @@ public class OrderTest {
     }
 
     @Test
-    void testGetDishesIsUnmodifiable() {
-        dineInOrder.addDish(pizza, 1);
-
-        assertThrows(UnsupportedOperationException.class, () -> {
-            dineInOrder.getDishOrders().add(new DishOrder(pasta, dineInOrder, 1));
-        });
-    }
-
-    @Test
     void testContainsDish() {
         dineInOrder.addDish(pizza, 1);
 

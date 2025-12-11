@@ -3,29 +3,20 @@ package classes;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class DishOrder implements Serializable {
     private Dish dish;
     private Order order;
     private int quantity;
+    private UUID uuid;
     private static List<DishOrder> extent = new ArrayList<>();
 
     public DishOrder(){}
     public DishOrder(Dish dish, Order order, int quantity) {
-        try {
-            setDish(dish);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            setOrder(order);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        uuid = UUID.randomUUID();
+        setDish(dish);
+        setOrder(order);
         setQuantity(quantity);
         addExtent(this);
     }
@@ -37,7 +28,7 @@ public class DishOrder implements Serializable {
     public int getQuantity() { return quantity; }
 
 
-    public void setDish(Dish dish) throws Exception {
+    public void setDish(Dish dish) {
         if(dish == null) {
             throw new IllegalArgumentException("Dish cannot be null");
         }
@@ -49,7 +40,7 @@ public class DishOrder implements Serializable {
             setDish(dish);
 
             if(!dish.getDishOrders().contains(this)){
-                dish.addManagedDishOrder(this);
+                dish.addDishOrderDish(this);
             }
         } else if (this.dish != dish) {
             throw new Exception("This DishOrder already has a dish assigned");
@@ -74,7 +65,7 @@ public class DishOrder implements Serializable {
 
 
 
-    public void setOrder(Order order) throws Exception {
+    public void setOrder(Order order) {
         if(order == null) {
             throw new IllegalArgumentException("Order cannot be null");
         }
@@ -166,17 +157,14 @@ public class DishOrder implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         DishOrder dishOrder = (DishOrder) o;
-        boolean result = Objects.equals(dish, dishOrder.dish) && Objects.equals(order, dishOrder.order);
-        return result;
+//        return Objects.equals(dish, dishOrder.dish) && Objects.equals(order, dishOrder.order);
+        return Objects.equals(uuid, dishOrder.uuid);
     }
-
-
 
     @Override
     public int hashCode() {
-        return Objects.hash(dish, order);
+//        return Objects.hash(dish, order);
+        return Objects.hash(uuid);
     }
-
-
 
 }

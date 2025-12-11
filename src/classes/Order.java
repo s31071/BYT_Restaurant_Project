@@ -80,7 +80,7 @@ public class Order implements Serializable {
 
 
     public Set<DishOrder> getDishOrders() {
-        return Collections.unmodifiableSet(new HashSet<>(dishOrders));
+        return dishOrders;
     }
 
     public Receipt getReceipt(){
@@ -232,7 +232,8 @@ public class Order implements Serializable {
             }
         }
 
-        new DishOrder(dish, this, quantity);
+        DishOrder newDishOrder = new DishOrder(dish, this, quantity);
+        dishOrders.add(newDishOrder);
     }
 
     public void removeDish(Dish dish) {

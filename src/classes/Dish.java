@@ -89,17 +89,6 @@ public class Dish implements Serializable {
         return false;
     }
 
-    public void addManagedDishOrder(DishOrder dishOrder) throws Exception {
-        if (dishOrder == null) {
-            throw new Exception("DishOrder cannot be null");
-        }
-        if(!dishOrders.contains(dishOrder)){
-            dishOrders.add(dishOrder);
-            if(dishOrder.getDish() != this) {
-                dishOrder.addDishManaging(this);
-            }
-        }
-    }
 
     public void removeManagedDishOrder(DishOrder dishOrder) throws Exception {
         if (dishOrder == null) {
@@ -113,11 +102,16 @@ public class Dish implements Serializable {
         }
     }
 
-    public void addDishOrderDish(DishOrder dishOrder) {
+    public void addDishOrderDish(DishOrder dishOrder) throws Exception {
         if (dishOrder == null) {
             throw new IllegalArgumentException("DishOrder cannot be null");
         }
-        dishOrders.add(dishOrder);
+        if(!dishOrders.contains(dishOrder)){
+            dishOrders.add(dishOrder);
+            if(dishOrder.getDish() != this) {
+                dishOrder.addDishManaging(this);
+            }
+        }
     }
 
 
@@ -158,8 +152,7 @@ public class Dish implements Serializable {
     }
 
     public Set<DishOrder> getDishOrders() {
-        //return dishOrders;
-        return Collections.unmodifiableSet(new HashSet<>(dishOrders));
+        return dishOrders;
     }
 
     public static void addExtent(Dish dish) {
