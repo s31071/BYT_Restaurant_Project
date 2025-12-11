@@ -70,7 +70,7 @@ public class SupplyHistory implements Serializable {
 
         this.invoice = newInvoice;
 
-        if (!newInvoice.getSupplyHistoryList().contains(this)) {
+        if (!newInvoice.getSupplyHistorySet().contains(this)) {
             newInvoice.addSupplyHistory(this);
         }
     }

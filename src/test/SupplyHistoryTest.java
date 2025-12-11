@@ -183,7 +183,7 @@ public class SupplyHistoryTest {
     @Test
     void testSupplyHistoryAutomaticallyAddedToInvoice() {
         SupplyHistory sh = new SupplyHistory(today, SupplyStatus.ORDERED, invoice, productOrder);
-        assertTrue(invoice.getSupplyHistoryList().contains(sh));
+        assertTrue(invoice.getSupplyHistorySet().contains(sh));
     }
 
     @Test

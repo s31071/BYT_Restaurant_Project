@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,7 +138,7 @@ public class InvoiceTest {
     @Test
     void testAddSupplyHistoryAddsReverseConnection() {
         SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        assertTrue(invoice.getSupplyHistoryList().contains(sh));
+        assertTrue(invoice.getSupplyHistorySet().contains(sh));
         assertEquals(invoice, sh.getInvoice());
     }
 
@@ -148,7 +147,7 @@ public class InvoiceTest {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
         SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
 
-        assertEquals(2, invoice.getSupplyHistoryList().size());
+        assertEquals(2, invoice.getSupplyHistorySet().size());
     }
 
     @Test
@@ -271,8 +270,8 @@ public class InvoiceTest {
     @Test
     void testSupplyHistoryAddedToInvoiceAutomatically() {
         SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        assertEquals(1, invoice.getSupplyHistoryList().size());
-        assertTrue(invoice.getSupplyHistoryList().contains(sh));
+        assertEquals(1, invoice.getSupplyHistorySet().size());
+        assertTrue(invoice.getSupplyHistorySet().contains(sh));
     }
 
     @Test
@@ -298,7 +297,7 @@ public class InvoiceTest {
     void testMultipleSupplyHistoryObjectsConnectCorrectly() {
         SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
         SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po1);
-        assertEquals(2, invoice.getSupplyHistoryList().size());
+        assertEquals(2, invoice.getSupplyHistorySet().size());
         assertEquals(2, po1.getSupplyHistories().size());
     }
 

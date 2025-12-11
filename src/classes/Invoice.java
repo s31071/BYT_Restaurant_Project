@@ -3,11 +3,8 @@ package classes;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.io.IOException;
-import java.util.Objects;
 
 public class Invoice extends Payment implements Serializable {
 
@@ -18,7 +15,7 @@ public class Invoice extends Payment implements Serializable {
     private String name;
     private Address address;
 
-    private List<SupplyHistory> supplyHistoryList = new ArrayList<>();
+    private HashSet<SupplyHistory> supplyHistorySet;
 
     private double sum;
 
@@ -28,7 +25,7 @@ public class Invoice extends Payment implements Serializable {
                    String street, String city, String postalCode, String country) {
 
         super(method);
-
+        supplyHistorySet = new HashSet<>();
         setID(ID);
         setTaxIdentificationNumber(taxId);
         setName(name);
@@ -85,8 +82,8 @@ public class Invoice extends Payment implements Serializable {
         this.address = address;
     }
 
-    public List<SupplyHistory> getSupplyHistoryList() {
-        return Collections.unmodifiableList(supplyHistoryList);
+    public Set<SupplyHistory> getSupplyHistorySet() {
+        return supplyHistorySet;
     }
 
     public void addSupplyHistory(SupplyHistory sh) {
@@ -94,8 +91,8 @@ public class Invoice extends Payment implements Serializable {
             throw new IllegalArgumentException("SupplyHistory cannot be null");
         }
 
-        if (!supplyHistoryList.contains(sh)) {
-            supplyHistoryList.add(sh);
+        if (!supplyHistorySet.contains(sh)) {
+            supplyHistorySet.add(sh);
 
             if (sh.getInvoice() != this) {
                 sh.setInvoice(this);
@@ -112,7 +109,7 @@ public class Invoice extends Payment implements Serializable {
     public void setSum() {
         double total = 0;
 
-        for (SupplyHistory sh : supplyHistoryList) {
+        for (SupplyHistory sh : supplyHistorySet) {
             if (sh.getProductOrder() != null) {
                 double v = sh.getProductOrder().getTotalSum();
                 if (v < 0) throw new IllegalStateException("ProductOrder total cannot be negative");
