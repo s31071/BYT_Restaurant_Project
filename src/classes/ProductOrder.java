@@ -139,6 +139,10 @@ public class ProductOrder implements Serializable {
             if (sh.getProductOrder() != this) {
                 sh.setProductOrder(this);
             }
+
+            if (sh.getInvoice() != null) {
+                sh.getInvoice().updateSum();
+            }
         }
     }
 

@@ -4,11 +4,8 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.io.IOException;
-import java.util.Objects;
 
 public class SupplyHistory implements Serializable {
 
@@ -18,11 +15,14 @@ public class SupplyHistory implements Serializable {
     private SupplyStatus status;
     private Invoice invoice;
     private ProductOrder productOrder;
+    private UUID uuid;
+    public SupplyHistory(LocalDate date, SupplyStatus status) {}
     // association SupplyHistory - Invoice (1 , *)
     // association SupplyHistory - ProductOrder (1 , *)
     public SupplyHistory() {}
 
     public SupplyHistory(LocalDate date, SupplyStatus status, Invoice invoice, ProductOrder productOrder) {
+        uuid = UUID.randomUUID();
         setDate(date);
         setStatus(status);
         setInvoice(invoice);
@@ -147,16 +147,13 @@ public class SupplyHistory implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SupplyHistory that = (SupplyHistory) o;
-        return Objects.equals(date, that.date)
-                && Objects.equals(invoice, that.invoice)
-                && Objects.equals(productOrder, that.productOrder);
+        return Objects.equals(uuid, that.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, invoice, productOrder);
+        return Objects.hash(uuid);
     }
 }

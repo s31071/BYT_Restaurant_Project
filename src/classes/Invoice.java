@@ -97,8 +97,18 @@ public class Invoice extends Payment implements Serializable {
             if (sh.getInvoice() != this) {
                 sh.setInvoice(this);
             }
-            setSum();
+            if (sh.getProductOrder() != null) {
+                updateSum();
+            }
         }
+    }
+
+    public void updateSum() {
+        this.sum = Math.round(
+                supplyHistorySet.stream()
+                        .mapToDouble(sh -> sh.getProductOrder().getTotalSum())
+                        .sum() * 100.0
+        ) / 100.0;
     }
 
     public void removeSupplyHistory(SupplyHistory sh) {
