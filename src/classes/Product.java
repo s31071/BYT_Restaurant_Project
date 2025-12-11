@@ -20,7 +20,7 @@ public class Product implements Serializable {
 
     // many-to-many association Product - ProductOrder (1..* , 1..*)
     private HashSet<ProductOrder> productOrders = new HashSet<>();
-
+    private Set<Dish> dishes = new HashSet<>();
     public Product() {}
 
     public Product(long ID, String name, double weight,
@@ -130,6 +130,33 @@ public class Product implements Serializable {
 
         if (po.getProducts().contains(this)) {
             po.removeProduct(this);
+        }
+    }
+
+    public Set<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void addDish(Dish dish) {
+        if (dish == null) {
+            throw new IllegalArgumentException("Dish cannot be null");
+        }
+        if (dishes.contains(dish)) return;
+        dishes.add(dish);
+
+        if (!dish.getProducts().contains(this)) {
+            dish.addProduct(this);
+        }
+    }
+
+    public void removeDish(Dish dish) {
+        if (dish == null) {
+            throw new IllegalArgumentException("Dish cannot be null");
+        }
+        if (!dishes.contains(dish)) return;
+        dishes.remove(dish);
+        if (dish.getProducts().contains(this)) {
+            dish.removeProduct(this);
         }
     }
 

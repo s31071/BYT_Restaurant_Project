@@ -14,6 +14,7 @@ public class Dish implements Serializable {
     private List<Integer> reviews = new ArrayList<>();
     private Menu menu; //composition with Menu
     private Set<DishOrder> dishOrders = new HashSet<>(); //aggregation with Order
+    private Set<Product> products = new HashSet<>();
 
     public Dish(){}
     public Dish(String name, double price, List<Integer> reviews) {
@@ -132,6 +133,30 @@ public class Dish implements Serializable {
         else throw new IllegalArgumentException("Dish could not be found");
     }
 
+    public void addProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+
+        if (products.contains(product)) return;
+        products.add(product);
+        if (!product.getDishes().contains(this)) {
+            product.addDish(this);
+        }
+    }
+
+    public void removeProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null");
+        }
+
+        if (!products.contains(product)) return;
+        products.remove(product);
+        if (product.getDishes().contains(this)) {
+            product.removeDish(this);
+        }
+    }
+
     public static List<Dish> getDishList() {
         return Collections.unmodifiableList(extent);
     }
@@ -153,6 +178,9 @@ public class Dish implements Serializable {
 
     public Set<DishOrder> getDishOrders() {
         return dishOrders;
+    }
+    public Set<Product> getProducts() {
+        return products;
     }
 
     public static void addExtent(Dish dish) {
