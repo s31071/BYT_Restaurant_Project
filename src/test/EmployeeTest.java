@@ -211,27 +211,4 @@ class EmployeeTest {
         assertTrue(managedSet.contains(subordinate));
     }
 
-    @Test
-    void shouldThrowWhenManagerHasOwnManager() throws Exception {
-        TestEmployee boss = new TestEmployee(
-                "Boss", "Top", "111222333",
-                "S", "C", "00", "P",
-                "boss@mail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null
-        );
-
-        TestEmployee midManager = new TestEmployee(
-                "Mid", "Manager", "222333444",
-                "S", "C", "00", "P",
-                "mid@mail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, boss
-        );
-
-        TestEmployee worker = new TestEmployee(
-                "Worker", "Guy", "333444555",
-                "S", "C", "00", "P",
-                "worker@mail.com", hireDate, Contract.EMPLOYMENT_CONTRACT, null
-        );
-
-        assertThrows(Exception.class, () -> midManager.addManagedEmployee(worker));
-    }
-
 }

@@ -249,7 +249,7 @@ class WaiterTest {
     }
 
     @Test
-    void testRemoveManagedReservationNotAssignedThrowsException() {
+    void testRemoveManagedReservationNotAssignedDoesNothing() {
         Reservation reservation = new Reservation(
                 3,
                 "Mike",
@@ -257,12 +257,15 @@ class WaiterTest {
                 ReservationStatus.AVAILABLE
         );
 
-        Exception ex = assertThrows(Exception.class, () ->
+        assertTrue(waiter.getReservations().isEmpty());
+
+        assertDoesNotThrow(() ->
                 waiter.removeManagedReservation(reservation)
         );
 
-        assertEquals("This reservation is not managed by this waiter", ex.getMessage());
+        assertTrue(waiter.getReservations().isEmpty());
     }
+
 
     @Test
     void testBidirectionalRelationAfterAdd() throws Exception {

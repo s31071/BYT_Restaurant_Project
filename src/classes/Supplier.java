@@ -46,6 +46,7 @@ public class Supplier extends Person implements Serializable {
         if (productOrders.remove(productOrder)) {
             if (productOrder.getSupplier() == this) {
                 productOrder.removeSupplier(this);
+                ProductOrder.removeFromExtent(productOrder);
             }
         }
     }

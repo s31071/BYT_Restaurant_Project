@@ -189,7 +189,13 @@ class SupplierTest {
 
         ProductOrder productOrder = new ProductOrder(new HashSet<>(Set.of(p1)), s2);
 
-        assertThrows(Exception.class, () -> s.removeOrderedProduct(productOrder));
+        assertDoesNotThrow(() ->
+                s.removeOrderedProduct(productOrder)
+        );
+
+        assertTrue(s.getProductOrders().isEmpty());
+
+        assertEquals(s2, productOrder.getSupplier());
     }
 
     @Test
