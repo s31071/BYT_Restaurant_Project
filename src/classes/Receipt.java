@@ -32,7 +32,6 @@ public class Receipt extends Payment implements Serializable {
         setTip(tip);
         setOrder(order);
         setSum();
-        order.setReceipt(this);
         addExtent(this);
     }
 
