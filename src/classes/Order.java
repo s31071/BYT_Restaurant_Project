@@ -176,9 +176,9 @@ public class Order implements Serializable {
         extent = (List<Order>) objectInputStream.readObject();
     }
 
-    public void addManagedDishOrder(DishOrder dishOrder) throws Exception {
+    public void addManagedDishOrder(DishOrder dishOrder) {
         if (dishOrder == null) {
-            throw new Exception("DishOrder cannot be null");
+            throw new IllegalArgumentException("DishOrder cannot be null");
         }
         if(!dishOrders.contains(dishOrder)){
             dishOrders.add(dishOrder);

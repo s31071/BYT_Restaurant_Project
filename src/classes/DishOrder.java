@@ -32,10 +32,14 @@ public class DishOrder implements Serializable {
         if(dish == null) {
             throw new IllegalArgumentException("Dish cannot be null");
         }
+        if (this.dish == dish) return;
         this.dish = dish;
+        if (!dish.getDishOrders().contains(this)) {
+            dish.addDishOrderDish(this);
+        }
     }
 
-    public void addDishManaging(Dish dish) throws Exception {
+    public void addDishManaging(Dish dish) {
         if(this.dish == null) {
             setDish(dish);
 
@@ -43,7 +47,7 @@ public class DishOrder implements Serializable {
                 dish.addDishOrderDish(this);
             }
         } else if (this.dish != dish) {
-            throw new Exception("This DishOrder already has a dish assigned");
+            throw new IllegalArgumentException("This DishOrder already has a dish assigned");
         }
     }
 
@@ -69,10 +73,15 @@ public class DishOrder implements Serializable {
         if(order == null) {
             throw new IllegalArgumentException("Order cannot be null");
         }
+        if (this.order == order) return;
         this.order = order;
+        if (!order.getDishOrders().contains(this)) {
+            order.addManagedDishOrder(this);
+        }
     }
 
-    public void addOrderManaging(Order order) throws Exception {
+
+    public void addOrderManaging(Order order) {
         if(this.order == null) {
             setOrder(order);
 
@@ -80,7 +89,7 @@ public class DishOrder implements Serializable {
                 order.addManagedDishOrder(this);
             }
         }else if (this.order != order) {
-            throw new Exception("This DishOrder already has an order assigned");
+            throw new IllegalArgumentException("This DishOrder already has an order assigned");
         }
     }
 

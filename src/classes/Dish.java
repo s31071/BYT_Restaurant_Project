@@ -102,7 +102,7 @@ public class Dish implements Serializable {
         }
     }
 
-    public void addDishOrderDish(DishOrder dishOrder) throws Exception {
+    public void addDishOrderDish(DishOrder dishOrder) {
         if (dishOrder == null) {
             throw new IllegalArgumentException("DishOrder cannot be null");
         }
