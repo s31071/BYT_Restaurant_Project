@@ -22,7 +22,6 @@ public class Dish implements Serializable {
         setPrice(price);
         setReviews(reviews);
         this.menu = null;
-        addExtent(this);
     }
 
     public void setName(String name) {
@@ -46,28 +45,40 @@ public class Dish implements Serializable {
         this.reviews = reviews;
     }
 
-    public void setMenu(Menu menu) throws Exception {
-        if(menu == null){
-            throw new Exception("Menu cannot be null");
-        }
-        this.menu = menu;
+    public String getName() {
+        return name;
     }
 
-    public void addMenuManaging(Menu menu) throws Exception {
-        if(this.menu == null) {
-            setMenu(menu);
+    public double getPrice() {
+        return price;
+    }
 
-            if(!menu.getDishes().contains(this)){
+    public List<Integer> getReviews() {
+        return reviews;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void addMenuManaging(Menu menu) {
+        if (menu == null) {
+            throw new IllegalArgumentException("Menu cannot be null");
+        }
+
+        if (this.menu == null) {
+            this.menu = menu;
+            if (!menu.getDishes().contains(this)) {
                 menu.addManagedDish(this);
             }
-        }else if (this.menu != menu) {
-            throw new Exception("This dish already has a menu assigned");
+        } else if (this.menu != menu) {
+            throw new IllegalArgumentException("This dish already has a menu assigned");
         }
     }
 
-    public void removeMenuManaging(Menu menu) throws Exception {
+    public void removeMenuManaging(Menu menu) {
         if (menu == null) {
-            throw new Exception("Menu cannot be null");
+            throw new IllegalArgumentException("Menu cannot be null");
         }
 
         if (this.menu != menu) {
@@ -81,15 +92,9 @@ public class Dish implements Serializable {
         }
     }
 
-    public void setDishOrders(Set<DishOrder> dishOrders) {
-        this.dishOrders = dishOrders;
+    public Set<DishOrder> getDishOrders() {
+        return dishOrders;
     }
-
-    public static boolean checkAvailability(Dish dish) {
-        if (extent.contains(dish)) return true;
-        return false;
-    }
-
 
     public void removeManagedDishOrder(DishOrder dishOrder) throws Exception {
         if (dishOrder == null) {
@@ -121,17 +126,8 @@ public class Dish implements Serializable {
             throw new IllegalArgumentException("DishOrder cannot be null");
         }
         dishOrders.remove(dishOrder);
-
     }
 
-    public static void addNewDish(Dish dish) {
-        extent.add(dish);
-    }
-
-    public static void deleteDish(Dish dish) {
-        if(extent.contains(dish)) extent.remove(dish);
-        else throw new IllegalArgumentException("Dish could not be found");
-    }
 
     public void addProduct(Product product) {
         if (product == null) {
@@ -157,28 +153,6 @@ public class Dish implements Serializable {
         }
     }
 
-    public static List<Dish> getDishList() {
-        return Collections.unmodifiableList(extent);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public List<Integer> getReviews() {
-        return reviews;
-    }
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public Set<DishOrder> getDishOrders() {
-        return dishOrders;
-    }
     public Set<Product> getProducts() {
         return products;
     }

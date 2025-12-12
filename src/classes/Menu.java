@@ -1,12 +1,8 @@
 package classes;
 
-import javax.management.AttributeNotFoundException;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.io.Serializable;
 import java.io.IOException;
 import java.util.Objects;
@@ -25,20 +21,8 @@ public class Menu implements Serializable {
         addExtent(this);
     }
 
-    public static void updateMenu(Dish dish, String action) throws AttributeNotFoundException {
-        if (!Dish.getDishList().contains(dish)) {
-            if (action.equals("ADD")) {
-                Dish.addNewDish(dish);
-            } else if (action.equals("DELETE")) {
-                Dish.deleteDish(dish);
-            }
-        } else {
-            throw new AttributeNotFoundException("Could not find dish to update");
-        }
-    }
-
     public void setName(String name) {
-        if (name.isEmpty() || name == null) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
         this.name = name;
@@ -63,21 +47,21 @@ public class Menu implements Serializable {
         return dishes;
     }
 
-    public void addManagedDish(Dish dish) throws Exception {
-        if(dish == null){
-            throw new Exception("Dish cannot be null");
+    public void addManagedDish(Dish dish) {
+        if (dish == null) {
+            throw new IllegalArgumentException("Dish cannot be null");
         }
         if(!dishes.contains(dish)){
             dishes.add(dish);
-            if(dish.getMenu() != this) {
+            if (dish.getMenu() != this) {
                 dish.addMenuManaging(this);
             }
         }
     }
 
-    public void removeManagedDish(Dish dish) throws Exception {
+    public void removeManagedDish(Dish dish) {
         if (dish == null) {
-            throw new Exception("Dish cannot be null");
+            throw new IllegalArgumentException("Dish cannot be null");
         }
 
         if (dishes.remove(dish)) {
@@ -87,12 +71,22 @@ public class Menu implements Serializable {
         }
     }
 
+
+    public boolean containsDish(Dish dish) {
+        return dishes.contains(dish);
+    }
+
+    public int getDishCount() {
+        return dishes.size();
+    }
+
+
     public static void addExtent(Menu menu) {
-        if(menu == null){
+        if (menu == null) {
             throw new IllegalArgumentException("Menu cannot be null");
         }
-        if(extent.contains(menu)){
-            throw new IllegalArgumentException("Such menu is already in data base");
+        if (extent.contains(menu)) {
+            throw new IllegalArgumentException("Such menu is already in database");
         }
         extent.add(menu);
     }
@@ -102,6 +96,13 @@ public class Menu implements Serializable {
     }
 
     public static void removeFromExtent(Menu menu) {
+        if (menu == null) {
+            return;
+        }
+        List<Dish> dishesToDelete = new ArrayList<>(menu.dishes);
+        for (Dish dish : dishesToDelete) {
+            menu.removeManagedDish(dish);
+        }
         extent.remove(menu);
     }
 
@@ -109,8 +110,7 @@ public class Menu implements Serializable {
         objectOutputStream.writeObject(extent);
     }
 
-    public static void readExtent(XMLDecoder objectInputStream)
-            throws IOException, ClassNotFoundException {
+    public static void readExtent(XMLDecoder objectInputStream) throws IOException, ClassNotFoundException {
         extent = (List<Menu>) objectInputStream.readObject();
     }
 
