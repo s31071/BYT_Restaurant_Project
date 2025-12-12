@@ -67,6 +67,7 @@ public class Menu implements Serializable {
         if (dishes.remove(dish)) {
             if (dish.getMenu() == this) {
                 dish.removeMenuManaging(this);
+                Dish.removeFromExtent(dish);
             }
         }
     }
