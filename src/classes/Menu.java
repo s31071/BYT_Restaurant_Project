@@ -103,6 +103,9 @@ public class Menu implements Serializable {
         List<Dish> dishesToDelete = new ArrayList<>(menu.dishes);
         for (Dish dish : dishesToDelete) {
             menu.removeManagedDish(dish);
+            dish.removeProduct((Product) dish.getProducts());
+            dish.removeDishOrderDish((DishOrder) dish.getDishOrders());
+
         }
         extent.remove(menu);
     }
