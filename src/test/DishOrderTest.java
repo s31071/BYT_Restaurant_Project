@@ -101,7 +101,7 @@ class DishOrderTest {
     }
 
     @Test
-    void testRemoveFromExtent() {
+    void testRemoveFromExtent() throws Exception {
         Dish dish = new Dish("Soup", 6.00, reviews);
         DishOrder dishOrder = new DishOrder(dish, testOrder, 2);
 
@@ -114,7 +114,7 @@ class DishOrderTest {
     }
 
     @Test
-    void testRemoveFromExtentCleansUpAssociations() {
+    void testRemoveFromExtentCleansUpAssociations() throws Exception {
         Dish dish = new Dish("Steak", 25.00, reviews);
         DishOrder dishOrder = new DishOrder(dish, testOrder, 1);
         assertTrue(DishOrder.getExtent().contains(dishOrder));
@@ -249,7 +249,7 @@ class DishOrderTest {
     }
 
     @Test
-    void testDishOrderExtentPersistence() {
+    void testDishOrderExtentPersistence() throws Exception {
         Dish dish1 = new Dish("Dish1", 10.0, reviews);
         Dish dish2 = new Dish("Dish2", 15.0, reviews);
 
