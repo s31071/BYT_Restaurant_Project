@@ -143,9 +143,11 @@ public class DishOrder implements Serializable {
         }
     }
 
-    public static void removeFromExtent(DishOrder dishOrder) {
+    public static void removeFromExtent(DishOrder dishOrder) throws Exception{
         if(dishOrder != null) {
             dishOrder.removeFromDishAndOrder();
+            dishOrder.removeOrderManaging(dishOrder.order);
+            dishOrder.removeDishManaging(dishOrder.dish);
         }
         extent.remove(dishOrder);
     }
