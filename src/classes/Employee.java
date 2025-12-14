@@ -16,17 +16,24 @@ public abstract class Employee extends Person implements Serializable {
     private Employee manager;
     private HashSet<Employee> managedEmployees;
 
+    //Composition
+    private FullTime fullTime;
+    private PartTime partTime;
+
     private HashSet<Shift> shiftsAssigned;
 
     public Employee(){}
 
-    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager) throws Exception {
+    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager, Type type, Double salary) throws Exception {
         super(name, surname, phoneNumber, street, city, postalCode, country, email);
         setEmploymentDate(employmentDate);
         setContract(contract);
 
         managedEmployees = new HashSet<>();
         shiftsAssigned = new HashSet<>();
+
+        if(type == null && salary == null) fullTime = new FullTime();
+        else partTime = new PartTime(type, salary);
 
         if (manager != null) {
             manager.addManagedEmployee(this);
@@ -163,6 +170,59 @@ public abstract class Employee extends Person implements Serializable {
 
     public Contract getContract() {
         return contract;
+    }
+
+    private class FullTime implements IfullTime{
+        private static final Double hoursPerWeek = 40.0;
+
+        @Override
+        public void ChangeToPartTime(Type type, Double salary) {
+            if (partTime != null) {
+                throw new IllegalStateException("Employee is already part-time");
+            }
+            fullTime = null;
+
+            partTime = new PartTime(type, salary);
+
+
+        }
+    }
+
+    private class PartTime implements IpartTime{
+        private Type type;
+        private Double salary;
+
+        public PartTime(Type type, Double salary){
+            this.type = type;
+            this.salary = salary;
+        }
+
+        @Override
+        public void ChangeToFullTime() {
+            if (fullTime != null) {
+                throw new IllegalStateException("Employee is already full-time");
+            }
+            partTime = null;
+
+            fullTime = new FullTime();
+
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        public void setType(Type type) {
+            this.type = type;
+        }
+
+        public Double getSalary() {
+            return salary;
+        }
+
+        public void setSalary(Double salary) {
+            this.salary = salary;
+        }
     }
 }
 
