@@ -5,5 +5,4 @@ public interface IpartTime {
     public Type getType();
     public void setType(Type type);
     public Double getSalary();
-    public void setSalary(Double salary);
 }

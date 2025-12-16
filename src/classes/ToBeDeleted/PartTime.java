@@ -1,3 +1,4 @@
+/*
 package classes;
 
 import java.beans.XMLDecoder;
@@ -88,3 +89,4 @@ public class PartTime extends Employee implements Serializable {
         return super.hashCode();
     }
 }
+*/

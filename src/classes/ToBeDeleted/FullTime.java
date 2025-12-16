@@ -1,3 +1,4 @@
+/*
 package classes;
 
 import java.beans.XMLDecoder;
@@ -69,4 +70,4 @@ public class FullTime extends Employee implements Serializable {
     public int hashCode() {
         return super.hashCode();
     }
-}
+}*/

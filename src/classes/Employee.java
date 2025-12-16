@@ -1,12 +1,20 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.io.Serializable;
 
+import static classes.Contract.*;
+
 
 public abstract class Employee extends Person implements Serializable {
+
     private double salary;
     private LocalDate employmentDate;
     private Contract contract;
@@ -24,7 +32,7 @@ public abstract class Employee extends Person implements Serializable {
 
     public Employee(){}
 
-    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager, Type type, Double salary) throws Exception {
+    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager, Type type) throws Exception {
         super(name, surname, phoneNumber, street, city, postalCode, country, email);
         setEmploymentDate(employmentDate);
         setContract(contract);
@@ -32,8 +40,15 @@ public abstract class Employee extends Person implements Serializable {
         managedEmployees = new HashSet<>();
         shiftsAssigned = new HashSet<>();
 
-        if(type == null && salary == null) fullTime = new FullTime();
-        else partTime = new PartTime(type, salary);
+        if(type == null) {
+            fullTime = new FullTime();
+            this.partTime = null;
+        }
+        else {
+            partTime = new PartTime(type);
+            this.fullTime = null;
+        }
+
 
         if (manager != null) {
             manager.addManagedEmployee(this);
@@ -65,6 +80,11 @@ public abstract class Employee extends Person implements Serializable {
             }
         }
     }
+
+    public Employee getManager() {
+        return manager;
+    }
+
     public void setManager(Employee manager){
         if (this.manager == manager) return;
 
@@ -77,6 +97,10 @@ public abstract class Employee extends Person implements Serializable {
         if (manager != null && !manager.managedEmployees.contains(this)) {
             manager.managedEmployees.add(this);
         }
+    }
+
+    public HashSet<Employee> getManagedEmployees() {
+        return managedEmployees;
     }
 
     public void addManagedEmployee(Employee managed) throws Exception {
@@ -97,8 +121,32 @@ public abstract class Employee extends Person implements Serializable {
         }
     }
 
-    public void removeManagedEmployee(Employee managed){
+    public void removeManagedEmployee(Employee managed) throws Exception {
+        if (managed == null) {
+            throw new Exception("Managed employee cannot be null");
+        }
 
+        if (managedEmployees.remove(managed)) {
+            if (managed.getManager() == this) {
+                managed.removeManager(this);
+            }
+        }
+    }
+
+    public void removeManager(Employee manager) throws Exception {
+        if (manager == null) {
+            throw new Exception("Manager cannot be null");
+        }
+
+        if (this.manager != manager) {
+            return;
+        }
+
+        this.manager = null;
+
+        if (manager.getManagedEmployees().contains(this)) {
+            manager.removeManagedEmployee(this);
+        }
     }
 
     protected abstract double calculateSalary();
@@ -172,29 +220,104 @@ public abstract class Employee extends Person implements Serializable {
         return contract;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
     private class FullTime implements IfullTime{
+        private static List<FullTime> extent = new ArrayList<>();
         private static final Double hoursPerWeek = 40.0;
+
+        public FullTime(){
+            salary = calculateSalary();
+            addExtent(this);
+        }
 
         @Override
         public void ChangeToPartTime(Type type, Double salary) {
             if (partTime != null) {
                 throw new IllegalStateException("Employee is already part-time");
             }
+
+            removeFromExtent(this);
             fullTime = null;
-
-            partTime = new PartTime(type, salary);
-
-
+            partTime = new PartTime(type);
         }
+
+        public double calculateSalary(){
+            double workingYears = getYearsWorked();
+            return switch (getContract()) {
+                case EMPLOYMENT_CONTRACT -> 0.75 * workingYears * hoursPerWeek * 4.5 * getBaseSalary();
+                case MANDATE_CONTRACT -> 0.9 * workingYears * hoursPerWeek * 4.5 * getBaseSalary();
+                case B2B -> workingYears * hoursPerWeek * 4.5 * getBaseSalary();
+            };
+        }
+
+        public static void addExtent(FullTime fullTime){
+            if(fullTime == null){
+                throw new IllegalArgumentException("Full time cannot be null");
+            }
+            if(extent.contains(fullTime)){
+                throw new IllegalArgumentException("Such full time employee is already in data base");
+            }
+            extent.add(fullTime);
+        }
+
+        public static List<FullTime> getExtent() {
+            return Collections.unmodifiableList(extent);
+        }
+
+        public static void removeFromExtent(FullTime fullTime) {
+            extent.remove(fullTime);
+        }
+
+        public static void writeExtent(XMLEncoder out) throws IOException {
+            out.writeObject(extent);
+        }
+
+        public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+            extent = (List<FullTime>) in.readObject();
+        }
+
+        public static void clearExtent(){
+            extent.clear();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            FullTime fullTime = (FullTime) o;
+            return Employee.this.equals(fullTime.getOuterEmployee());
+        }
+
+        @Override
+        public int hashCode() {
+            return Employee.this.hashCode();
+        }
+
+        // helper to access the outer Employee
+        private Employee getOuterEmployee() {
+            return Employee.this;
+        }
+
     }
 
     private class PartTime implements IpartTime{
+        private static List<PartTime> extent = new ArrayList<>();
         private Type type;
-        private Double salary;
 
-        public PartTime(Type type, Double salary){
-            this.type = type;
-            this.salary = salary;
+        public PartTime(Type type){
+            setType(type);
+            salary = calculateSalary();
+            addExtent(this);
         }
 
         @Override
@@ -202,10 +325,19 @@ public abstract class Employee extends Person implements Serializable {
             if (fullTime != null) {
                 throw new IllegalStateException("Employee is already full-time");
             }
-            partTime = null;
 
+            removeFromExtent(this);
+            partTime = null;
             fullTime = new FullTime();
 
+        }
+
+        public double calculateSalary() {
+            return switch (type){
+                case HALF_TIME -> 20 * 4.5 * getBaseSalary();
+                case THREE_QUARTER_TIME -> 30 * 4.5 * getBaseSalary();
+                case ON_CALL -> 10 * 4.5 * getBaseSalary();
+            };
         }
 
         public Type getType() {
@@ -213,6 +345,9 @@ public abstract class Employee extends Person implements Serializable {
         }
 
         public void setType(Type type) {
+            if(type == null){
+                throw new IllegalArgumentException("Type cannot be null");
+            }
             this.type = type;
         }
 
@@ -220,9 +355,53 @@ public abstract class Employee extends Person implements Serializable {
             return salary;
         }
 
-        public void setSalary(Double salary) {
-            this.salary = salary;
+        public static void addExtent(PartTime partTime) {
+            if (partTime == null) {
+                throw new IllegalArgumentException("Part time cannot be null");
+            }
+            if(extent.contains(partTime)){
+                throw new IllegalArgumentException("Such part time employee is already in data base");
+            }
+            extent.add(partTime);
         }
+
+        public static List<PartTime> getExtent() {
+            return Collections.unmodifiableList(extent);
+        }
+
+        public static void removeFromExtent(PartTime partTime) {
+            extent.remove(partTime);
+        }
+
+        public static void writeExtent(XMLEncoder out) throws IOException {
+            out.writeObject(extent);
+        }
+
+        public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+            extent = (List<PartTime>) in.readObject();
+        }
+
+        public static void clearExtent(){
+            extent.clear();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PartTime partTime = (PartTime) o;
+            return Employee.this.equals(partTime.getOuterEmployee());
+        }
+
+        @Override
+        public int hashCode() {
+            return Employee.this.hashCode();
+        }
+
+        private Employee getOuterEmployee() {
+            return Employee.this;
+        }
+
     }
 }
-
