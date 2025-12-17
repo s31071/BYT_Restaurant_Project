@@ -13,7 +13,8 @@ import java.io.Serializable;
 import static classes.Contract.*;
 
 
-public abstract class Employee extends Person implements Serializable {
+public abstract class Employee implements Iemployee, Serializable {
+    private static List<Employee> extent = new ArrayList<>();
 
     private double salary;
     private LocalDate employmentDate;
@@ -28,12 +29,15 @@ public abstract class Employee extends Person implements Serializable {
     private FullTime fullTime;
     private PartTime partTime;
 
+    private Person person;
+
     private HashSet<Shift> shiftsAssigned;
 
     public Employee(){}
 
-    public Employee(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, LocalDate employmentDate, Contract contract, Employee manager, Type type) throws Exception {
-        super(name, surname, phoneNumber, street, city, postalCode, country, email);
+    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type) throws Exception {
+        setPerson(person);
+
         setEmploymentDate(employmentDate);
         setContract(contract);
 
@@ -53,6 +57,8 @@ public abstract class Employee extends Person implements Serializable {
         if (manager != null) {
             manager.addManagedEmployee(this);
         }
+
+        addExtent(this);
     }
 
     public void addWorkedInShift(Shift shift) throws Exception {
@@ -149,17 +155,22 @@ public abstract class Employee extends Person implements Serializable {
         }
     }
 
-    protected abstract double calculateSalary();
+    public abstract double calculateSalary();
 
     public double getBaseSalary() {
         return baseSalary;
+    }
+
+    public Person getPerson() {
+        return person;
     }
 
     public HashSet<Shift> getShiftsAssigned() {
         return shiftsAssigned;
     }
 
-    private void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
+    @Override
+    public void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
         employee.setName(newName);
         employee.setSurname(newSurname);
         employee.setPhoneNumber(newPhoneNumber);
@@ -175,6 +186,13 @@ public abstract class Employee extends Person implements Serializable {
             case MANDATE_CONTRACT -> 0.85;
             case B2B -> 1.2;
         };
+    }
+
+    public void setPerson(Person person) throws Exception {
+        if(person == null){
+            throw new Exception("Person cannot be null");
+        }
+        this.person = person;
     }
 
     public void setSalary(double salary) {
@@ -220,6 +238,72 @@ public abstract class Employee extends Person implements Serializable {
         return contract;
     }
 
+    public String getName(){
+        return person.getName();
+    }
+
+    public void setName(String name){
+        person.setName(name);
+    }
+
+    public String getSurname(){
+        return person.getSurname();
+    }
+
+    public void setSurname(String surname){
+        person.setSurname(surname);
+    }
+
+    public String getPhoneNumber(){
+        return person.getPhoneNumber();
+    }
+
+    public void setPhoneNumber(String phoneNumber){
+        person.setPhoneNumber(phoneNumber);
+    }
+
+    public Address getAddress(){
+        return person.getAddress();
+    }
+
+    public void setAddress(Address address){
+        person.setAddress(address);
+    }
+
+    public String getEmail(){
+        return person.getEmail();
+    }
+
+    public void setEmail(String email){
+        person.setEmail(email);
+    }
+
+    public static void addExtent(Employee employee){
+        if(employee == null){
+            throw new IllegalArgumentException("Employee cannot be null");
+        }
+        if(extent.contains(employee)){
+            throw new IllegalArgumentException("Such employee is already in data base");
+        }
+        extent.add(employee);
+    }
+
+    public static List<Employee> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Employee employee) {
+        extent.remove(employee);
+    }
+
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Employee>) in.readObject();
+    }
+
     @Override
     public boolean equals(Object o) {
         return super.equals(o);
@@ -249,6 +333,7 @@ public abstract class Employee extends Person implements Serializable {
             fullTime = null;
             partTime = new PartTime(type);
         }
+
 
         public double calculateSalary(){
             double workingYears = getYearsWorked();

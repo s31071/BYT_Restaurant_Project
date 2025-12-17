@@ -4,11 +4,14 @@ import java.util.Objects;
 
 public abstract class Person {
 
-    public String name;
-    public String surname;
-    public String phoneNumber;
-    public Address address;
-    public String email;
+    private String name;
+    private String surname;
+    private String phoneNumber;
+    private Address address;
+    private String email;
+
+    private Employee employee;
+    private Customer customer;
 
     public Person(){}
     public Person(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email) {
@@ -18,6 +21,35 @@ public abstract class Person {
         Address address = new Address(street, city, postalCode, country);
         setAddress(address);
         setEmail(email);
+    }
+
+    public void becomeEmployee(Employee employee) throws Exception { //TODO: Wydaje mi sie ze nie musi byc bidirectional bo employee bez person nie istnieje wiec w druga strone employee musi miec w konstruktorze person
+        if (employee == null) {
+            throw new Exception("Employee cannot be null");
+        }
+
+        if (this.employee == null) {
+            this.employee = employee;
+            if (employee.getPerson() != this) {
+                employee.setPerson(this);
+            }
+        } else if (this.employee != employee) {
+            throw new IllegalStateException("This person already is an employee");
+        }
+    }
+
+    public void stopBeingEmployee(Employee employee) throws Exception {
+        if (employee == null) {
+            throw new Exception("Employee cannot be null");
+        }
+
+        if (this.employee != employee) {
+            return;
+        }
+
+        this.employee = null;
+
+        Employee.removeFromExtent(employee);
     }
 
     public String getName() {
@@ -62,6 +94,13 @@ public abstract class Person {
             );
         }
         this.surname = surname;
+    }
+
+    public void setEmployee(Employee employee) throws Exception {
+        if(employee == null){
+            throw new Exception("Employee cannot be null");
+        }
+        this.employee = employee;
     }
 
     public void setPhoneNumber(String phoneNumber) {

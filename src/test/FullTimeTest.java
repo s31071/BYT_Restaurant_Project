@@ -3,11 +3,13 @@ package test;
 import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 class FullTimeTest {
 
@@ -22,7 +24,7 @@ class FullTimeTest {
                 LocalDate.of(2020, 1, 1), Contract.EMPLOYMENT_CONTRACT, null);
     }
 
-    @Test
+    @org.testng.annotations.Test
     void testConstructor() {
         assertEquals("Jan", emp.getName());
         assertEquals("Nowak", emp.getSurname());
