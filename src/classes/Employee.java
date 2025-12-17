@@ -11,9 +11,7 @@ import java.util.List;
 import java.io.Serializable;
 
 import static classes.Contract.*;
-
-
-public abstract class Employee implements Iemployee, Serializable {
+public class Employee implements Iemployee, Serializable {
     private static List<Employee> extent = new ArrayList<>();
 
     private double salary;
@@ -21,44 +19,135 @@ public abstract class Employee implements Iemployee, Serializable {
     private Contract contract;
     private double baseSalary = 31.5;
 
-    //reflex association
     private Employee manager;
     private HashSet<Employee> managedEmployees;
 
-    //Composition
     private FullTime fullTime;
     private PartTime partTime;
+
+    private Cook cook;
+    private Waiter waiter;
+    private DeliveryDriver deliveryDriver;
 
     private Person person;
 
     private HashSet<Shift> shiftsAssigned;
 
-    public Employee(){}
+    public enum Role {
+        COOK, WAITER, DELIVERY_DRIVER
+    }
 
-    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type) throws Exception {
+    public Employee() {}
+
+    //employee-cook
+    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type,
+                    double yearsOfExperience, String title, String specialization) throws Exception {
         setPerson(person);
-
         setEmploymentDate(employmentDate);
         setContract(contract);
 
         managedEmployees = new HashSet<>();
         shiftsAssigned = new HashSet<>();
 
-        if(type == null) {
+        if (type == null) {
             fullTime = new FullTime();
             this.partTime = null;
-        }
-        else {
+        } else {
             partTime = new PartTime(type);
             this.fullTime = null;
         }
 
+        if (manager != null) {
+            manager.addManagedEmployee(this);
+        }
+        this.cook = new Cook(this, yearsOfExperience, title, specialization);
+        addExtent(this);
+    }
+
+    //employee-waiter
+    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type,
+                    WorkwearSize workwearSize, double maximumTables) throws Exception {
+        setPerson(person);
+        setEmploymentDate(employmentDate);
+        setContract(contract);
+
+        managedEmployees = new HashSet<>();
+        shiftsAssigned = new HashSet<>();
+
+        if (type == null) {
+            fullTime = new FullTime();
+            this.partTime = null;
+        } else {
+            partTime = new PartTime(type);
+            this.fullTime = null;
+        }
+
+        if (manager != null) {
+            manager.addManagedEmployee(this);
+        }
+        this.waiter = new Waiter(this, workwearSize, maximumTables);
+        addExtent(this);
+    }
+
+    //employee-delivery driver
+    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type,
+                    String carModel, String registrationNumber, boolean bonusApply) throws Exception {
+        setPerson(person);
+        setEmploymentDate(employmentDate);
+        setContract(contract);
+
+        managedEmployees = new HashSet<>();
+        shiftsAssigned = new HashSet<>();
+
+        if (type == null) {
+            fullTime = new FullTime();
+            this.partTime = null;
+        } else {
+            partTime = new PartTime(type);
+            this.fullTime = null;
+        }
 
         if (manager != null) {
             manager.addManagedEmployee(this);
         }
 
+        this.deliveryDriver = new DeliveryDriver(this, carModel, registrationNumber, bonusApply);
         addExtent(this);
+    }
+    public Cook getCook() {
+        return cook;
+    }
+    void setCook(Cook cook) {
+        this.cook = cook;
+    }
+    public Waiter getWaiter() {
+        return waiter;
+    }
+    void setWaiter(Waiter waiter) {
+        this.waiter = waiter;
+    }
+    public DeliveryDriver getDeliveryDriver() {
+        return deliveryDriver;
+    }
+    void setDeliveryDriver(DeliveryDriver deliveryDriver) {
+        this.deliveryDriver = deliveryDriver;
+    }
+    public Role getCurrentRole() {
+        if (cook != null) return Role.COOK;
+        if (waiter != null) return Role.WAITER;
+        if (deliveryDriver != null) return Role.DELIVERY_DRIVER;
+        return null;
+    }
+    public boolean isCook() {
+        return cook != null;
+    }
+
+    public boolean isWaiter() {
+        return waiter != null;
+    }
+
+    public boolean isDeliveryDriver() {
+        return deliveryDriver != null;
     }
 
     public void addWorkedInShift(Shift shift) throws Exception {
@@ -87,11 +176,15 @@ public abstract class Employee implements Iemployee, Serializable {
         }
     }
 
+    public HashSet<Shift> getShiftsAssigned() {
+        return shiftsAssigned;
+    }
+
     public Employee getManager() {
         return manager;
     }
 
-    public void setManager(Employee manager){
+    public void setManager(Employee manager) {
         if (this.manager == manager) return;
 
         if (this.manager != null) {
@@ -155,29 +248,16 @@ public abstract class Employee implements Iemployee, Serializable {
         }
     }
 
-    public abstract double calculateSalary();
+
+    public double calculateSalary() {
+        if (cook != null) return cook.calculateSalary();
+        if (waiter != null) return waiter.calculateSalary();
+        if (deliveryDriver != null) return deliveryDriver.calculateSalary();
+        throw new IllegalStateException("Employee must be either a cook, a waiter or a delivery driver");
+    }
 
     public double getBaseSalary() {
         return baseSalary;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public HashSet<Shift> getShiftsAssigned() {
-        return shiftsAssigned;
-    }
-
-    @Override
-    public void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract){
-        employee.setName(newName);
-        employee.setSurname(newSurname);
-        employee.setPhoneNumber(newPhoneNumber);
-        employee.setAddress(newAddress);
-        employee.setEmail(newEmail);
-        employee.setEmploymentDate(newEmploymentDate);
-        employee.setContract(newContract);
     }
 
     public double contractMultiplier(Contract c) {
@@ -188,101 +268,116 @@ public abstract class Employee implements Iemployee, Serializable {
         };
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
     public void setPerson(Person person) throws Exception {
-        if(person == null){
+        if (person == null) {
             throw new Exception("Person cannot be null");
         }
         this.person = person;
     }
 
+    public String getName() {
+        return person.getName();
+    }
+
+    public void setName(String name) {
+        person.setName(name);
+    }
+
+    public String getSurname() {
+        return person.getSurname();
+    }
+
+    public void setSurname(String surname) {
+        person.setSurname(surname);
+    }
+
+    public String getPhoneNumber() {
+        return person.getPhoneNumber();
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        person.setPhoneNumber(phoneNumber);
+    }
+
+    public Address getAddress() {
+        return person.getAddress();
+    }
+
+    public void setAddress(Address address) {
+        person.setAddress(address);
+    }
+
+    public String getEmail() {
+        return person.getEmail();
+    }
+
+    public void setEmail(String email) {
+        person.setEmail(email);
+    }
+
     public void setSalary(double salary) {
-        if(salary < 0){
-            throw new IllegalArgumentException("Salary cannot be 0");
+        if (salary < 0) {
+            throw new IllegalArgumentException("Salary cannot be negative");
         }
         this.salary = salary;
     }
 
+    public double getSalary() {
+        return salary;
+    }
+
     public void setEmploymentDate(LocalDate employmentDate) {
-        if(employmentDate == null){
+        if (employmentDate == null) {
             throw new IllegalArgumentException("Employment date cannot be null");
         }
 
-        if(employmentDate.isAfter(LocalDate.now())){
+        if (employmentDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Employment date cannot be in the future");
         }
 
         this.employmentDate = employmentDate;
     }
 
+    public LocalDate getEmploymentDate() {
+        return employmentDate;
+    }
+
     public void setContract(Contract contract) {
-        if(contract == null){
+        if (contract == null) {
             throw new IllegalArgumentException("Contract cannot be null");
         }
         this.contract = contract;
-    }
-
-    public long getYearsWorked() {
-        return java.time.temporal.ChronoUnit.YEARS.between(getEmploymentDate(), LocalDate.now());
-    }
-
-
-    public double getSalary() {
-        return salary;
-    }
-
-    public LocalDate getEmploymentDate() {
-        return employmentDate;
     }
 
     public Contract getContract() {
         return contract;
     }
 
-    public String getName(){
-        return person.getName();
+    public long getYearsWorked() {
+        return java.time.temporal.ChronoUnit.YEARS.between(getEmploymentDate(), LocalDate.now());
     }
 
-    public void setName(String name){
-        person.setName(name);
+    @Override
+    public void updateEmployee(Employee employee, String newName, String newSurname, String newPhoneNumber, 
+                               Address newAddress, String newEmail, LocalDate newEmploymentDate, Contract newContract) {
+        employee.setName(newName);
+        employee.setSurname(newSurname);
+        employee.setPhoneNumber(newPhoneNumber);
+        employee.setAddress(newAddress);
+        employee.setEmail(newEmail);
+        employee.setEmploymentDate(newEmploymentDate);
+        employee.setContract(newContract);
     }
 
-    public String getSurname(){
-        return person.getSurname();
-    }
-
-    public void setSurname(String surname){
-        person.setSurname(surname);
-    }
-
-    public String getPhoneNumber(){
-        return person.getPhoneNumber();
-    }
-
-    public void setPhoneNumber(String phoneNumber){
-        person.setPhoneNumber(phoneNumber);
-    }
-
-    public Address getAddress(){
-        return person.getAddress();
-    }
-
-    public void setAddress(Address address){
-        person.setAddress(address);
-    }
-
-    public String getEmail(){
-        return person.getEmail();
-    }
-
-    public void setEmail(String email){
-        person.setEmail(email);
-    }
-
-    public static void addExtent(Employee employee){
-        if(employee == null){
+    public static void addExtent(Employee employee) {
+        if (employee == null) {
             throw new IllegalArgumentException("Employee cannot be null");
         }
-        if(extent.contains(employee)){
+        if (extent.contains(employee)) {
             throw new IllegalArgumentException("Such employee is already in data base");
         }
         extent.add(employee);
@@ -294,6 +389,10 @@ public abstract class Employee implements Iemployee, Serializable {
 
     public static void removeFromExtent(Employee employee) {
         extent.remove(employee);
+    }
+
+    public static void clearExtent() {
+        extent.clear();
     }
 
     public static void writeExtent(XMLEncoder out) throws IOException {
@@ -314,11 +413,11 @@ public abstract class Employee implements Iemployee, Serializable {
         return super.hashCode();
     }
 
-    private class FullTime implements IfullTime{
+    private class FullTime implements IfullTime {
         private static List<FullTime> extent = new ArrayList<>();
         private static final Double hoursPerWeek = 40.0;
 
-        public FullTime(){
+        public FullTime() {
             salary = calculateSalary();
             addExtent(this);
         }
@@ -334,8 +433,7 @@ public abstract class Employee implements Iemployee, Serializable {
             partTime = new PartTime(type);
         }
 
-
-        public double calculateSalary(){
+        public double calculateSalary() {
             double workingYears = getYearsWorked();
             return switch (getContract()) {
                 case EMPLOYMENT_CONTRACT -> 0.75 * workingYears * hoursPerWeek * 4.5 * getBaseSalary();
@@ -344,11 +442,11 @@ public abstract class Employee implements Iemployee, Serializable {
             };
         }
 
-        public static void addExtent(FullTime fullTime){
-            if(fullTime == null){
+        public static void addExtent(FullTime fullTime) {
+            if (fullTime == null) {
                 throw new IllegalArgumentException("Full time cannot be null");
             }
-            if(extent.contains(fullTime)){
+            if (extent.contains(fullTime)) {
                 throw new IllegalArgumentException("Such full time employee is already in data base");
             }
             extent.add(fullTime);
@@ -370,7 +468,7 @@ public abstract class Employee implements Iemployee, Serializable {
             extent = (List<FullTime>) in.readObject();
         }
 
-        public static void clearExtent(){
+        public static void clearExtent() {
             extent.clear();
         }
 
@@ -392,7 +490,6 @@ public abstract class Employee implements Iemployee, Serializable {
         private Employee getOuterEmployee() {
             return Employee.this;
         }
-
     }
 
     private class PartTime implements IpartTime{
@@ -414,11 +511,10 @@ public abstract class Employee implements Iemployee, Serializable {
             removeFromExtent(this);
             partTime = null;
             fullTime = new FullTime();
-
         }
 
         public double calculateSalary() {
-            return switch (type){
+            return switch (type) {
                 case HALF_TIME -> 20 * 4.5 * getBaseSalary();
                 case THREE_QUARTER_TIME -> 30 * 4.5 * getBaseSalary();
                 case ON_CALL -> 10 * 4.5 * getBaseSalary();
@@ -487,6 +583,5 @@ public abstract class Employee implements Iemployee, Serializable {
         private Employee getOuterEmployee() {
             return Employee.this;
         }
-
     }
 }
