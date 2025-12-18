@@ -388,6 +388,7 @@ public class Employee implements Iemployee, Serializable {
     }
 
     public static void removeFromExtent(Employee employee) {
+
         extent.remove(employee);
     }
 
@@ -405,12 +406,15 @@ public class Employee implements Iemployee, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return person.equals(employee.person);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return person.hashCode();
     }
 
     private class FullTime implements IfullTime {

@@ -9,22 +9,80 @@ import java.util.List;
 import java.io.Serializable;
 import java.io.IOException;
 
-public class Supplier extends Person implements Serializable {
+public class Supplier implements ISupplier, Serializable {
     private static List<Supplier> extent = new ArrayList<>();
     private String companyName;
     private Category category;
     private double deliveryCost;
     private HashSet<ProductOrder> productOrders;
 
+    private Person person;
+
     public Supplier(){}
-    public Supplier(String name, String surname, String phoneNumber, String street, String city, String postalCode, String country, String email, String companyName, Category category, double deliveryCost) {
-        super(name, surname, phoneNumber, street, city, postalCode, country, email);
+    public Supplier(Person person, String companyName, Category category, double deliveryCost) throws Exception{
+
+        setPerson(person);
         setCompanyName(companyName);
         setCategory(category);
         setDeliveryCost(deliveryCost);
-        addExtent(this);
         productOrders = new HashSet<>();
+        addExtent(this);
     }
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) throws Exception {
+        if (person == null) {
+            throw new Exception("Person cannot be null");
+        }
+        this.person = person;
+    }
+
+    public String getName() {
+        return person.getName();
+    }
+
+    public void setName(String name) {
+        person.setName(name);
+    }
+
+    public String getSurname() {
+        return person.getSurname();
+    }
+
+    public void setSurname(String surname) {
+        person.setSurname(surname);
+    }
+
+    public String getPhoneNumber() {
+        return person.getPhoneNumber();
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        person.setPhoneNumber(phoneNumber);
+    }
+
+    public Address getAddress() {
+        return person.getAddress();
+    }
+
+    public void setAddress(Address address) {
+        person.setAddress(address);
+    }
+
+    public String getEmail() {
+        return person.getEmail();
+    }
+
+    public void setEmail(String email) {
+        person.setEmail(email);
+    }
+
+
+
+
+
 
     public void addOrderedProduct(ProductOrder productOrder) throws Exception {
         if(productOrder == null){
@@ -124,11 +182,14 @@ public class Supplier extends Person implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Supplier supplier = (Supplier) o;
+        return person.equals(supplier.person);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return person.hashCode();
     }
 }
