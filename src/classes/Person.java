@@ -33,9 +33,15 @@ public abstract class Person {
         addExtent(this);
     }
 
-    public void becomeSupplier(Supplier supplier) throws Exception{
+    public void becomeSupplier(Supplier supplier) throws Exception {
         if (supplier == null) {
             throw new IllegalArgumentException("Supplier cannot be null");
+        }
+
+        if (this.employee != null || this.customer != null) {
+            throw new IllegalStateException(
+                    "A person cannot be a Supplier and Employee/Customer at the same time"
+            );
         }
 
         if (this.supplier == null) {
