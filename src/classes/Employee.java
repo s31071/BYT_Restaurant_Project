@@ -39,59 +39,10 @@ public class Employee implements Iemployee, Serializable {
 
     public Employee() {}
 
-    //employee-cook
-    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type,
-                    double yearsOfExperience, String title, String specialization) throws Exception {
-        setPerson(person);
-        setEmploymentDate(employmentDate);
-        setContract(contract);
-
-        managedEmployees = new HashSet<>();
-        shiftsAssigned = new HashSet<>();
-
-        if (type == null) {
-            fullTime = new FullTime();
-            this.partTime = null;
-        } else {
-            partTime = new PartTime(type);
-            this.fullTime = null;
-        }
-
-        if (manager != null) {
-            manager.addManagedEmployee(this);
-        }
-        this.cook = new Cook(this, yearsOfExperience, title, specialization);
-        addExtent(this);
-    }
-
-    //employee-waiter
-    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type,
-                    WorkwearSize workwearSize, double maximumTables) throws Exception {
-        setPerson(person);
-        setEmploymentDate(employmentDate);
-        setContract(contract);
-
-        managedEmployees = new HashSet<>();
-        shiftsAssigned = new HashSet<>();
-
-        if (type == null) {
-            fullTime = new FullTime();
-            this.partTime = null;
-        } else {
-            partTime = new PartTime(type);
-            this.fullTime = null;
-        }
-
-        if (manager != null) {
-            manager.addManagedEmployee(this);
-        }
-        this.waiter = new Waiter(this, workwearSize, maximumTables);
-        addExtent(this);
-    }
-
-    //employee-delivery driver
-    public Employee(Person person, LocalDate employmentDate, Contract contract, Employee manager, Type type,
-                    String carModel, String registrationNumber, boolean bonusApply) throws Exception {
+    public Employee(Person person, Role role, LocalDate employmentDate, Contract contract, Employee manager, Type type,
+                    double yearsOfExperience, String title, String specialization,
+                    WorkwearSize workwearSize, Integer maximumTables,
+                    String carModel, String registrationNumber, Boolean bonusApply) throws Exception {
         setPerson(person);
         setEmploymentDate(employmentDate);
         setContract(contract);
@@ -111,9 +62,30 @@ public class Employee implements Iemployee, Serializable {
             manager.addManagedEmployee(this);
         }
 
-        this.deliveryDriver = new DeliveryDriver(this, carModel, registrationNumber, bonusApply);
+        switch (role) {
+            case COOK:
+                if (title == null || specialization == null) {
+                    throw new Exception("Cook requires yearsOfExperience, title, and specialization");
+                }
+                this.cook = new Cook(this, yearsOfExperience, title, specialization);
+                break;
+            case WAITER:
+                if (workwearSize == null || maximumTables == null) {
+                    throw new Exception("Waiter requires workwearSize and maximumTables");
+                }
+                this.waiter = new Waiter(this, workwearSize, maximumTables);
+                break;
+            case DELIVERY_DRIVER:
+                if (carModel == null || registrationNumber == null || bonusApply == null) {
+                    throw new Exception("DeliveryDriver requires carModel, registrationNumber, and bonusApply");
+                }
+                this.deliveryDriver = new DeliveryDriver(this, carModel, registrationNumber, bonusApply);
+                break;
+        }
+
         addExtent(this);
     }
+
     public Cook getCook() {
         return cook;
     }
