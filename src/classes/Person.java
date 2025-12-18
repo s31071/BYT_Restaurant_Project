@@ -1,8 +1,15 @@
 package classes;
 
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class Person {
+    private static List<Person> extent = new ArrayList<>();
 
     private String name;
     private String surname;
@@ -21,6 +28,8 @@ public abstract class Person {
         Address address = new Address(street, city, postalCode, country);
         setAddress(address);
         setEmail(email);
+
+        addExtent(this);
     }
 
     public void becomeEmployee(Employee employee) throws Exception { //TODO: Wydaje mi sie ze nie musi byc bidirectional bo employee bez person nie istnieje wiec w druga strone employee musi miec w konstruktorze person
@@ -38,6 +47,21 @@ public abstract class Person {
         }
     }
 
+    public void becomeCustomer(Customer customer) throws Exception {
+        if (customer == null) {
+            throw new Exception("Customer cannot be null");
+        }
+
+        if (this.customer == null) {
+            this.customer = customer;
+            if (customer.getPerson() != this) {
+                customer.setPerson(this);
+            }
+        } else if (this.customer != customer) {
+            throw new IllegalStateException("This person already is an customer");
+        }
+    }
+
     public void stopBeingEmployee(Employee employee) throws Exception {
         if (employee == null) {
             throw new Exception("Employee cannot be null");
@@ -50,6 +74,20 @@ public abstract class Person {
         this.employee = null;
 
         Employee.removeFromExtent(employee);
+    }
+
+    public void stopBeingCustomer(Customer customer) throws Exception {
+        if (customer == null) {
+            throw new Exception("Customer cannot be null");
+        }
+
+        if (this.customer != customer) {
+            return;
+        }
+
+        this.customer = null;
+
+        Customer.removeFromExtent(customer);
     }
 
     public String getName() {
@@ -125,6 +163,46 @@ public abstract class Person {
             throw new IllegalArgumentException("Incorrect email format");
         }
         this.email = email;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public static void addExtent(Person person) {
+        if (person == null) {
+            throw new IllegalArgumentException("Person cannot be null");
+        }
+        if (extent.contains(person)) {
+            throw new IllegalArgumentException("Such person is already in data base");
+        }
+        extent.add(person);
+    }
+
+    public static List<Person> getExtent() {
+        return Collections.unmodifiableList(extent);
+    }
+
+    public static void removeFromExtent(Person person) throws Exception {
+        person.stopBeingCustomer(person.getCustomer());
+        person.stopBeingEmployee(person.getEmployee());
+        extent.remove(person);
+    }
+
+    public static void clearExtent() {
+        extent.clear();
+    }
+
+    public static void writeExtent(XMLEncoder out) throws IOException {
+        out.writeObject(extent);
+    }
+
+    public static void readExtent(XMLDecoder in) throws IOException, ClassNotFoundException {
+        extent = (List<Person>) in.readObject();
     }
 
     @Override

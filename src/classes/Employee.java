@@ -388,6 +388,7 @@ public class Employee implements Iemployee, Serializable {
     }
 
     public static void removeFromExtent(Employee employee) {
+
         extent.remove(employee);
     }
 
