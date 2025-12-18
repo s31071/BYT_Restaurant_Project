@@ -28,21 +28,19 @@ public class ExtentToolBoxTest {
                 return list;
             }
             return null;
-
         } catch (NoSuchFieldException ignored) {
             return null;
         }
     }
 
     private static final Class<?>[] extentClassess = {
+            Person.class,
             Cook.class,
             Customer.class,
             DeliveryDriver.class,
             Dish.class,
-            FullTime.class,
             Invoice.class,
             Menu.class,
-            PartTime.class,
             Product.class,
             ProductOrder.class,
             Receipt.class,
@@ -55,6 +53,10 @@ public class ExtentToolBoxTest {
     };
 
     private void clearExtents() throws Exception {
+        Method clearPerson = Person.class.getDeclaredMethod("clearExtent");
+        clearPerson.setAccessible(true);
+        clearPerson.invoke(null);
+
         Method clearCook = Cook.class.getDeclaredMethod("clearExtent");
         clearCook.setAccessible(true);
         clearCook.invoke(null);
@@ -71,10 +73,6 @@ public class ExtentToolBoxTest {
         clearDish.setAccessible(true);
         clearDish.invoke(null);
 
-        Method clearFullTime = FullTime.class.getDeclaredMethod("clearExtent");
-        clearFullTime.setAccessible(true);
-        clearFullTime.invoke(null);
-
         Method clearInvoice = Invoice.class.getDeclaredMethod("clearExtent");
         clearInvoice.setAccessible(true);
         clearInvoice.invoke(null);
@@ -86,10 +84,6 @@ public class ExtentToolBoxTest {
         Method clearOrder = Order.class.getDeclaredMethod("clearExtent");
         clearOrder.setAccessible(true);
         clearOrder.invoke(null);
-
-        Method clearPartTime = PartTime.class.getDeclaredMethod("clearExtent");
-        clearPartTime.setAccessible(true);
-        clearPartTime.invoke(null);
 
         Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
         clearProduct.setAccessible(true);
@@ -140,14 +134,22 @@ public class ExtentToolBoxTest {
     @Test
     void testExtentsAreClearedCorrectly() throws Exception {
         new Product(11, "Milk", 2.0, Category.DAIRY, LocalDate.now().plusDays(2), 7.99);
-        new Customer("Jan", "Kowalski", "123456789",
-                "Street", "City", "00-001", "Poland", "jan@example.com");
+
+        Person p = new Person(
+                "Jan", "Kowalski", "123456789",
+                "Street", "City", "00-001", "Poland",
+                "jan@gmail.com"
+        );
+        new Customer(p);
 
         List<?> productExtent = getExtentOf(Product.class);
-        if (productExtent != null) assertFalse(productExtent.isEmpty());
+        assertFalse(productExtent.isEmpty());
 
         List<?> customerExtent = getExtentOf(Customer.class);
-        if (customerExtent != null) assertFalse(customerExtent.isEmpty());
+        assertFalse(customerExtent.isEmpty());
+
+        List<?> personExtent = getExtentOf(Person.class);
+        assertFalse(personExtent.isEmpty());
 
         clearExtents();
 
@@ -173,63 +175,75 @@ public class ExtentToolBoxTest {
     void testSaveAndLoadExtents() throws Exception {
         clearExtents();
 
-        new Customer("Jan", "Kowalski", "123456789",
-                "Street", "City", "00-001", "Poland", "jan@example.com");
+        Person p = new Person(
+                "Jan", "Kowalski", "123456789",
+                "Street", "City", "00-001", "Poland",
+                "jan@gmail.com"
+        );
+        new Customer(p);
 
         new Product(11, "Milk", 2.0, Category.DAIRY, LocalDate.now().plusDays(2), 7.99);
 
-        List<?> beforeCustomer = getExtentOf(Customer.class);
-        List<?> beforeProduct = getExtentOf(Product.class);
-
-        assertNotNull(beforeCustomer);
-        assertNotNull(beforeProduct);
-        assertEquals(1, beforeCustomer.size());
-        assertEquals(1, beforeProduct.size());
+        assertEquals(1, getExtentOf(Customer.class).size());
+        assertEquals(1, getExtentOf(Product.class).size());
+        assertEquals(1, getExtentOf(Person.class).size());
 
         ExtentToolBox.saveAllExtents();
-
         clearExtents();
 
-        List<?> emptyCustomer = getExtentOf(Customer.class);
-        List<?> emptyProduct = getExtentOf(Product.class);
-
-        assertNotNull(emptyCustomer);
-        assertNotNull(emptyProduct);
-        assertEquals(0, emptyCustomer.size());
-        assertEquals(0, emptyProduct.size());
+        assertEquals(0, getExtentOf(Customer.class).size());
+        assertEquals(0, getExtentOf(Product.class).size());
+        assertEquals(0, getExtentOf(Person.class).size());
 
         ExtentToolBox.loadAllExtents();
 
-        List<?> afterCustomer = getExtentOf(Customer.class);
-        List<?> afterProduct = getExtentOf(Product.class);
-
-        assertNotNull(afterCustomer);
-        assertNotNull(afterProduct);
-        assertEquals(1, afterCustomer.size());
-        assertEquals(1, afterProduct.size());
+        assertEquals(1, getExtentOf(Customer.class).size());
+        assertEquals(1, getExtentOf(Product.class).size());
+        assertEquals(1, getExtentOf(Person.class).size());
     }
 
     @Test
     void testMultipleExtentsSavedAndLoaded() throws Exception {
         clearExtents();
 
-        new Customer("Adam", "Nowak", "987654321",
-                "Long", "Town", "01-234", "Poland", "asd@gmail.com");
+        Person pc = new Person(
+                "Adam", "Nowak", "987654321",
+                "Long", "Town", "01-234", "Poland",
+                "asd@gmail.com"
+        );
+        new Customer(pc);
 
-        new Supplier("Ewa", "Nowak", "555444333",
-                "Road", "City", "02-222", "Poland", "ewa@gmail.com",
-                "SupplyCo", Category.MEAT, 20.0);
-        new Waiter("Tom", "Wait", "333222111", "Street", "Village", "00-050", "Poland", "some@email.com", LocalDate.now(), Contract.MANDATE_CONTRACT, WorkwearSize.M,10, null);
+        Person ps = new Person(
+                "Ewa", "Nowak", "555444333",
+                "Road", "City", "02-222", "Poland",
+                "ewa@gmail.com"
+        );
+        new Supplier(ps, "SupplyCo", Category.MEAT, 20.0);
+
+        Person pw = new Person(
+                "Tom", "Wait", "333222111",
+                "Street", "Village", "00-050", "Poland",
+                "some@gmail.com"
+        );
+
+        new Employee(
+                pw,
+                LocalDate.now(),
+                Contract.MANDATE_CONTRACT,
+                null,
+                Type.HALF_TIME,
+                WorkwearSize.M,
+                10
+        );
+
 
         ExtentToolBox.saveAllExtents();
-
         clearExtents();
-
         ExtentToolBox.loadAllExtents();
 
+        assertEquals(3, getExtentOf(Person.class).size());
         assertEquals(1, getExtentOf(Customer.class).size());
         assertEquals(1, getExtentOf(Supplier.class).size());
         assertEquals(1, getExtentOf(Waiter.class).size());
     }
-
 }

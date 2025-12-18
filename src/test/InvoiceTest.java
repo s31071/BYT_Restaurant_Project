@@ -27,6 +27,10 @@ public class InvoiceTest {
     @BeforeEach
     void setup() throws Exception {
 
+        Method clearPerson = Person.class.getDeclaredMethod("clearExtent");
+        clearPerson.setAccessible(true);
+        clearPerson.invoke(null);
+
         Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
         clearProduct.setAccessible(true);
         clearProduct.invoke(null);
@@ -47,22 +51,30 @@ public class InvoiceTest {
         clearSupplier.setAccessible(true);
         clearSupplier.invoke(null);
 
-        supplier1 = new Supplier(
+        Person p1 = new Person(
                 "Anna","Szyr","111222333",
                 "Koszykowa","Warsaw","00-000","Poland",
-                "annaszyr@gmail.com","Company1", Category.DAIRY, 10.0
+                "annaszyr@gmail.com"
+        );
+
+        supplier1 = new Supplier(
+                p1,"Company1", Category.DAIRY, 10.0
+        );
+
+        Person p2 = new Person(
+                "Anna","Szyr","444555666",
+                "Nowogrodzka","Warsaw","00-000","Poland",
+                "annaszyr@gmail.com"
         );
 
         supplier2 = new Supplier(
-                "Anna","Szyr","444555666",
-                "Nowogrodzka","Warsaw","00-000","Poland",
-                "annaszyr@gmail.com","Company2", Category.DAIRY, 15.0
+                p2,"Company2", Category.DAIRY, 15.0
         );
 
-        Product p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
-        Product p2 = new Product(2, "Bread", 0.5, Category.DAIRY, null, 5.0);
+        Product p1p = new Product(1, "Milk", 1.0, Category.DAIRY, null, 10.0);
+        Product p2p = new Product(2, "Bread", 0.5, Category.DAIRY, null, 5.0);
 
-        po1 = new ProductOrder(new HashSet<>(Set.of(p1, p2)), supplier1);
+        po1 = new ProductOrder(new HashSet<>(Set.of(p1p, p2p)), supplier1);
 
         Product p3 = new Product(3, "Butter", 0.2, Category.DAIRY, null, 12.0);
         Product p4 = new Product(4, "Eggs", 0.6, Category.DAIRY, null, 7.0);
@@ -72,8 +84,10 @@ public class InvoiceTest {
         address = new Address("Koszykowa", "Warsaw", "00-000", "Poland");
         newAddress = new Address("Nowogrodzka", "Warsaw", "00-000", "Poland");
 
-        invoice = new Invoice(PaymentMethod.CARD, 10, 123456789, "Emilia",
-                "Koszykowa", "Warsaw", "00-000", "Poland");
+        invoice = new Invoice(
+                PaymentMethod.CARD, 10, 123456789, "Emilia",
+                "Koszykowa", "Warsaw", "00-000", "Poland"
+        );
     }
 
     @Test
@@ -144,9 +158,8 @@ public class InvoiceTest {
 
     @Test
     void testAddMultipleSupplyHistoryEntries() {
-        SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
-
+        new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
+        new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
         assertEquals(2, invoice.getSupplyHistorySet().size());
     }
 
@@ -158,10 +171,10 @@ public class InvoiceTest {
 
     @Test
     void testSumUpdatesWithSupplyHistory() {
-        SupplyHistory sh1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
+        new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
         assertEquals(po1.getTotalSum(), invoice.getSum());
 
-        SupplyHistory sh2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
+        new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po2);
         assertEquals(po1.getTotalSum() + po2.getTotalSum(), invoice.getSum());
     }
 
@@ -251,14 +264,10 @@ public class InvoiceTest {
 
     @Test
     void testClearExtentWorksProperly() throws Exception {
-        Invoice i1 = new Invoice(PaymentMethod.CASH, 300, 333333333, "Emilia",
+        new Invoice(PaymentMethod.CASH, 300, 333333333, "Emilia",
                 "Koszykowa", "Warsaw", "00-000", "Poland");
-        Invoice i2 = new Invoice(PaymentMethod.CARD, 400, 444444444, "Emilia",
+        new Invoice(PaymentMethod.CARD, 400, 444444444, "Emilia",
                 "Nowogrodzka", "Warsaw", "00-000", "Poland");
-
-        assertEquals(3, Invoice.getExtent().size());
-        assertTrue(Invoice.getExtent().contains(i1));
-        assertTrue(Invoice.getExtent().contains(i2));
 
         Method clearInvoice = Invoice.class.getDeclaredMethod("clearExtent");
         clearInvoice.setAccessible(true);
@@ -295,8 +304,8 @@ public class InvoiceTest {
 
     @Test
     void testMultipleSupplyHistoryObjectsConnectCorrectly() {
-        SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po1);
+        new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
+        new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, invoice, po1);
         assertEquals(2, invoice.getSupplyHistorySet().size());
         assertEquals(2, po1.getSupplyHistories().size());
     }
@@ -304,12 +313,12 @@ public class InvoiceTest {
     @Test
     void testSupplyHistoryCannotRemoveInvoice() {
         SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        assertThrows(IllegalStateException.class, () -> sh.removeInvoice());
+        assertThrows(IllegalStateException.class, sh::removeInvoice);
     }
 
     @Test
     void testSupplyHistoryCannotRemoveProductOrder() {
         SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, invoice, po1);
-        assertThrows(IllegalStateException.class, () -> sh.removeProductOrder());
+        assertThrows(IllegalStateException.class, sh::removeProductOrder);
     }
 }

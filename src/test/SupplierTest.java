@@ -13,15 +13,33 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SupplierTest {
+
     Supplier s;
+    Person person;
 
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    void setUp() throws Exception {
+
+        Method clearPerson = Person.class.getDeclaredMethod("clearExtent");
+        clearPerson.setAccessible(true);
+        clearPerson.invoke(null);
+
         Method clearMethod = Supplier.class.getDeclaredMethod("clearExtent");
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
-        s = new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
-                "BestMeat", Category.MEAT, 120.0);
+
+        person = new Person(
+                "Adam",
+                "Nowak",
+                "123456789",
+                "Markowskiego",
+                "Piaseczno",
+                "05-500",
+                "Poland",
+                "adam@gmail.com"
+        );
+
+        s = new Supplier(person, "BestMeat", Category.MEAT, 120.0);
     }
 
     @Test
@@ -34,36 +52,40 @@ class SupplierTest {
     @Test
     void shouldThrowExceptionForEmptyCompanyName() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
-                        "", Category.MEAT, 120.0));
+                new Supplier(person, "", Category.MEAT, 120.0));
     }
 
     @Test
     void shouldThrowExceptionForNullCompanyName() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
-                        null, Category.MEAT, 120.0));
+                new Supplier(person, null, Category.MEAT, 120.0));
     }
 
     @Test
     void shouldThrowExceptionForInvalidEmail() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam#example.com",
-                        "BestMeat", Category.MEAT, 120.0));
+                new Person(
+                        "Adam",
+                        "Nowak",
+                        "123456789",
+                        "Markowskiego",
+                        "Piaseczno",
+                        "05-500",
+                        "Poland",
+                        "adam#gmail.com"
+                ));
     }
 
     @Test
     void shouldThrowExceptionForNullCategory() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500",
-                        "Poland", "adam@example.com", "BestMeat", null, 120.0));
+                new Supplier(person, "BestMeat", null, 120.0));
     }
 
     @Test
     void shouldThrowExceptionForNegativeDeliveryCost() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno", "05-500",
-                        "Poland", "adam@example.com", "BestMeat", Category.MEAT, -1.0));
+                new Supplier(person, "BestMeat", Category.MEAT, -1.0));
     }
 
     @Test
@@ -96,56 +118,49 @@ class SupplierTest {
     }
 
     @Test
-    void testAddExtentDuplicateSupplierThrowsException() throws Exception {
-        Method method = Supplier.class.getDeclaredMethod("addExtent", Supplier.class);
-        method.setAccessible(true);
-
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> new Supplier(
-                        "Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
-                        "BestMeat", Category.MEAT, 120.0
-                )
-        );
-
-        assertEquals("Such supplier is already in data base", ex.getMessage());
-    }
-
-    @Test
     void testExtentContainsOnlyOneSupplierAfterDuplicateAttempt() throws Exception {
-        Method addMethod = Supplier.class.getDeclaredMethod("addExtent", Supplier.class);
-        addMethod.setAccessible(true);
-
-        Method getExtentMethod = Supplier.class.getDeclaredMethod("getExtent");
-        getExtentMethod.setAccessible(true);
-
         try {
-            Supplier duplicate = new Supplier("Adam", "Nowak", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "adam@example.com",
-                    "BestMeat", Category.MEAT, 120.0);
+            Person samePerson = new Person(
+                    "Adam",
+                    "Nowak",
+                    "123456789",
+                    "Markowskiego",
+                    "Piaseczno",
+                    "05-500",
+                    "Poland",
+                    "adam@gmail.com"
+            );
+
+            new Supplier(samePerson, "BestMeat", Category.MEAT, 120.0);
         } catch (IllegalArgumentException ignored) {}
 
-        var extent = (java.util.List<Supplier>) getExtentMethod.invoke(null);
+        var extent = Supplier.getExtent();
         assertEquals(1, extent.size());
         assertEquals(s, extent.get(0));
     }
 
     @Test
     void testRemoveFromExtent() throws Exception {
-        Supplier s2 = new Supplier(
-                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
-                "s31431@pjwstk.edu.pl", "GreenVeg", Category.VEGETABLES, 75.0
+        Person p2 = new Person(
+                "Eva",
+                "Nowak",
+                "555444333",
+                "Koszykowa",
+                "Warszawa",
+                "00-001",
+                "Poland",
+                "s31431@pjwstk.edu.pl"
         );
 
-        Method getExtent = Supplier.class.getDeclaredMethod("getExtent");
-        getExtent.setAccessible(true);
-        var extent = (java.util.List<Supplier>) getExtent.invoke(null);
+        Supplier s2 = new Supplier(p2, "GreenVeg", Category.VEGETABLES, 75.0);
 
+        var extent = Supplier.getExtent();
         assertEquals(2, extent.size());
         assertTrue(extent.contains(s2));
 
         Supplier.removeFromExtent(s2);
 
-        extent = (java.util.List<Supplier>) getExtent.invoke(null);
+        extent = Supplier.getExtent();
         assertEquals(1, extent.size());
         assertFalse(extent.contains(s2));
         assertTrue(extent.contains(s));
@@ -153,24 +168,27 @@ class SupplierTest {
 
     @Test
     void testClearExtent() throws Exception {
-        Supplier s2 = new Supplier(
-                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
-                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
+        Person p2 = new Person(
+                "Eva",
+                "Nowak",
+                "555444333",
+                "Koszykowa",
+                "Warszawa",
+                "00-001",
+                "Poland",
+                "eva@gmail.com"
         );
 
-        Method getExtent = Supplier.class.getDeclaredMethod("getExtent");
-        getExtent.setAccessible(true);
-        var extent = (java.util.List<Supplier>) getExtent.invoke(null);
+        Supplier s2 = new Supplier(p2, "GreenVeg", Category.VEGETABLES, 75.0);
 
+        var extent = Supplier.getExtent();
         assertEquals(2, extent.size());
-        assertTrue(extent.contains(s));
-        assertTrue(extent.contains(s2));
 
         Method clearMethod = Supplier.class.getDeclaredMethod("clearExtent");
         clearMethod.setAccessible(true);
         clearMethod.invoke(null);
 
-        extent = (java.util.List<Supplier>) getExtent.invoke(null);
+        extent = Supplier.getExtent();
         assertEquals(0, extent.size());
     }
 
@@ -181,20 +199,35 @@ class SupplierTest {
 
     @Test
     void testRemoveOrderedProductNotAssignedThrows() throws Exception {
-        Supplier s2 = new Supplier(
-                "Eva", "Nowak", "555444333", "Koszykowa", "Warszawa", "00-001", "Poland",
-                "eva@example.com", "GreenVeg", Category.VEGETABLES, 75.0
+        Person p2 = new Person(
+                "Eva",
+                "Nowak",
+                "555444333",
+                "Koszykowa",
+                "Warszawa",
+                "00-001",
+                "Poland",
+                "eva@gmail.com"
         );
-        Product p1 = new Product(3, "Turkey", 3.0, Category.MEAT, LocalDate.now().plusDays(7), 70.0);
 
-        ProductOrder productOrder = new ProductOrder(new HashSet<>(Set.of(p1)), s2);
+        Supplier s2 = new Supplier(p2, "GreenVeg", Category.VEGETABLES, 75.0);
 
-        assertDoesNotThrow(() ->
-                s.removeOrderedProduct(productOrder)
+        Product p1 = new Product(
+                3,
+                "Turkey",
+                3.0,
+                Category.MEAT,
+                LocalDate.now().plusDays(7),
+                70.0
         );
 
+        ProductOrder productOrder = new ProductOrder(
+                new HashSet<>(Set.of(p1)),
+                s2
+        );
+
+        assertDoesNotThrow(() -> s.removeOrderedProduct(productOrder));
         assertTrue(s.getProductOrders().isEmpty());
-
         assertEquals(s2, productOrder.getSupplier());
     }
 
@@ -204,9 +237,19 @@ class SupplierTest {
         clearPOExtent.setAccessible(true);
         clearPOExtent.invoke(null);
 
-        Product p1 = new Product(100, "Bread", 1.0, Category.MEAT, LocalDate.now().plusDays(2), 15.0);
+        Product p1 = new Product(
+                100,
+                "Bread",
+                1.0,
+                Category.MEAT,
+                LocalDate.now().plusDays(2),
+                15.0
+        );
 
-        ProductOrder po = new ProductOrder(new HashSet<>(Set.of(p1)), s);
+        ProductOrder po = new ProductOrder(
+                new HashSet<>(Set.of(p1)),
+                s
+        );
 
         assertTrue(s.getProductOrders().contains(po));
         assertTrue(ProductOrder.getExtent().contains(po));

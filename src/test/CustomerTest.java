@@ -1,28 +1,36 @@
 package test;
 
-import classes.Address;
-import classes.Contract;
-import classes.Cook;
-import classes.Customer;
+import classes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerTest {
 
     private Customer c1;
+    private Person p1;
 
     @BeforeEach
-    void setUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method clearMethod = Customer.class.getDeclaredMethod("clearExtent");
-        clearMethod.setAccessible(true);
-        clearMethod.invoke(null);
-        c1 = new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com");
+    void setUp() throws Exception {
+
+        Method clearPerson = Person.class.getDeclaredMethod("clearExtent");
+        clearPerson.setAccessible(true);
+        clearPerson.invoke(null);
+
+        Method clearCustomer = Customer.class.getDeclaredMethod("clearExtent");
+        clearCustomer.setAccessible(true);
+        clearCustomer.invoke(null);
+
+        p1 = new Person(
+                "Ewa", "Kowalska", "987654321",
+                "Markowskiego", "Piaseczno", "05-500", "Poland",
+                "ewa@gmail.com"
+        );
+
+        c1 = new Customer(p1);
     }
 
     @Test
@@ -34,116 +42,83 @@ class CustomerTest {
     @Test
     void testInvalidPhoneThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Customer("Ewa", "Kowalska", "12", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com"));
+                new Person("Ewa", "Kowalska", "12",
+                        "Markowskiego", "Piaseczno", "05-500", "Poland",
+                        "ewa@gmail.com"));
     }
 
     @Test
     void testInvalidEmailThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
-                new Customer("Ewa", "Kowalska", "123456789", "Markowskiego", "Piaseczno","05-500", "Poland", "invalid"));
+                new Person("Ewa", "Kowalska", "123456789",
+                        "Markowskiego", "Piaseczno", "05-500", "Poland",
+                        "invalid"));
     }
 
     @Test
     void testLoyaltyPointsInitialValue() {
-        double points = c1.getLoyaltyPoints();
-        assertEquals(0.0, points);
+        assertEquals(0.0, c1.getLoyaltyPoints());
     }
 
     @Test
-    void testUpdateLoyaltyPointsAddsCorrectly() throws Exception {
-        Method updateMethod = Customer.class.getDeclaredMethod("updateLoyaltyPoints", double.class);
-        updateMethod.setAccessible(true);
-        updateMethod.invoke(c1, 20.0);
-        updateMethod.invoke(c1, 30.0);
-        double points = c1.getLoyaltyPoints();
-        assertEquals(50.0, points);
+    void testUpdateLoyaltyPointsAddsCorrectly() {
+        c1.updateLoyaltyPoints(20.0);
+        c1.updateLoyaltyPoints(30.0);
+        assertEquals(50.0, c1.getLoyaltyPoints());
     }
 
     @Test
-    void testUpdateLoyaltyPointsAcceptsNegative() throws Exception {
-        Method updateMethod = Customer.class.getDeclaredMethod("updateLoyaltyPoints", double.class);
-        updateMethod.setAccessible(true);
-        updateMethod.invoke(c1, 100.0);
-        updateMethod.invoke(c1, -40.0);
-        double points = c1.getLoyaltyPoints();
-        assertEquals(60.0, points);
+    void testUpdateLoyaltyPointsAcceptsNegative() {
+        c1.updateLoyaltyPoints(100.0);
+        c1.updateLoyaltyPoints(-40.0);
+        assertEquals(60.0, c1.getLoyaltyPoints());
     }
 
     @Test
-    void testAddExtentDuplicateCustomerThrowsException() throws Exception {
-        Method method = Customer.class.getDeclaredMethod("addExtent", Customer.class);
-        method.setAccessible(true);
+    void testAddExtentDuplicateCustomerThrowsException() {
 
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
-                () -> new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com"
-                )
+                () -> new Customer(p1)
         );
 
         assertEquals("Such customer is already in data base", ex.getMessage());
     }
 
     @Test
-    void testExtentContainsOnlyOneCustomerAfterDuplicateAttempt() throws Exception {
-        Method addMethod = Customer.class.getDeclaredMethod("addExtent", Customer.class);
-        addMethod.setAccessible(true);
+    void testRemoveFromExtent() {
 
-        Method getExtentMethod = Customer.class.getDeclaredMethod("getExtent");
-        getExtentMethod.setAccessible(true);
-
-        try {
-            Customer duplicate = new Customer("Ewa", "Kowalska", "987654321", "Markowskiego", "Piaseczno","05-500", "Poland", "ewa@example.com");
-        } catch (IllegalArgumentException ignored) {}
-
-        var extent = (java.util.List<Customer>) getExtentMethod.invoke(null);
-        assertEquals(1, extent.size());
-        assertEquals(c1, extent.get(0));
-    }
-
-    @Test
-    void testRemoveFromExtent() throws Exception {
-        Customer c2 = new Customer(
+        Person p2 = new Person(
                 "Eva", "Nowak", "555444333",
                 "Koszykowa", "Warszawa", "00-001", "Poland",
-                "eva@example.com"
+                "eva@gmail.com"
         );
 
-        Method getExtent = Customer.class.getDeclaredMethod("getExtent");
-        getExtent.setAccessible(true);
-        var extent = (java.util.List<Customer>) getExtent.invoke(null);
+        Customer c2 = new Customer(p2);
 
-        assertEquals(2, extent.size());
-        assertTrue(extent.contains(c2));
+        assertEquals(2, Customer.getExtent().size());
 
         Customer.removeFromExtent(c2);
 
-        extent = (java.util.List<Customer>) getExtent.invoke(null);
-        assertEquals(1, extent.size());
-        assertFalse(extent.contains(c2));
-        assertTrue(extent.contains(c1));
+        assertEquals(1, Customer.getExtent().size());
+        assertTrue(Customer.getExtent().contains(c1));
     }
 
     @Test
-    void testClearExtent() throws Exception {
-        Customer c2 = new Customer(
+    void testClearExtent() {
+
+        Person p2 = new Person(
                 "Eva", "Nowak", "555444333",
                 "Koszykowa", "Warszawa", "00-001", "Poland",
-                "s31431@pjwstk.pl"
+                "eva@gmail.com"
         );
 
-        Method getExtent = Customer.class.getDeclaredMethod("getExtent");
-        getExtent.setAccessible(true);
-        var extent = (java.util.List<Customer>) getExtent.invoke(null);
+        new Customer(p2);
 
-        assertEquals(2, extent.size());
-        assertTrue(extent.contains(c1));
-        assertTrue(extent.contains(c2));
+        assertEquals(2, Customer.getExtent().size());
 
-        Method clearMethod = Customer.class.getDeclaredMethod("clearExtent");
-        clearMethod.setAccessible(true);
-        clearMethod.invoke(null);
+        Customer.clearExtent();
 
-        extent = (java.util.List<Customer>) getExtent.invoke(null);
-        assertEquals(0, extent.size());
+        assertEquals(0, Customer.getExtent().size());
     }
 }

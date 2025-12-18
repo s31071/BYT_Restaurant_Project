@@ -18,7 +18,7 @@ public class Waiter implements IWaiter, Serializable {
 
     public Waiter() {}
 
-    Waiter(Employee employee, WorkwearSize workwearSize, double maximumTables) throws Exception {
+    public Waiter(Employee employee, WorkwearSize workwearSize, double maximumTables) throws Exception {
         if (employee == null) {
             throw new Exception("Waiter cannot exist without an Employee");
         }

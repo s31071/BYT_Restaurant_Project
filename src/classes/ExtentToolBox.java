@@ -14,7 +14,7 @@ public class ExtentToolBox {
                 new BufferedOutputStream(new FileOutputStream(allExtentFile)))) {
 
             encoder.setPersistenceDelegate(
-                    java.time.LocalDate.class,
+                    LocalDate.class,
                     new java.beans.PersistenceDelegate() {
                         @Override
                         protected java.beans.Expression instantiate(Object obj, java.beans.Encoder enc) {
@@ -23,22 +23,25 @@ public class ExtentToolBox {
                                     date,
                                     LocalDate.class,
                                     "of",
-                                    new Object[]{date.getYear(), date.getMonthValue(), date.getDayOfMonth()}
+                                    new Object[]{
+                                            date.getYear(),
+                                            date.getMonthValue(),
+                                            date.getDayOfMonth()
+                                    }
                             );
                         }
                     }
             );
 
+            Person.writeExtent(encoder);
             Cook.writeExtent(encoder);
             Customer.writeExtent(encoder);
             DeliveryDriver.writeExtent(encoder);
             Dish.writeExtent(encoder);
             DishOrder.writeExtent(encoder);
-            FullTime.writeExtent(encoder);
             Invoice.writeExtent(encoder);
             Menu.writeExtent(encoder);
             Order.writeExtent(encoder);
-            PartTime.writeExtent(encoder);
             Product.writeExtent(encoder);
             ProductOrder.writeExtent(encoder);
             Receipt.writeExtent(encoder);
@@ -53,21 +56,19 @@ public class ExtentToolBox {
         }
     }
 
-
     public static void loadAllExtents() throws IOException, ClassNotFoundException {
         try (XMLDecoder decoder = new XMLDecoder(
                 new BufferedInputStream(new FileInputStream(allExtentFile)))) {
 
+            Person.readExtent(decoder);
             Cook.readExtent(decoder);
             Customer.readExtent(decoder);
             DeliveryDriver.readExtent(decoder);
             Dish.readExtent(decoder);
             DishOrder.readExtent(decoder);
-            FullTime.readExtent(decoder);
             Invoice.readExtent(decoder);
             Menu.readExtent(decoder);
             Order.readExtent(decoder);
-            PartTime.readExtent(decoder);
             Product.readExtent(decoder);
             ProductOrder.readExtent(decoder);
             Receipt.readExtent(decoder);

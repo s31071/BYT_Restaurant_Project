@@ -21,6 +21,11 @@ public class ProductOrderTest {
     @BeforeEach
     void setup() throws Exception {
 
+        Method clearPerson = Person.class.getDeclaredMethod("clearExtent");
+        clearPerson.setAccessible(true);
+        clearPerson.invoke(null);
+
+
         Method clearProduct = Product.class.getDeclaredMethod("clearExtent");
         clearProduct.setAccessible(true);
         clearProduct.invoke(null);
@@ -37,16 +42,24 @@ public class ProductOrderTest {
         clearInvoice.setAccessible(true);
         clearInvoice.invoke(null);
 
-        supplier1 = new Supplier(
+        Person pSupplier1 = new Person(
                 "Emilia", "Dec", "111222333",
                 "Koszykowa", "Warsaw", "00-000", "Poland",
-                "emiliadec@gmail.com", "CompanyA", Category.DAIRY, 5.0
+                "emiliadec@gmail.com"
+        );
+
+        supplier1 = new Supplier(
+                pSupplier1, "CompanyA", Category.DAIRY, 5.0
+        );
+
+        Person pSupplier2 = new Person(
+                "Anna", "Szyr", "444555666",
+                "Nowogrodzka", "Warsaw", "00-000", "Poland",
+                "annaszyr@gmail.com"
         );
 
         supplier2 = new Supplier(
-                "Anna", "Szyr", "444555666",
-                "Nowogrodzka", "Warsaw", "00-000", "Poland",
-                "annaszyr@gmail.com", "CompanyB", Category.BREAD, 8.0
+                pSupplier2, "CompanyB", Category.BREAD, 8.0
         );
 
         p1 = new Product(1, "Milk", 1.0, Category.DAIRY, null, 3.50);
@@ -156,8 +169,8 @@ public class ProductOrderTest {
 
     @Test
     void testClearExtentWorksProperly() throws Exception {
-        ProductOrder o1 = new ProductOrder(new HashSet<>(Set.of(p1)), supplier1);
-        ProductOrder o2 = new ProductOrder(new HashSet<>(Set.of(p2)), supplier1);
+        new ProductOrder(new HashSet<>(Set.of(p1)), supplier1);
+        new ProductOrder(new HashSet<>(Set.of(p2)), supplier1);
 
         assertEquals(3, ProductOrder.getExtent().size());
 
@@ -199,29 +212,35 @@ public class ProductOrderTest {
 
     @Test
     void testAddSupplyHistoryCreatesReverse() {
-        SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED,
+        SupplyHistory sh = new SupplyHistory(
+                LocalDate.now(), SupplyStatus.ORDERED,
                 new Invoice(PaymentMethod.CASH, 1, 111, "Emilia",
                         "Koszykowa", "Warsaw", "00-000", "Poland"),
-                productOrder);
+                productOrder
+        );
         assertTrue(productOrder.getSupplyHistories().contains(sh));
         assertEquals(productOrder, sh.getProductOrder());
     }
 
     @Test
     void testRemoveSupplyHistoryNotAllowed() {
-        SupplyHistory sh = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED,
+        SupplyHistory sh = new SupplyHistory(
+                LocalDate.now(), SupplyStatus.ORDERED,
                 new Invoice(PaymentMethod.CASH, 2, 222, "Anna",
                         "Nowogrodzka", "Warsaw", "00-000", "Poland"),
-                productOrder);
+                productOrder
+        );
         assertThrows(IllegalStateException.class, () -> productOrder.removeSupplyHistory(sh));
     }
 
     @Test
     void testMultipleSupplyHistoriesStored() {
-        Invoice inv = new Invoice(PaymentMethod.CASH, 3, 333, "Emilia",
-                "Koszykowa","Warsaw","00-000","Poland");
-        SupplyHistory s1 = new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, inv, productOrder);
-        SupplyHistory s2 = new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, inv, productOrder);
+        Invoice inv = new Invoice(
+                PaymentMethod.CASH, 3, 333, "Emilia",
+                "Koszykowa","Warsaw","00-000","Poland"
+        );
+        new SupplyHistory(LocalDate.now(), SupplyStatus.ORDERED, inv, productOrder);
+        new SupplyHistory(LocalDate.now().minusDays(1), SupplyStatus.ORDERED, inv, productOrder);
 
         assertEquals(2, productOrder.getSupplyHistories().size());
     }
