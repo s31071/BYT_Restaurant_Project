@@ -1,9 +1,9 @@
 package classes;
 
 public interface Icustomer {
-    double getLoyaltyPoints();
-    void setLoyaltyPoints(double loyaltyPoints);
+    Double getLoyaltyPoints();
+    void setLoyaltyPoints(Double loyaltyPoints);
 
-    void updateLoyaltyPoints(double newPoints);
+    void updateLoyaltyPoints(Double newPoints);
     void displayCustomerInfo();
 }

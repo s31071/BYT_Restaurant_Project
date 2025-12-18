@@ -11,7 +11,7 @@ public class Customer implements Icustomer, Serializable {
     private static List<Customer> extent = new ArrayList<>();
 
     private Person person;
-    private double loyaltyPoints;
+    private Double loyaltyPoints;
     public HashSet<Table> tablesTaken = new HashSet<>();
 
     public Customer() {}
@@ -21,7 +21,7 @@ public class Customer implements Icustomer, Serializable {
             throw new IllegalArgumentException("Person cannot be null");
         }
         this.person = person;
-        this.loyaltyPoints = 0;
+        this.loyaltyPoints = 0.0;
         addExtent(this);
     }
 
@@ -53,15 +53,15 @@ public class Customer implements Icustomer, Serializable {
         return person.getEmail();
     }
 
-    public void updateLoyaltyPoints(double newPoints) {
+    public void updateLoyaltyPoints(Double newPoints) {
         loyaltyPoints += newPoints;
     }
 
-    public double getLoyaltyPoints() {
+    public Double getLoyaltyPoints() {
         return loyaltyPoints;
     }
 
-    public void setLoyaltyPoints(double loyaltyPoints) {
+    public void setLoyaltyPoints(Double loyaltyPoints) {
         this.loyaltyPoints = loyaltyPoints;
     }
 
