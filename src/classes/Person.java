@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Person {
+public class Person {
     private static List<Person> extent = new ArrayList<>();
 
     private String name;
@@ -55,15 +55,17 @@ public abstract class Person {
         }
     }
 
-    public void stopBeingSupplier() {
-        if (this.supplier == null) {
+    public void stopBeingSupplier(Supplier supplier) throws Exception {
+        if (supplier == null) {
+            throw new Exception("Supplier cannot be null");
+        }
+
+        if (this.supplier != supplier) {
             return;
         }
 
-        Supplier tmp = this.supplier;
         this.supplier = null;
-
-        Supplier.removeFromExtent(tmp);
+        Supplier.removeFromExtent(supplier);
     }
 
     public void becomeEmployee(Employee employee) throws Exception { //TODO: Wydaje mi sie ze nie musi byc bidirectional bo employee bez person nie istnieje wiec w druga strone employee musi miec w konstruktorze person
@@ -207,6 +209,10 @@ public abstract class Person {
         return customer;
     }
 
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
     public static void addExtent(Person person) {
         if (person == null) {
             throw new IllegalArgumentException("Person cannot be null");
@@ -222,8 +228,22 @@ public abstract class Person {
     }
 
     public static void removeFromExtent(Person person) throws Exception {
-        person.stopBeingCustomer(person.getCustomer());
-        person.stopBeingEmployee(person.getEmployee());
+        if (person == null) {
+            throw new IllegalArgumentException("Person cannot be null");
+        }
+
+        if (person.getCustomer() != null) {
+            person.stopBeingCustomer(person.getCustomer());
+        }
+
+        if (person.getEmployee() != null) {
+            person.stopBeingEmployee(person.getEmployee());
+        }
+
+        if (person.getSupplier() != null) {
+            person.stopBeingSupplier(person.getSupplier());
+        }
+
         extent.remove(person);
     }
 
